@@ -10,7 +10,7 @@ import { env } from '../server-env';
       provide: AuthService,
       async useFactory() {
         // Check from db or something if we should use Clerk or our own auth
-        if (env.AUTH_PROVIDER === 'RANDOM') {
+        if (env.AUTH_PROVIDER === 'unsafe_random') {
           return new RandomAuthService();
         }
         return new ClerkAuthService();
