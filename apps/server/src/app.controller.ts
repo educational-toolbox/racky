@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
+import { TrpcRouter } from './trpc/trpc.router';
+import { AuthenticatedGuard } from './auth/authenticated.guard';
 
-@Controller()
+@UseGuards(AuthenticatedGuard)
+@Controller('/api')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly router: TrpcRouter) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('/openapi.json')
+  getOpenApiJsonFile(@Res() res: Response) {
+    return res.json(this.router.openapiDoc);
   }
 }

@@ -5,5 +5,6 @@ import { Module } from '@nestjs/common';
 @Module({
   imports: [],
   providers: [trpcServiceProvider, TrpcRouter],
+  exports: [TrpcRouter],
 })
 export class TrpcModule {}

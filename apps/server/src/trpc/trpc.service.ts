@@ -1,4 +1,5 @@
 import { Injectable, Provider } from '@nestjs/common';
+import { OpenApiMeta } from 'trpc-openapi';
 import { initTRPC } from '@trpc/server';
 import type SuperJSON from 'superjson';
 
@@ -6,7 +7,9 @@ import type SuperJSON from 'superjson';
 export class TrpcService {
   constructor(private readonly transformer: SuperJSON) {}
 
-  public readonly trpc = initTRPC.create({ transformer: this.transformer });
+  public readonly trpc = initTRPC
+    .meta<OpenApiMeta>()
+    .create({ transformer: this.transformer });
   public readonly procedure = this.trpc.procedure;
   public readonly router = this.trpc.router;
   public readonly mergeRouters = this.trpc.mergeRouters;
