@@ -1,7 +1,7 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { TrpcRouter } from '@educational-toolbox/racky-api/trpc/trpc.router';
+import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import { AppModule } from './app.module';
 import { env } from './server-env';
 
 const getPort = () => {
@@ -18,8 +18,8 @@ async function bootstrap() {
   app.enableCors();
   app.use(cookieParser());
   const trpc = app.get(TrpcRouter);
-  trpc.applyTRPCHandler(app);
   trpc.applyOpenAPIMiddleware(app);
+  trpc.applyTRPCHandler(app);
   await app.listen(getPort());
 }
 

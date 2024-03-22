@@ -1,7 +1,7 @@
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { INestApplication, Injectable } from '@nestjs/common';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
@@ -27,12 +27,15 @@ export class TrpcRouter {
   async applyTRPCHandler(app: INestApplication) {
     app.use(
       `/trpc`,
-      trpcExpress.createExpressMiddleware({
-        router: this.appRouter,
-        createContext: () => {
-          return { db: this.databaseService };
-        },
-      }),
+      async (req: Request, res: Response, next: NextFunction) => {
+        const middleware = trpcExpress.createExpressMiddleware({
+          router: this.appRouter,
+          createContext: () => {
+            return { db: this.databaseService, req };
+          },
+        });
+        return middleware(req, res, next);
+      },
     );
   }
 
@@ -45,15 +48,15 @@ export class TrpcRouter {
   }
 
   async applyOpenAPIMiddleware(app: INestApplication) {
-    const callback = createOpenApiExpressMiddleware({
-      router: this.appRouter,
-      createContext: () => {
-        return { db: this.databaseService };
-      },
-    });
     app.use((req: Request, res: Response, next: NextFunction) => {
+      const middleware = createOpenApiExpressMiddleware({
+        router: this.appRouter,
+        createContext: () => {
+          return { db: this.databaseService, req };
+        },
+      });
       if (req.path in this.openapiDoc.paths) {
-        return callback(req, res);
+        return middleware(req, res);
       }
       return next();
     });

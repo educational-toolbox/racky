@@ -3,9 +3,11 @@ import { AuthService } from './auth.service';
 import { ClerkAuthService } from './clerk-auth.service';
 import { RandomAuthService } from './random-auth.service';
 import { env } from '../server-env';
+import { AuthenticatedGuard } from './authenticated.guard';
 
 @Module({
   providers: [
+    AuthenticatedGuard,
     {
       provide: AuthService,
       async useFactory() {
@@ -17,6 +19,6 @@ import { env } from '../server-env';
       },
     },
   ],
-  exports: [AuthService],
+  exports: [AuthService, AuthenticatedGuard],
 })
 export class AuthModule {}

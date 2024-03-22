@@ -1,11 +1,13 @@
 import { TrpcModule } from '@educational-toolbox/racky-api/trpc/trpc.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { AppController } from './app.controller';
+import { AuthenticatedGuard } from './auth/authenticated.guard';
 import { DatabaseModule } from './database/database.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LogEntryEventController } from './events/log-entry.event.contoller';
 
 @Module({
@@ -17,6 +19,12 @@ import { LogEntryEventController } from './events/log-entry.event.contoller';
     DatabaseModule,
   ],
   controllers: [AppController, LogEntryEventController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticatedGuard,
+    },
+  ],
 })
 export class AppModule {}

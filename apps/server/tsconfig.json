@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json", // Extend the config options from the root
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,
     "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "target": "es2017",

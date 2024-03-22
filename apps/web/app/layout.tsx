@@ -13,7 +13,7 @@ function RootLayout(props: { children: React.ReactNode }) {
       <body className={cn(inter.className, "container mx-auto")}>
         <TRPCReactProvider headers={headers()}>
           {props.children}
-          <Toaster />
+          <Toaster richColors />
         </TRPCReactProvider>
       </body>
     </html>
