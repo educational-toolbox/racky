@@ -1,16 +1,19 @@
 import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "./providers";
 import { headers } from "next/headers";
+import "./globals.css";
+import { Toaster } from "./components/ui/sonner";
+import { cn } from "./lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
-async function RootLayout(props: { children: React.ReactNode }) {
+function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className, "container mx-auto")}>
         <TRPCReactProvider headers={headers()}>
           {props.children}
-          {/* <p>hi</p> */}
+          <Toaster />
         </TRPCReactProvider>
       </body>
     </html>
