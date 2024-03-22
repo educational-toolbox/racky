@@ -30,7 +30,7 @@ export class ExampleRouter {
         );
         return input.name;
       }),
-    getLogs: this.trpc.procedure
+    getLogs: this.trpc.protectedProcedure
       .meta({
         openapi: { method: 'GET', path: '/query-logs' },
       })

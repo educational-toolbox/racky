@@ -17,7 +17,8 @@ export class TrpcService {
     .meta<OpenApiMeta>()
     .context<{ db: DatabaseService; req: Request<any> }>()
     .create({ transformer: this.transformer });
-  public readonly procedure = this.trpc.procedure.use(async (ctx) => {
+  public readonly procedure = this.trpc.procedure;
+  public readonly protectedProcedure = this.trpc.procedure.use(async (ctx) => {
     const canActivate = await this.guard.canActivateFromRequest(ctx.ctx.req);
     if (!canActivate) {
       throw new TRPCError({ code: 'FORBIDDEN' });

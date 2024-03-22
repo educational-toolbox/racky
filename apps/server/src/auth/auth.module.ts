@@ -12,6 +12,7 @@ import { AuthenticatedGuard } from './authenticated.guard';
       provide: AuthService,
       async useFactory() {
         // Check from db or something if we should use Clerk or our own auth
+        console.log(`using "${env.AUTH_PROVIDER}" provider`);
         if (env.AUTH_PROVIDER === 'unsafe_random') {
           return new RandomAuthService();
         }
