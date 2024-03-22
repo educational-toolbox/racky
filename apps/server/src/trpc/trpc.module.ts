@@ -3,7 +3,6 @@ import { trpcServiceProvider } from '@educational-toolbox/racky-api/trpc/trpc.se
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [],
   providers: [trpcServiceProvider, TrpcRouter],
   exports: [TrpcRouter],
 })

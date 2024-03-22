@@ -1,5 +1,6 @@
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { INestApplication, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { NextFunction, Request, Response } from 'express';
 import {
@@ -7,24 +8,30 @@ import {
   generateOpenApiDocument,
 } from 'trpc-openapi';
 import { z } from 'zod';
+import { env } from '../server-env';
+import { LogEntryEvent } from '../events/log-entry.event';
 
 @Injectable()
 export class TrpcRouter {
   readonly openapiDoc: ReturnType<typeof generateOpenApiDocument>;
 
-  constructor(private readonly trpc: TrpcService) {
+  constructor(
+    private readonly trpc: TrpcService,
+    private readonly eventEmmitter: EventEmitter2,
+  ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
   }
 
   appRouter = this.trpc.router({
     hello: this.trpc.procedure
-      .meta({ /* 👉 */ openapi: { method: 'GET', path: '/say-hello' } })
+      .meta({ openapi: { method: 'GET', path: '/say-hello' } })
       .input(z.object({ name: z.string().optional() }))
       .output(z.string())
       .query(async ({ input }) => {
-        await new Promise((res) => {
-          setTimeout(res, 1000);
-        });
+        this.eventEmmitter.emit(
+          LogEntryEvent.eventName,
+          new LogEntryEvent(input.name),
+        );
         return `Hello ${input.name ? input.name : `Bilbo`}`;
       }),
   });
@@ -40,7 +47,7 @@ export class TrpcRouter {
     return generateOpenApiDocument(this.appRouter, {
       title: 'tRPC OpenAPI',
       version: '1.0.0',
-      baseUrl: 'http://localhost:3000',
+      baseUrl: env.NEXT_PUBLIC_NESTJS_SERVER,
     });
   }
 
