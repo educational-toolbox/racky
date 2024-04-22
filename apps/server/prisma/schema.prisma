@@ -7,6 +7,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model Log {
   id   Int      @id @default(autoincrement())
   type String
@@ -19,8 +24,9 @@ model User {
   email        String        @unique
   firstName    String?
   lastName     String?
-  role         String        @default("USER")
-  enterprise   Enterprise    @relation(fields: [enterpriseId], references: [id])
+  password     String
+  role         Role          @default(USER)
+  enterprise   Enterprise?   @relation(fields: [enterpriseId], references: [id])
   enterpriseId String
   reservations Reservation[]
 }
@@ -34,16 +40,16 @@ model Enterprise {
 }
 
 model Categories {
-  id            String       @id @default(uuid())
+  id            String        @id @default(uuid())
   name          String
   clientId      String
-  enterprise    Enterprise   @relation(fields: [enterpriseId], references: [id])
+  enterprise    Enterprise    @relation(fields: [enterpriseId], references: [id])
   enterpriseId  String
-  itemCatalog   itemCatalog? @relation(fields: [itemCatalogId], references: [id])
+  itemCatalog   CataloggItem? @relation(fields: [itemCatalogId], references: [id])
   itemCatalogId String?
 }
 
-model itemCatalog {
+model CataloggItem {
   id          String       @id @default(uuid())
   name        String
   description String
@@ -58,7 +64,7 @@ model Item {
   available       Boolean
   pictureOverride String?
   status          String
-  itemCatalog     itemCatalog       @relation(fields: [itemCatalogId], references: [id])
+  itemCatalog     CataloggItem      @relation(fields: [itemCatalogId], references: [id])
   itemCatalogId   String
   reservations    ReservationItem[]
 }
