@@ -1,11 +1,15 @@
 datasource db {
-  provider     = "sqlite"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Log {
@@ -13,4 +17,72 @@ model Log {
   type String
   text String
   date DateTime @default(now())
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  firstName    String?
+  lastName     String?
+  password     String
+  role         Role          @default(USER)
+  enterprise   Enterprise?   @relation(fields: [enterpriseId], references: [id])
+  enterpriseId String
+  reservations Reservation[]
+}
+
+model Enterprise {
+  id         String       @id @default(uuid())
+  name       String       @unique
+  zone       String
+  users      User[]
+  categories Categories[]
+}
+
+model Categories {
+  id            String        @id @default(uuid())
+  name          String
+  clientId      String
+  enterprise    Enterprise    @relation(fields: [enterpriseId], references: [id])
+  enterpriseId  String
+  itemCatalog   CataloggItem? @relation(fields: [itemCatalogId], references: [id])
+  itemCatalogId String?
+}
+
+model CataloggItem {
+  id          String       @id @default(uuid())
+  name        String
+  description String
+  quantity    Int
+  clientId    String
+  categories  Categories[]
+  items       Item[]
+}
+
+model Item {
+  id              String            @id @default(uuid())
+  available       Boolean
+  pictureOverride String?
+  status          String
+  itemCatalog     CataloggItem      @relation(fields: [itemCatalogId], references: [id])
+  itemCatalogId   String
+  reservations    ReservationItem[]
+}
+
+model ReservationItem {
+  id            String      @id @default(uuid())
+  itemId        String
+  reservationId String
+  Item          Item        @relation(fields: [itemId], references: [id])
+  Reservation   Reservation @relation(fields: [reservationId], references: [id])
+}
+
+model Reservation {
+  id        String            @id @default(uuid())
+  startDate DateTime
+  endDate   DateTime
+  status    String
+  user      User              @relation(fields: [userId], references: [id])
+  userId    String
+  items     ReservationItem[]
 }
