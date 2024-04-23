@@ -1,13 +1,15 @@
-import { ClientDataExample } from "./example/client";
-import { MutationExample } from "./example/mutation";
-import { ServerDataExample } from "./example/server";
+import {api} from "~/utils/api/server";
 
-export default function Home() {
+export default async function Home() {
+
+  const x = await api.items.addItem.mutate({
+    status: 'active',
+    pictureOverride: 'https://example.com/image.jpg',
+    id: '123',
+  });
   return (
     <div>
-      <ServerDataExample />
-      <ClientDataExample />
-      <MutationExample />
+
     </div>
   );
 }
