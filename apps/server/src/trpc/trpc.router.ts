@@ -9,6 +9,7 @@ import {
 import { DatabaseService } from '../database/database.service';
 import { env } from '../server-env';
 import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.router';
+import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
 
 @Injectable()
 export class TrpcRouter {
@@ -18,12 +19,14 @@ export class TrpcRouter {
     private readonly trpc: TrpcService,
     private readonly databaseService: DatabaseService,
     private readonly catalogRouter: CatalogRouter,
+    private readonly itemRouter: ItemRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
   }
 
   appRouter = this.trpc.router({
     catalog: this.catalogRouter.catalogRouter,
+    items: this.itemRouter.itemRouter,
   });
 
   async applyTRPCHandler(app: INestApplication) {

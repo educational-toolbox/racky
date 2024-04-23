@@ -19,12 +19,14 @@ export class CatalogRouter {
       .meta({ openapi: { method: 'GET', path: '/items' } })
       .input(z.object({ id: z.string() }))
       .output(z.array(ItemSchema))
-      .query(({ input }) => this.catalogService.findItemByCategory(input.id)),
+      .query(({ input }) =>
+        this.catalogService.findItemByCategory(input.id, '911'),
+      ),
 
     catalogueItems: this.trpc.protectedProcedure
       .meta({ openapi: { method: 'GET', path: '/catalogueItems' } })
       .input(z.void())
       .output(z.array(CatalogItemSchema))
-      .query(() => this.catalogService.findCatalogueItems()),
+      .query(() => this.catalogService.findCatalogueItems('911')),
   });
 }
