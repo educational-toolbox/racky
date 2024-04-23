@@ -19,4 +19,12 @@ export class CatalogService {
       },
     });
   }
+
+  findCatalogueItems() {
+    return this.databaseService.catalogItem.findMany({
+      where: {
+        clientId: '911',
+      },
+    });
+  }
 }
