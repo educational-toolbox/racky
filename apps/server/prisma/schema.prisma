@@ -26,36 +26,35 @@ model User {
   lastName     String?
   password     String?
   role         Role          @default(USER)
-  enterprise   Enterprise?   @relation(fields: [enterpriseId], references: [id])
-  enterpriseId String
+  client       Client?       @relation(fields: [clientId], references: [id])
+  clientId     String
   reservations Reservation[]
 }
 
-model Enterprise {
-  id         String      @id @default(uuid())
-  name       String      @unique
+model Client {
+  id         String     @id @default(uuid())
+  name       String     @unique
   zone       String
   users      User[]
-  categories Categorie[]
+  categories Category[]
 }
 
-model Categorie {
+model Category {
   id            String       @id @default(uuid())
   name          String
+  client        Client       @relation(fields: [clientId], references: [id])
   clientId      String
-  enterprise    Enterprise   @relation(fields: [enterpriseId], references: [id])
-  enterpriseId  String
   itemCatalog   CatalogItem? @relation(fields: [itemCatalogId], references: [id])
   itemCatalogId String?
 }
 
 model CatalogItem {
-  id          String      @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   description String
   quantity    Int
   clientId    String
-  categories  Categorie[]
+  categories  Category[]
   items       Item[]
 }
 

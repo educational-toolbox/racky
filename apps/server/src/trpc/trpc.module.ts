@@ -8,10 +8,17 @@ import { DatabaseModule } from '../database/database.module';
 import { AuthModule } from '../auth/auth.module';
 import { CatalogModule } from '@educational-toolbox/racky-api/catalog/catalog.module';
 import { ItemModule } from '@educational-toolbox/racky-api/item/item.module';
+import { CategoryModule } from '@educational-toolbox/racky-api/category/category.module';
 
 @Global()
 @Module({
-  imports: [DatabaseModule, AuthModule, CatalogModule, ItemModule],
+  imports: [
+    DatabaseModule,
+    AuthModule,
+    CatalogModule,
+    ItemModule,
+    CategoryModule,
+  ],
   providers: [trpcServiceProvider, TrpcRouter],
   exports: [TrpcRouter, TrpcService],
 })

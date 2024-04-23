@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
-import { ItemSchema } from '@educational-toolbox/racky-api/catalog/catalog.shema';
 import { z } from 'zod';
 import { ItemService } from '@educational-toolbox/racky-api/item/item.service';
+import { ItemSchema } from '@educational-toolbox/racky-api/item/item.schema';
 
 @Injectable()
 export class ItemRouter {
