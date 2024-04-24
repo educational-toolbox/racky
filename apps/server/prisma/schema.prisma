@@ -12,6 +12,13 @@ enum Role {
   ADMIN
 }
 
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  RETURNED
+}
+
 model Log {
   id   Int      @id @default(autoincrement())
   type String
@@ -81,7 +88,7 @@ model Reservation {
   id        String            @id @default(uuid())
   startDate DateTime
   endDate   DateTime
-  status    String
+  status    ReservationStatus @default(PENDING)
   user      User              @relation(fields: [userId], references: [id])
   userId    String
   items     ReservationItem[]
