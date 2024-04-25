@@ -59,13 +59,14 @@ model CatalogItem {
 }
 
 model Item {
-  id              String            @id @default(uuid())
-  available       Boolean
-  pictureOverride String?
-  status          String
-  itemCatalog     CatalogItem       @relation(fields: [itemCatalogId], references: [id])
-  itemCatalogId   String
-  reservations    ReservationItem[]
+  id            String            @id @default(uuid())
+  available     Boolean
+  name          String
+  picture       String?
+  status        String
+  itemCatalog   CatalogItem       @relation(fields: [itemCatalogId], references: [id])
+  itemCatalogId String
+  reservations  ReservationItem[]
 }
 
 model ReservationItem {

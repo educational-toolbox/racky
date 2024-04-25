@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@educational-toolbox/racky-api/database/database.service';
-import { CategorySchema } from '@educational-toolbox/racky-api/category/category.schema';
+import {
+  CategorySchemaRead,
+  CategoryWrite,
+} from '@educational-toolbox/racky-api/category/category.schema';
 import { z } from 'zod';
 
 @Injectable()
@@ -15,13 +18,13 @@ export class CategoryService {
     });
   }
 
-  createCategory(category: z.infer<typeof CategorySchema>) {
+  createCategory(category: CategoryWrite) {
     return this.databaseService.category.create({
       data: category,
     });
   }
 
-  editCategory(category: any) {
+  editCategory(category: z.infer<typeof CategorySchemaRead>) {
     return this.databaseService.category.update({
       where: { id: category.id },
       data: category,
