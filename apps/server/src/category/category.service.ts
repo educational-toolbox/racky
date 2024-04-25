@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@educational-toolbox/racky-api/database/database.service';
+import { CategorySchema } from '@educational-toolbox/racky-api/category/category.schema';
+import { z } from 'zod';
 
 @Injectable()
 export class CategoryService {
@@ -13,7 +15,7 @@ export class CategoryService {
     });
   }
 
-  createCategory(category: any) {
+  createCategory(category: z.infer<typeof CategorySchema>) {
     return this.databaseService.category.create({
       data: category,
     });
