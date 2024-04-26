@@ -1,15 +1,33 @@
-import {api} from "~/utils/api/server";
+'use client';
 
-export default async function Home() {
+import { useState } from 'react';
 
-  const x = await api.items.addItem.mutate({
-    status: 'active',
-    pictureOverride: 'https://example.com/image.jpg',
-    id: '123',
-  });
+export default function Home() {
+  const [file, setFile] = useState<File | null>(null);
+
+  function handleChange(event: any) {
+    setFile(event.target.files[0]);
+  }
+
+  async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    file && formData.append('file', file);
+    await fetch('http://localhost:30001/item/image', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  }
+
   return (
-    <div>
-
+    <div className="App">
+      <form onSubmit={handleSubmit}>
+        <h1>React File Upload</h1>
+        <input type="file" onChange={handleChange} />
+        <button type="submit">Upload</button>
+      </form>
     </div>
   );
 }

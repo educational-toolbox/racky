@@ -19,4 +19,8 @@ export class ItemService {
   deleteItem(itemId: string) {
     return this.databaseService.item.delete({ where: { id: itemId } });
   }
+
+  addItemImage(image: Express.Multer.File) {
+    console.log('img', image);
+  }
 }
