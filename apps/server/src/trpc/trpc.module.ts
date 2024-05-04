@@ -9,6 +9,7 @@ import { AuthModule } from '../auth/auth.module';
 import { CatalogModule } from '@educational-toolbox/racky-api/catalog/catalog.module';
 import { ItemModule } from '@educational-toolbox/racky-api/item/item.module';
 import { CategoryModule } from '@educational-toolbox/racky-api/category/category.module';
+import { ReservationModule } from '../reservation/reservation.module';
 
 @Global()
 @Module({
@@ -18,6 +19,7 @@ import { CategoryModule } from '@educational-toolbox/racky-api/category/category
     CatalogModule,
     ItemModule,
     CategoryModule,
+    ReservationModule,
   ],
   providers: [trpcServiceProvider, TrpcRouter],
   exports: [TrpcRouter, TrpcService],

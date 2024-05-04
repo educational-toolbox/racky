@@ -18,18 +18,27 @@ export class CatalogRouter {
         openapi: {
           method: 'GET',
           path: '/items',
-          summary: 'Get all catalog items',
-          description: 'Get all catalog items from the database',
+          summary: 'Get all items for a category',
+          description: 'Get all items for a category from the database',
+          tags: ['Catalog'],
         },
       })
-      .input(z.object({ id: z.string() }))
+      .input(z.object({ categoryId: z.string() }))
       .output(z.array(ItemSchemaRead))
       .query(({ input }) =>
-        this.catalogService.findItemByCategory(input.id, '911'),
+        this.catalogService.findItemByCategory(input.categoryId, '911'),
       ),
 
     catalogueItems: this.trpc.protectedProcedure
-      .meta({ openapi: { method: 'GET', path: '/catalogueItems' } })
+      .meta({
+        openapi: {
+          method: 'GET',
+          path: '/catalog/items',
+          tags: ['Catalog'],
+          summary: 'Get all catalogue items',
+          description: 'Get all catalogue items from the database',
+        },
+      })
       .input(z.void())
       .output(z.array(CatalogItemSchemaRead))
       .query(() => this.catalogService.findCatalogueItems('911')),

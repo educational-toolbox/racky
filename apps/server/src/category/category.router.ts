@@ -16,25 +16,57 @@ export class CategoryRouter {
 
   categoryRouter = this.trpc.router({
     getCategories: this.trpc.procedure
-      .meta({ openapi: { method: 'GET', path: '/categories' } })
+      .meta({
+        openapi: {
+          method: 'GET',
+          path: '/categories',
+          tags: ['Category'],
+          summary: 'Get all categories',
+          description: 'Get all categories from the database',
+        },
+      })
       .input(z.void())
       .output(z.array(CategorySchemaRead))
       .query(() => this.categoryService.getAllCategory('911')),
 
     addCategory: this.trpc.protectedProcedure
-      .meta({ openapi: { method: 'GET', path: '/category' } })
+      .meta({
+        openapi: {
+          method: 'POST',
+          path: '/category',
+          tags: ['Category'],
+          summary: 'Create a category',
+          description: 'Create a category in the database',
+        },
+      })
       .input(CategorySchemaWrite)
       .output(CategorySchemaRead)
       .query(({ input }) => this.categoryService.createCategory(input)),
 
     editCategory: this.trpc.protectedProcedure
-      .meta({ openapi: { method: 'PUT', path: '/category' } })
+      .meta({
+        openapi: {
+          method: 'PUT',
+          path: '/category',
+          tags: ['Category'],
+          summary: 'Update a category',
+          description: 'Update a category in the database',
+        },
+      })
       .input(CategorySchemaRead)
       .output(CategorySchemaRead)
       .query(({ input }) => this.categoryService.editCategory(input)),
 
     deleteCategory: this.trpc.protectedProcedure
-      .meta({ openapi: { method: 'DELETE', path: '/category' } })
+      .meta({
+        openapi: {
+          method: 'DELETE',
+          path: '/category',
+          tags: ['Category'],
+          summary: 'Delete a category',
+          description: 'Delete a category from the database',
+        },
+      })
       .input(z.object({ id: z.string() }))
       .output(CategorySchemaRead)
       .query(({ input }) => this.categoryService.deleteCategory(input.id)),

@@ -11,6 +11,7 @@ import { env } from '../server-env';
 import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.router';
 import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
 import { CategoryRouter } from '@educational-toolbox/racky-api/category/category.router';
+import { ReservationRouter } from '../reservation/reservation.router';
 
 @Injectable()
 export class TrpcRouter {
@@ -22,6 +23,7 @@ export class TrpcRouter {
     private readonly catalogRouter: CatalogRouter,
     private readonly itemRouter: ItemRouter,
     private readonly categoryRouter: CategoryRouter,
+    private readonly reservationRouter: ReservationRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
   }
@@ -30,6 +32,7 @@ export class TrpcRouter {
     catalog: this.catalogRouter.catalogRouter,
     items: this.itemRouter.itemRouter,
     category: this.categoryRouter.categoryRouter,
+    reservation: this.reservationRouter.reservationRouter,
   });
 
   async applyTRPCHandler(app: INestApplication) {

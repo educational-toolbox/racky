@@ -9,6 +9,12 @@ import {
 export class ItemService {
   constructor(private readonly databaseService: DatabaseService) {}
 
+  async getItemById(itemId: string) {
+    return await this.databaseService.item.findUnique({
+      where: { id: itemId },
+    });
+  }
+
   async createItem(item: ItemWrite) {
     return await this.databaseService.item.create({
       data: {
