@@ -1,0 +1,14 @@
+<html>
+  <body>
+    <style>
+      body,html { margin: 0; padding: 0; }
+    </style>
+    <script
+      src='https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'
+    ></script>
+    <redoc></redoc>
+    <script>
+      Redoc.init( 'http://localhost:{{port}}/api/openapi.json')
+    </script>
+  </body>
+</html>
