@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const ItemSchemaRead = z.object({
   id: z.string(),
   name: z.string(),
-  pictureOverride: z.string().nullable(),
+  picture: z.string().nullable(),
   status: z.string(),
   itemCatalogId: z.string(),
 });

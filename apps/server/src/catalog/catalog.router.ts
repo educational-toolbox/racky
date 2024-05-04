@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { z } from 'zod';
 import { CatalogService } from '@educational-toolbox/racky-api/catalog/catalog.service';
-import { ItemSchema } from '@educational-toolbox/racky-api/item/item.schema';
+import { ItemSchemaRead } from '@educational-toolbox/racky-api/item/item.schema';
 import { CatalogItemSchemaRead } from '@educational-toolbox/racky-api/catalog/catalog.schema';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class CatalogRouter {
         },
       })
       .input(z.object({ id: z.string() }))
-      .output(z.array(ItemSchema))
+      .output(z.array(ItemSchemaRead))
       .query(({ input }) =>
         this.catalogService.findItemByCategory(input.id, '911'),
       ),

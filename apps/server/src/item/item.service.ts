@@ -9,26 +9,26 @@ import {
 export class ItemService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  createItem(item: ItemWrite) {
-    return this.databaseService.item.create({
+  async createItem(item: ItemWrite) {
+    return await this.databaseService.item.create({
       data: {
         status: item.status,
         available: true,
         name: item.name,
-        picture: item.pictureOverride,
+        picture: item.picture,
         itemCatalogId: item.itemCatalogId,
       },
     });
   }
 
-  editItem(item: ItemRead) {
-    return this.databaseService.item.update({
+  async editItem(item: ItemRead) {
+    return await this.databaseService.item.update({
       where: { id: item.id },
       data: item,
     });
   }
 
-  deleteItem(itemId: string) {
-    return this.databaseService.item.delete({ where: { id: itemId } });
+  async deleteItem(itemId: string) {
+    return await this.databaseService.item.delete({ where: { id: itemId } });
   }
 }
