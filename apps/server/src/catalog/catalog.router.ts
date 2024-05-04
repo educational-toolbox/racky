@@ -16,7 +16,14 @@ export class CatalogRouter {
 
   catalogRouter = this.trpc.router({
     items: this.trpc.procedure
-      .meta({ openapi: { method: 'GET', path: '/items' } })
+      .meta({
+        openapi: {
+          method: 'GET',
+          path: '/items',
+          summary: 'Get all catalog items',
+          description: 'Get all catalog items from the database',
+        },
+      })
       .input(z.object({ id: z.string() }))
       .output(z.array(ItemSchema))
       .query(({ input }) =>
