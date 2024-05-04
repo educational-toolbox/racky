@@ -2,10 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { z } from 'zod';
 import { CatalogService } from '@educational-toolbox/racky-api/catalog/catalog.service';
-import {
-  CatalogItemSchema,
-  ItemSchema,
-} from '@educational-toolbox/racky-api/catalog/catalog.shema';
+import { ItemSchema } from '@educational-toolbox/racky-api/item/item.schema';
+import { CatalogItemSchemaRead } from '@educational-toolbox/racky-api/catalog/catalog.schema';
 
 @Injectable()
 export class CatalogRouter {
@@ -33,7 +31,7 @@ export class CatalogRouter {
     catalogueItems: this.trpc.protectedProcedure
       .meta({ openapi: { method: 'GET', path: '/catalogueItems' } })
       .input(z.void())
-      .output(z.array(CatalogItemSchema))
+      .output(z.array(CatalogItemSchemaRead))
       .query(() => this.catalogService.findCatalogueItems('911')),
   });
 }
