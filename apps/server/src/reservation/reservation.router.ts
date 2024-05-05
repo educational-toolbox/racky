@@ -33,7 +33,7 @@ export class ReservationRouter {
       .meta({
         openapi: {
           method: 'GET',
-          path: '/reservation',
+          path: '/reservation/{id}',
           example: { request: { id: '1' } },
           tags: ['Reservation'],
           summary: 'Get a reservation by id',

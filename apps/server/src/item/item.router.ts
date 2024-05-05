@@ -19,7 +19,7 @@ export class ItemRouter {
       .meta({
         openapi: {
           method: 'GET',
-          path: '/item',
+          path: '/item/{id}',
           tags: ['Item'],
           summary: 'Get an item',
           description: 'Get an item from the database by id',
