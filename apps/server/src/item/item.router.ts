@@ -6,20 +6,22 @@ import {
   ItemSchemaRead,
   ItemSchemaWrite,
 } from '@educational-toolbox/racky-api/item/item.schema';
+import { CachingService } from '../caching/caching.service';
 
 @Injectable()
 export class ItemRouter {
   constructor(
     private readonly trpc: TrpcService,
     private readonly itemService: ItemService,
+    private readonly cacheService: CachingService,
   ) {}
 
   itemRouter = this.trpc.router({
-    getOne: this.trpc.protectedProcedure
+    getOne: this.trpc.procedure
       .meta({
         openapi: {
           method: 'GET',
-          path: '/item/{id}',
+          path: '/item',
           tags: ['Item'],
           summary: 'Get an item',
           description: 'Get an item from the database by id',
@@ -27,7 +29,13 @@ export class ItemRouter {
       })
       .input(z.object({ id: z.string() }))
       .output(ItemSchemaRead.or(z.null()))
-      .mutation(({ input }) => this.itemService.getItemById(input.id)),
+      .mutation(async ({ input, ctx: { key } }) => {
+        const cachedItem = await this.cacheService.get(key);
+        if (cachedItem != null) return ItemSchemaRead.parse(cachedItem);
+        const item = await this.itemService.getItemById(input.id);
+        await this.cacheService.set(key, item);
+        return item;
+      }),
 
     addItem: this.trpc.protectedProcedure
       .meta({
