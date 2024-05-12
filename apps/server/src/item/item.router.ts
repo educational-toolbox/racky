@@ -7,6 +7,7 @@ import {
   ItemSchemaWrite,
 } from '@educational-toolbox/racky-api/item/item.schema';
 import { CachingService } from '../caching/caching.service';
+import { TRPCError } from '@trpc/server';
 
 @Injectable()
 export class ItemRouter {
@@ -33,6 +34,7 @@ export class ItemRouter {
         const cachedItem = await this.cacheService.get(key);
         if (cachedItem != null) return ItemSchemaRead.parse(cachedItem);
         const item = await this.itemService.getItemById(input.id);
+        if (item == null) throw new TRPCError({ code: 'NOT_FOUND' });
         await this.cacheService.set(key, item);
         return item;
       }),
