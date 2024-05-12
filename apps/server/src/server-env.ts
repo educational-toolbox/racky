@@ -4,7 +4,7 @@ function loadEnv<T extends readonly string[] = readonly string[]>(
   allowedValues?: T,
 ): T[number] {
   const x = process.env[label];
-  if (defaultValue === 'undefined') {
+  if (defaultValue === 'undefined' && x == null) {
     return undefined as unknown as T[number];
   }
   if (defaultValue != null && x == null) {
