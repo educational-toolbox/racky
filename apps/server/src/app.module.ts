@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { LogEntryEventController } from './events/log-entry.event.contoller';
+import { CachingModule } from './caching/caching.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { LogEntryEventController } from './events/log-entry.event.contoller';
     TrpcModule,
     AuthModule,
     DatabaseModule,
+    CachingModule,
   ],
   controllers: [AppController, LogEntryEventController],
   providers: [AppService],

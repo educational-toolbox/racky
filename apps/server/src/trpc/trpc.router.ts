@@ -35,14 +35,22 @@ export class TrpcRouter {
     reservation: this.reservationRouter.reservationRouter,
   });
 
+  private generateUniqueKey(req: Request): string {
+    return `${req.method}:${req.originalUrl}:${'TODO:user-id'}`;
+  }
+
   async applyTRPCHandler(app: INestApplication) {
     app.use(
       `/trpc`,
       async (req: Request, res: Response, next: NextFunction) => {
         const middleware = trpcExpress.createExpressMiddleware({
           router: this.appRouter,
-          createContext: () => {
-            return { db: this.databaseService, req };
+          createContext: (info) => {
+            return {
+              db: this.databaseService,
+              req,
+              key: this.generateUniqueKey(info.req) as string,
+            };
           },
         });
         return middleware(req, res, next);
@@ -62,8 +70,12 @@ export class TrpcRouter {
     app.use((req: Request, res: Response, next: NextFunction) => {
       const middleware = createOpenApiExpressMiddleware({
         router: this.appRouter,
-        createContext: () => {
-          return { db: this.databaseService, req };
+        createContext: (info) => {
+          return {
+            db: this.databaseService,
+            req,
+            key: this.generateUniqueKey(info.req) as string,
+          };
         },
       });
       if (req.path in this.openapiDoc.paths) {

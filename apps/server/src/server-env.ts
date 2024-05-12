@@ -1,9 +1,12 @@
 function loadEnv<T extends readonly string[] = readonly string[]>(
   label: string,
-  allowedValues?: T,
   defaultValue?: T[number],
+  allowedValues?: T,
 ): T[number] {
   const x = process.env[label];
+  if (defaultValue === 'undefined') {
+    return undefined as unknown as T[number];
+  }
   if (defaultValue != null && x == null) {
     return defaultValue;
   }
@@ -18,14 +21,16 @@ function loadEnv<T extends readonly string[] = readonly string[]>(
 
 const NEXT_PUBLIC_NESTJS_SERVER = loadEnv('NEXT_PUBLIC_NESTJS_SERVER');
 const CLERK_PUBLIC_KEY = loadEnv('CLERK_PUBLIC_KEY');
-const AUTH_PROVIDER = loadEnv(
-  'AUTH_PROVIDER',
-  ['unsafe_random', 'clerk'] as const,
+const AUTH_PROVIDER = loadEnv('AUTH_PROVIDER', 'unsafe_random', [
   'unsafe_random',
-);
+  'clerk',
+] as const);
+
+const REDIS_URL = loadEnv('REDIS_URL', 'undefined') as string | undefined;
 
 export const env = {
   NEXT_PUBLIC_NESTJS_SERVER,
   CLERK_PUBLIC_KEY,
   AUTH_PROVIDER,
+  REDIS_URL,
 };

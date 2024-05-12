@@ -15,7 +15,7 @@ export class TrpcService {
 
   public readonly trpc = initTRPC
     .meta<OpenApiMeta>()
-    .context<{ db: DatabaseService; req: Request<any> }>()
+    .context<{ db: DatabaseService; req: Request<any>; key: string }>()
     .create({ transformer: this.transformer });
   public readonly procedure = this.trpc.procedure;
   public readonly protectedProcedure = this.trpc.procedure.use(async (ctx) => {
