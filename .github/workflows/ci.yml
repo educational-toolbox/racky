@@ -131,7 +131,7 @@ jobs:
       - name: Run ESLint
         run: pnpm lint
   build-front:
-    needs: ["linting", "security", "typechecking"]
+    needs: ["linting", "typechecking"]
     name: Build Front-end
     runs-on: ubuntu-latest
     steps:
@@ -161,7 +161,7 @@ jobs:
       - name: Run build
         run: pnpm build
   build-api:
-    needs: ["linting", "security", "typechecking"]
+    needs: ["linting", "typechecking"]
     name: Build API Server
     runs-on: ubuntu-latest
     steps:
