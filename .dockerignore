@@ -1,0 +1,3 @@
+node_modules/
+apps/server/Dockerfile
+apps/web/Dockerfile

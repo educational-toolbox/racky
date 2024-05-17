@@ -1,43 +1,39 @@
-##### DEPENDENCIES
-
-FROM --platform=linux/amd64 node:18-alpine AS builder
-RUN apk update
+## Installer & Runtime (better to split l8r)
+FROM --platform=linux/amd64 node:18-alpine AS INSTALLER
 WORKDIR /app
-RUN yarn global add pnpm
+RUN apk update
 COPY . .
+RUN yarn global add pnpm
+RUN pnpm fetch
+RUN pnpm install -r --offline --frozen-lockfile
+RUN pnpm build:server
 
-##### INSTALLER
-
-FROM --platform=linux/amd64 node:18-alpine AS installer
-RUN apk update
-WORKDIR /app
-
-COPY .gitignore .gitignore
-COPY --from=builder /app/pnpm-lock.yaml\* ./
-COPY --from=builder /app/server .
-
-RUN yarn global add pnpm && pnpm fetch && pnpm install -r --offline --frozen-lockfile
-
-RUN pnpm turbo build --filter=api-server
-
-##### RUNTIME
-
-FROM --platform=linux/amd64 node:18-alpine AS runner
-RUN apk update
-WORKDIR /app
-
-# Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 api-server
 USER api-server
-EXPOSE 3000
-ENV PORT 3000
-
+EXPOSE 3001
+ENV NEXT_PUBLIC_NESTJS_SERVER http://localhost:3001
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
-COPY --from=installer /app/apps/server/package.json ./
+CMD ["node", "/app/apps/server/dist/main.js"]
 
-COPY --from=installer --chown=api-server:nodejs /app/apps/api-server/dist ./
 
-CMD ["node", "apps/server/main.js"]
+## Runtime
+# FROM --platform=linux/amd64 node:18-alpine AS RUNTIME
+# RUN apk update
+# WORKDIR /api
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 api-server
+# USER api-server
+# EXPOSE 3000
+# ENV PORT 3000
+# ENV NODE_ENV production
+# ENV NEXT_TELEMETRY_DISABLED 1
+
+# COPY --from=INSTALLER /app/apps/server/package.json /api/package.json
+# # COPY --from=INSTALLER /app/node_modules ./node_modules
+# COPY --from=INSTALLER /app/apps/server/node_modules /api/node_modules
+# COPY --from=INSTALLER --chown=api-server:nodejs /app/apps/server/dist /api/
+
+# CMD ["node", "/api/main.js"]
