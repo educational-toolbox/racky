@@ -132,7 +132,7 @@ jobs:
         run: pnpm lint
   build-front:
     needs: ["linting", "security", "typechecking"]
-    name: Run Build
+    name: Build Front-end
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -162,7 +162,7 @@ jobs:
         run: pnpm build
   build-api:
     needs: ["linting", "security", "typechecking"]
-    name: Run Build
+    name: Build API Server
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -254,7 +254,7 @@ jobs:
         run: docker push ghcr.io/kopenkinda/api:${{ env.sha_short }}
   create-docker-image-front:
     needs: ["setup-project", "build-front"]
-    name: Create Docker Image for API
+    name: Create Docker Image for Frontend
     runs-on: ubuntu-latest
     steps:
       - name: Declare some variables
