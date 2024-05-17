@@ -159,7 +159,7 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
       - name: Run build
-        run: pnpm build
+        run: pnpm build:web
   build-api:
     needs: ["linting", "typechecking"]
     name: Build API Server
@@ -189,7 +189,7 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
       - name: Run build
-        run: pnpm build
+        run: pnpm build:server
   security:
     needs: ["setup-project"]
     name: Run Security Checks
