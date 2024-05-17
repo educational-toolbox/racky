@@ -12,7 +12,7 @@
     "dev": "pnpm with-env nest start --watch",
     "start:debug": "pnpm with-env nest start --debug --watch",
     "start:prod": "pnpm with-env node dist/main",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -22,7 +22,8 @@
     "nest": "nest",
     "patch-package": "patch-package",
     "prisma": "pnpm with-env prisma",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env --",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.11",

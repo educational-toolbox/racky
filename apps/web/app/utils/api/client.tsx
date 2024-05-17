@@ -1,6 +1,6 @@
 "use client";
 
-import { AppRouter } from "@educational-toolbox/racky-api/trpc/trpc.router";
+import type { AppRouter } from "@educational-toolbox/racky-api/trpc/trpc.router";
 import { createTRPCReact } from "@trpc/react-query";
 
 if (!process.env.NEXT_PUBLIC_NESTJS_SERVER) {

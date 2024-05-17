@@ -7,7 +7,9 @@
     "build": "pnpm with-env next build",
     "start": "pnpm with-env next start",
     "lint": "pnpm with-env next lint",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env --",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --check ./app/**/*.{ts,tsx}"
   },
   "dependencies": {
     "@clerk/themes": "^2.0.0",

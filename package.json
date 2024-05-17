@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run --parallel dev",
-    "build:server": "pnpm -F server build",
-    "build:web": "pnpm -F web build",
-    "start:server": "pnpm -F server start:prod",
-    "start:web": "pnpm -F web start"
+    "build:server": "pnpm -F \"@educational-toolbox/racky-api\" build",
+    "build:web": "pnpm -F \"@educational-toolbox/racky-web-client\" build",
+    "start:server": "pnpm -F \"@educational-toolbox/racky-api\" start:prod",
+    "start:web": "pnpm -F \"@educational-toolbox/racky-web-client\" start",
+    "format": "pnpm -F \"@educational-toolbox/racky-api\" format && pnpm -F \"@educational-toolbox/racky-web-client\" format",
+    "lint": "pnpm -F \"@educational-toolbox/racky-api\" lint && pnpm -F \"@educational-toolbox/racky-web-client\" lint",
+    "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck"
   },
   "keywords": [],
   "author": "",
