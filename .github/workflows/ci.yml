@@ -243,8 +243,8 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
           echo "IMG_NAME_API=ghcr.io/kopenkinda/api:${{ env.sha_short }}" >> "$GITHUB_ENV"
-          - name: Checkout repo
-          uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
       - name: add fake .env
         run: touch .env
       - name: Build Docker Image
