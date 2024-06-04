@@ -5,15 +5,20 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run --parallel dev",
+    "test": "pnpm with-env pnpm run --parallel test",
     "build:server": "pnpm -F \"@educational-toolbox/racky-api\" build",
     "build:web": "pnpm -F \"@educational-toolbox/racky-web-client\" build",
     "start:server": "pnpm -F \"@educational-toolbox/racky-api\" start:prod",
     "start:web": "pnpm -F \"@educational-toolbox/racky-web-client\" start",
     "format": "pnpm -F \"@educational-toolbox/racky-api\" format && pnpm -F \"@educational-toolbox/racky-web-client\" format",
     "lint": "pnpm -F \"@educational-toolbox/racky-api\" lint && pnpm -F \"@educational-toolbox/racky-web-client\" lint",
-    "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck"
+    "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck",
+    "with-env": "dotenv -e .env --"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv-cli": "^7.4.1"
+  }
 }
