@@ -3,3 +3,4 @@ dist
 build
 .env
 *.sqlite3
+.DS_Store
