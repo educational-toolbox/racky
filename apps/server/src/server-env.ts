@@ -20,7 +20,7 @@ function loadEnv<T extends readonly string[] = readonly string[]>(
 }
 
 const NEXT_PUBLIC_NESTJS_SERVER = loadEnv('NEXT_PUBLIC_NESTJS_SERVER');
-const CLERK_PUBLIC_KEY = loadEnv('CLERK_PUBLIC_KEY');
+const CLERK_PUBLIC_KEY = loadEnv('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY');
 const AUTH_PROVIDER = loadEnv('AUTH_PROVIDER', 'unsafe_random', [
   'unsafe_random',
   'clerk',
