@@ -22,7 +22,7 @@ function RootLayout(props: { children: React.ReactNode }) {
             disableTransitionOnChange
           >
             <TRPCReactProvider headers={headers()}>
-              <TooltipProvider>
+              <TooltipProvider delayDuration={0}>
                 {props.children}
                 <Toaster richColors />
               </TooltipProvider>
