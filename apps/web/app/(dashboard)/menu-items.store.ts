@@ -1,5 +1,10 @@
 import type { Package2 } from "lucide-react";
-import { HomeIcon, PackageOpenIcon } from "lucide-react";
+import {
+  HomeIcon,
+  PackageOpenIcon,
+  TestTube2Icon,
+  TestTubeIcon,
+} from "lucide-react";
 import { create } from "zustand";
 
 export interface MenuItem {
@@ -30,6 +35,16 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     label: "Inventory",
     href: "/inventory",
     icon: PackageOpenIcon,
+  },
+  {
+    label: "client public example",
+    href: "/client-public-example",
+    icon: TestTubeIcon,
+  },
+  {
+    label: "client protected example",
+    href: "/client-protected-example",
+    icon: TestTube2Icon,
   },
 ];
 

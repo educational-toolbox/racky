@@ -35,7 +35,7 @@ export const trpcServiceProvider: Provider = {
     const transformer = await (eval(`import('superjson')`) as Promise<
       typeof import('superjson')
     >);
-    const instance = new transformer.default();
+    const instance = new transformer.default({ dedupe: false });
     return new TrpcService(instance, guard);
   },
   inject: [AuthenticatedGuard],
