@@ -1,11 +1,11 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
-import { TRPCReactProvider } from "./providers";
 import { headers } from "next/headers";
-import "./globals.css";
+import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
+import "./globals.css";
 import { cn } from "./lib/utils";
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
-import Sidebar from '~/components/sidebar/Sidebar';
+import { TRPCReactProvider } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,24 +13,16 @@ function RootLayout(props: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <html lang="en">
-      <body className={cn(inter.className, "container mx-auto")}>
-      <header>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </header
-      <Sidebar/>
-      <TRPCReactProvider headers={headers()}>
-        {props.children}
-        <Toaster richColors />
-      </TRPCReactProvider>
-      </body>
+        <body className={cn(inter.className)}>
+          <TRPCReactProvider headers={headers()}>
+            <TooltipProvider>
+              {props.children}
+              <Toaster richColors />
+            </TooltipProvider>
+          </TRPCReactProvider>
+        </body>
       </html>
     </ClerkProvider>
-
   );
 }
 
