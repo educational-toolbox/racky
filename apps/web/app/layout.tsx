@@ -4,19 +4,33 @@ import { headers } from "next/headers";
 import "./globals.css";
 import { Toaster } from "./components/ui/sonner";
 import { cn } from "./lib/utils";
+import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
+import Sidebar from '~/components/sidebar/Sidebar';
 
 const inter = Inter({ subsets: ["latin"] });
 
 function RootLayout(props: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <ClerkProvider>
+      <html lang="en">
       <body className={cn(inter.className, "container mx-auto")}>
-        <TRPCReactProvider headers={headers()}>
-          {props.children}
-          <Toaster richColors />
-        </TRPCReactProvider>
+      <header>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </header
+      <Sidebar/>
+      <TRPCReactProvider headers={headers()}>
+        {props.children}
+        <Toaster richColors />
+      </TRPCReactProvider>
       </body>
-    </html>
+      </html>
+    </ClerkProvider>
+
   );
 }
 
