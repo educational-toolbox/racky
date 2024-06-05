@@ -28,9 +28,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { cn } from "~/lib/utils";
+import { cn, slugToTitle } from "~/lib/utils";
 import type { MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
+import { ThemeSwitcher } from "~/components/theme-switcher";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const path = usePathname();
@@ -57,6 +58,12 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
               <DesktopMenu items={items} pathname={fixedPathname} />
             </nav>
             <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ThemeSwitcher />
+                </TooltipTrigger>
+                <TooltipContent side="right">Change theme</TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -108,7 +115,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
                     if (index === crumbs.length - 1) {
                       return (
                         <BreadcrumbItem key={index}>
-                          <BreadcrumbPage>{crumb}</BreadcrumbPage>
+                          <BreadcrumbPage>{slugToTitle(crumb)}</BreadcrumbPage>
                         </BreadcrumbItem>
                       );
                     }

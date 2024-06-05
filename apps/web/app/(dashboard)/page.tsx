@@ -1,3 +1,4 @@
 export default function Home() {
-  return <div></div>;
+  // const data = await api.catalog.catalogueItems.query();
+  return <div>{/* <pre>{JSON.stringify(data, null, 2)}</pre> */}</div>;
 }
