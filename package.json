@@ -12,8 +12,11 @@
     "start:web": "pnpm -F \"@educational-toolbox/racky-web-client\" start",
     "format": "pnpm -F \"@educational-toolbox/racky-api\" format && pnpm -F \"@educational-toolbox/racky-web-client\" format",
     "lint": "pnpm -F \"@educational-toolbox/racky-api\" lint && pnpm -F \"@educational-toolbox/racky-web-client\" lint",
+    "format:write": "pnpm -F \"@educational-toolbox/racky-api\" format:write && pnpm -F \"@educational-toolbox/racky-web-client\" format:write",
+    "lint:write": "pnpm -F \"@educational-toolbox/racky-api\" lint:write && pnpm -F \"@educational-toolbox/racky-web-client\" lint:write",
     "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck",
-    "with-env": "dotenv -e .env --"
+    "with-env": "dotenv -e .env --",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -21,5 +24,8 @@
   "dependencies": {
     "dotenv-cli": "^7.4.1"
   },
-  "packageManager": "pnpm@8.13.1"
+  "packageManager": "pnpm@8.13.1",
+  "devDependencies": {
+    "husky": "^9.0.11"
+  }
 }
