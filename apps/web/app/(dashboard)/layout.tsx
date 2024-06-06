@@ -32,6 +32,7 @@ import { cn, slugToTitle } from "~/lib/utils";
 import type { MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
 import { ThemeSwitcher } from "~/components/theme-switcher";
+import { Separator } from "~/components/ui/separator";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const path = usePathname();
@@ -164,7 +165,9 @@ function DashboardBreadcrumbs({ crumbs }: { crumbs: string[] }) {
             <Fragment key={index}>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">{crumb}</Link>
+                  <Link href={"/" + crumbs.slice(0, index - 1).join("/")}>
+                    {slugToTitle(crumb)}
+                  </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -192,22 +195,26 @@ function MobileMenu({
         <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
         <span className="sr-only">Acme Inc</span>
       </Link>
-      {items.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={cn("flex items-center gap-4 px-2.5", {
-            "text-muted-foreground hover:text-foreground": !isLinkActive(
-              item,
-              pathname
-            ),
-            "text-foreground": isLinkActive(item, pathname),
-          })}
-        >
-          <item.icon className="h-5 w-5" />
-          {item.label}
-        </Link>
-      ))}
+      {items.map((item) =>
+        item.type === "item" ? (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn("flex items-center gap-4 px-2.5", {
+              "text-muted-foreground hover:text-foreground": !isLinkActive(
+                item,
+                pathname
+              ),
+              "text-foreground": isLinkActive(item, pathname),
+            })}
+          >
+            <item.icon className="h-5 w-5" />
+            {item.label}
+          </Link>
+        ) : (
+          <Separator key={item.id} />
+        )
+      )}
     </>
   );
 }
@@ -221,34 +228,39 @@ function DesktopMenu({
 }) {
   return (
     <>
-      {items.map((item) => (
-        <Tooltip key={item.href}>
-          <TooltipTrigger asChild>
-            <Link
-              href={item.href}
-              className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8",
-                {
-                  "text-muted-foreground": !isLinkActive(item, pathname),
-                  "bg-accent text-accent-foreground": isLinkActive(
-                    item,
-                    pathname
-                  ),
-                }
-              )}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="sr-only">{item.label}</span>
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent side="right">{item.label}</TooltipContent>
-        </Tooltip>
-      ))}
+      {items.map((item) =>
+        item.type === "item" ? (
+          <Tooltip key={item.href}>
+            <TooltipTrigger asChild>
+              <Link
+                href={item.href}
+                className={cn(
+                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8",
+                  {
+                    "text-muted-foreground": !isLinkActive(item, pathname),
+                    "bg-accent text-accent-foreground": isLinkActive(
+                      item,
+                      pathname
+                    ),
+                  }
+                )}
+              >
+                <item.icon className="h-5 w-5" />
+                <span className="sr-only">{item.label}</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">{item.label}</TooltipContent>
+          </Tooltip>
+        ) : (
+          <Separator key={item.id} />
+        )
+      )}
     </>
   );
 }
 
 function isLinkActive(item: MenuItem, pathname: string) {
+  if (item.type === "separator") return false;
   return (
     (item.exact === true && item.href === pathname) ||
     (item.exact !== true && pathname.startsWith(item.href))

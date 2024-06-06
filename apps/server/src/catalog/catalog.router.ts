@@ -25,9 +25,13 @@ export class CatalogRouter {
       })
       .input(z.object({ categoryId: z.string() }))
       .output(z.array(ItemSchemaRead))
-      .query(({ input }) =>
-        this.catalogService.findItemByCategory(input.categoryId, '911'),
-      ),
+      .query(async ({ input, ctx }) => {
+        const result = await this.catalogService.findItemByCategory(
+          input.categoryId,
+          ctx.clientId ?? '911',
+        );
+        return result;
+      }),
 
     catalogueItems: this.trpc.protectedProcedure
       .meta({
@@ -41,6 +45,6 @@ export class CatalogRouter {
       })
       .input(z.void())
       .output(z.array(CatalogItemSchemaRead))
-      .query(() => this.catalogService.findCatalogueItems('911')),
+      .query(({ ctx }) => this.catalogService.findCatalogueItems(ctx.clientId)),
   });
 }

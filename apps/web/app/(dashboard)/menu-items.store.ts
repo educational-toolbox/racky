@@ -7,44 +7,62 @@ import {
 } from "lucide-react";
 import { create } from "zustand";
 
-export interface MenuItem {
-  icon: typeof Package2;
-  label: string;
-  href: string;
-  exact?: boolean;
-  hidden?: boolean;
-}
+type SeparatorId = `$separator-${string}`;
+
+export type MenuItem =
+  | {
+      type: "item";
+      icon: typeof Package2;
+      label: string;
+      href: string;
+      exact?: boolean;
+      hidden?: boolean;
+    }
+  | {
+      type: "separator";
+      id: SeparatorId;
+      hidden?: boolean;
+    };
 
 export interface MenuItemsStore {
   items: readonly MenuItem[];
 
   add: (item: MenuItem, idx?: number) => void;
-  hide: (href: string) => void;
+  // eslint-disable-next-line @typescript-eslint/ban-types -- allow any string or template-like string (temp hack until next ts version)
+  hide: (hrefOrId: (string & {}) | SeparatorId) => void;
   getLabel: (href: string) => string;
 }
 
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
-    label: "Dashboard",
-    href: "/",
+    type: "item",
+    label: "server protected example",
+    href: "/protected/server-example",
     icon: HomeIcon,
     exact: true,
     hidden: false,
   },
   {
-    label: "Inventory",
-    href: "/inventory",
+    type: "item",
+    label: "client protected example",
+    href: "/protected/client-example",
+    icon: TestTube2Icon,
+  },
+  {
+    type: "separator",
+    id: "$separator-1",
+  },
+  {
+    type: "item",
+    label: "server public example",
+    href: "/public/server-example",
     icon: PackageOpenIcon,
   },
   {
+    type: "item",
     label: "client public example",
-    href: "/client-public-example",
+    href: "/public/client-example",
     icon: TestTubeIcon,
-  },
-  {
-    label: "client protected example",
-    href: "/client-protected-example",
-    icon: TestTube2Icon,
   },
 ];
 
@@ -61,15 +79,22 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
       return { items };
     });
   },
-  hide(href) {
+  hide(hrefOrId) {
     set((state) => ({
       items: state.items.map((item) =>
-        item.href === href ? { ...item, hidden: true } : item
+        (item.type === "item" ? item.href : item.id) === hrefOrId
+          ? { ...item, hidden: true }
+          : item
       ),
     }));
   },
   getLabel(href) {
-    const item = this.items.find((item) => item.href === href);
+    const item = this.items.find(
+      (item) => "href" in item && item.href === href
+    );
+    if (!item || item.type === "separator") {
+      return "";
+    }
     return item ? item.label : "";
   },
 }));
