@@ -167,7 +167,7 @@ function DashboardBreadcrumbs({ crumbs }: { crumbs: string[] }) {
                 <BreadcrumbLink asChild>
                   <AppLink
                     href={normalizeUrlPath(
-                      "/" + crumbs.slice(0, index - 1).join("/")
+                      "/" + crumbs.slice(0, index - 1).join("/"),
                     )}
                   >
                     {slugToTitle(crumb)}
@@ -207,7 +207,7 @@ function MobileMenu({
             className={cn("flex items-center gap-4 px-2.5", {
               "text-muted-foreground hover:text-foreground": !isLinkActive(
                 item,
-                pathname
+                pathname,
               ),
               "text-foreground": isLinkActive(item, pathname),
             })}
@@ -217,7 +217,7 @@ function MobileMenu({
           </AppLink>
         ) : (
           <Separator key={item.id} />
-        )
+        ),
       )}
     </>
   );
@@ -244,9 +244,9 @@ function DesktopMenu({
                     "text-muted-foreground": !isLinkActive(item, pathname),
                     "bg-accent text-accent-foreground": isLinkActive(
                       item,
-                      pathname
+                      pathname,
                     ),
-                  }
+                  },
                 )}
               >
                 <item.icon className="h-5 w-5" />
@@ -257,7 +257,7 @@ function DesktopMenu({
           </Tooltip>
         ) : (
           <Separator key={item.id} />
-        )
+        ),
       )}
     </>
   );
