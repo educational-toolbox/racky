@@ -5,16 +5,27 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run --parallel dev",
+    "test": "pnpm with-env pnpm run --parallel test",
     "build:server": "pnpm -F \"@educational-toolbox/racky-api\" build",
     "build:web": "pnpm -F \"@educational-toolbox/racky-web-client\" build",
     "start:server": "pnpm -F \"@educational-toolbox/racky-api\" start:prod",
     "start:web": "pnpm -F \"@educational-toolbox/racky-web-client\" start",
     "format": "pnpm -F \"@educational-toolbox/racky-api\" format && pnpm -F \"@educational-toolbox/racky-web-client\" format",
     "lint": "pnpm -F \"@educational-toolbox/racky-api\" lint && pnpm -F \"@educational-toolbox/racky-web-client\" lint",
-    "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck"
+    "format:write": "pnpm -F \"@educational-toolbox/racky-api\" format:write && pnpm -F \"@educational-toolbox/racky-web-client\" format:write",
+    "lint:write": "pnpm -F \"@educational-toolbox/racky-api\" lint:write && pnpm -F \"@educational-toolbox/racky-web-client\" lint:write",
+    "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck",
+    "with-env": "dotenv -e .env --",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@8.13.1+sha512.758bebc6989cb6462c5138129840193b10c258ddcdb0ab43ee0ef9dd87784bc218d6e41cb5beeac362b8ce33f1f8b08025b599933c0bce82050a9a36b8474d43"
+  "dependencies": {
+    "dotenv-cli": "^7.4.1"
+  },
+  "packageManager": "pnpm@8.13.1",
+  "devDependencies": {
+    "husky": "^9.0.11"
+  }
 }
