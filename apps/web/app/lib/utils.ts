@@ -30,3 +30,19 @@ export function slugToTitle(slug: string) {
   if (parts.length < 1) return "";
   return [capitalize(parts[0]), ...parts.slice(1).map(toLowerCase)].join(" ");
 }
+
+export function normalizeUrlPath(url: string) {
+  if (url === "/") return "/";
+  let final = url;
+  if (final.endsWith("/")) {
+    final = final.slice(0, -1);
+  }
+  if (!final.startsWith("/")) {
+    final = `/${final}`;
+  }
+  return final;
+}
+
+export function normalizeUrl(url: URL | string) {
+  return new URL(url.toString()).toString();
+}

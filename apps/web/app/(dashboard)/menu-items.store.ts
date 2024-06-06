@@ -6,6 +6,7 @@ import {
   TestTubeIcon,
 } from "lucide-react";
 import { create } from "zustand";
+import { normalizeUrlPath } from "~/lib/utils";
 
 type SeparatorId = `$separator-${string}`;
 
@@ -37,7 +38,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
     type: "item",
     label: "server protected example",
-    href: "/protected/server-example",
+    href: normalizeUrlPath("/protected/server-example"),
     icon: HomeIcon,
     exact: true,
     hidden: false,
@@ -45,7 +46,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
     type: "item",
     label: "client protected example",
-    href: "/protected/client-example",
+    href: normalizeUrlPath("/protected/client-example"),
     icon: TestTube2Icon,
   },
   {
@@ -55,13 +56,13 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
     type: "item",
     label: "server public example",
-    href: "/public/server-example",
+    href: normalizeUrlPath("/public/server-example"),
     icon: PackageOpenIcon,
   },
   {
     type: "item",
     label: "client public example",
-    href: "/public/client-example",
+    href: normalizeUrlPath("/public/client-example"),
     icon: TestTubeIcon,
   },
 ];
@@ -84,13 +85,13 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
       items: state.items.map((item) =>
         (item.type === "item" ? item.href : item.id) === hrefOrId
           ? { ...item, hidden: true }
-          : item,
+          : item
       ),
     }));
   },
   getLabel(href) {
     const item = this.items.find(
-      (item) => "href" in item && item.href === href,
+      (item) => "href" in item && item.href === href
     );
     if (!item || item.type === "separator") {
       return "";
