@@ -1,5 +1,6 @@
 import type { Package2 } from "lucide-react";
 import {
+  CameraIcon,
   HomeIcon,
   PackageOpenIcon,
   TestTube2Icon,
@@ -65,6 +66,13 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     href: normalizeUrlPath("/public/client-example"),
     icon: TestTubeIcon,
   },
+  { type: "separator", id: "$separator-2" },
+  {
+    type: "item",
+    label: "upload example",
+    href: normalizeUrlPath("/media"),
+    icon: CameraIcon,
+  },
 ];
 
 export const useMenuItems = create<MenuItemsStore>((set) => ({
@@ -85,13 +93,13 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
       items: state.items.map((item) =>
         (item.type === "item" ? item.href : item.id) === hrefOrId
           ? { ...item, hidden: true }
-          : item,
+          : item
       ),
     }));
   },
   getLabel(href) {
     const item = this.items.find(
-      (item) => "href" in item && item.href === href,
+      (item) => "href" in item && item.href === href
     );
     if (!item || item.type === "separator") {
       return "";

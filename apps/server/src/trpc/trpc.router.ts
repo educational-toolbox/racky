@@ -1,3 +1,6 @@
+import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.router';
+import { CategoryRouter } from '@educational-toolbox/racky-api/category/category.router';
+import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { INestApplication, Injectable, Logger } from '@nestjs/common';
 import * as trpcExpress from '@trpc/server/adapters/express';
@@ -6,13 +9,11 @@ import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
 } from 'trpc-openapi';
-import { DatabaseService } from '../database/database.service';
-import { env } from '../server-env';
-import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.router';
-import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
-import { CategoryRouter } from '@educational-toolbox/racky-api/category/category.router';
-import { ReservationRouter } from '../reservation/reservation.router';
 import { clerkClient } from '../auth/clerk-client';
+import { DatabaseService } from '../database/database.service';
+import { MediaRouter } from '../media/media.router';
+import { ReservationRouter } from '../reservation/reservation.router';
+import { env } from '../server-env';
 
 @Injectable()
 export class TrpcRouter {
@@ -26,6 +27,7 @@ export class TrpcRouter {
     private readonly itemRouter: ItemRouter,
     private readonly categoryRouter: CategoryRouter,
     private readonly reservationRouter: ReservationRouter,
+    private readonly mediaRouter: MediaRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
   }
@@ -35,6 +37,7 @@ export class TrpcRouter {
     items: this.itemRouter.itemRouter,
     category: this.categoryRouter.categoryRouter,
     reservation: this.reservationRouter.reservationRouter,
+    media: this.mediaRouter.mediaRouter,
   });
 
   private async getClientId(req: Request): Promise<string> {

@@ -28,6 +28,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.591.0",
+    "@aws-sdk/s3-request-presigner": "^3.591.0",
     "@clerk/clerk-sdk-node": "^4.13.11",
     "@nestjs/common": "^10.3.3",
     "@nestjs/config": "^3.2.0",

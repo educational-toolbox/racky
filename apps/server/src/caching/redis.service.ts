@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CachingService } from './caching.service';
 import { createClient } from 'redis';
 import { env } from '../server-env';
+import { TIME } from '../CONSTANTS';
 
 @Injectable()
 export class RedisCachingService implements CachingService {
@@ -31,7 +32,7 @@ export class RedisCachingService implements CachingService {
   async set<T = any>(
     key: string,
     value: T,
-    ttlInMilliseconds = 5000,
+    ttlInMilliseconds = TIME.FIVE_SECONDS,
   ): Promise<void> {
     this.logger.log(`Setting cache for key: ${key}`);
     try {
