@@ -10,6 +10,7 @@
     "lint:write": "pnpm with-env next lint --fix",
     "with-env": "dotenv -e ../../.env --",
     "typecheck": "tsc --noEmit",
+    "lint-staged": "lint-staged",
     "format": "prettier --check ./app/**/*.{ts,tsx}",
     "format:write": "prettier --write ./app/**/*.{ts,tsx}"
   },
@@ -86,6 +87,7 @@
     "eslint": "^8.57.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
+    "lint-staged": "^15.2.5",
     "typescript": "^5.4.2",
     "typescript-eslint": "^7.2.0"
   }

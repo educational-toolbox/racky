@@ -15,9 +15,6 @@ importers:
       husky:
         specifier: ^9.0.11
         version: 9.0.11
-      lint-staged:
-        specifier: ^15.2.5
-        version: 15.2.5
 
   apps/server:
     dependencies:
@@ -127,6 +124,9 @@ importers:
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.11.28)(ts-node@10.9.2)
+      lint-staged:
+        specifier: ^15.2.5
+        version: 15.2.5
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
@@ -371,6 +371,9 @@ importers:
       eslint-plugin-import:
         specifier: ^2.29.1
         version: 2.29.1(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      lint-staged:
+        specifier: ^15.2.5
+        version: 15.2.5
       typescript:
         specifier: ^5.4.2
         version: 5.4.2

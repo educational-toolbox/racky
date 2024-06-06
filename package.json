@@ -16,7 +16,8 @@
     "lint:write": "pnpm -F \"@educational-toolbox/racky-api\" lint:write && pnpm -F \"@educational-toolbox/racky-web-client\" lint:write",
     "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck",
     "with-env": "dotenv -e .env --",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint-staged": "pnpm -F \"@educational-toolbox/racky-api\" lint-staged && pnpm -F \"@educational-toolbox/racky-web-client\" lint-staged"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +27,6 @@
   },
   "packageManager": "pnpm@8.13.1",
   "devDependencies": {
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.5"
+    "husky": "^9.0.11"
   }
 }

@@ -10,7 +10,6 @@ export class AppController {
   @Get()
   @Render('spec')
   specView() {
-    
     return { port: getPort() };
   }
 

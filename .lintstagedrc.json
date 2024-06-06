@@ -1,5 +1,0 @@
-{
-  "./apps/server/*.ts": ["eslint --fix --config ./apps/server/.eslintrc.js", "prettier --write --config ./apps/server/.prettierrc"],
-  "./apps/client/*.ts": ["eslint --fix --config ./apps/client/.eslintrc.json", "prettier --write"],
-  "./apps/client/*.tsx": ["eslint --fix --config ./apps/client/.eslintrc.json", "prettier --write"]
-}
