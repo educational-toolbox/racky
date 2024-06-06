@@ -49,7 +49,7 @@ export class MediaRouter {
       .input(z.object({ fileKey: z.string() }))
       .output(z.string())
       .query(async ({ input, ctx }) => {
-        const cached = await this.cacheService.get(input.fileKey);
+        const cached = await this.cacheService.get(ctx.key);
         if (cached != null) return cached;
         const image = await this.mediaService.get(input.fileKey);
         await this.cacheService.set(ctx.key, image, TIME.THIRTY_MINUTES);

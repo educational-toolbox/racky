@@ -7,7 +7,9 @@ import { Button } from "~/components/ui/button";
 import { s3 } from "~/hooks/use-s3";
 
 export default function MediaExamplePage() {
-  const [imageKey, setImageKey] = useState<string | null>(null);
+  const [imageKey, setImageKey] = useState<string | null>(
+    "racky/images//20240516_172402.jpg/1717688026618.0642"
+  );
   const { data, isLoading } = s3.useDownloadImage(
     { fileKey: imageKey! },
     {
@@ -20,7 +22,7 @@ export default function MediaExamplePage() {
       {isLoading ? (
         "Loading..."
       ) : data != null ? (
-        <Image width={1920} height={1080} src={data} alt="Uploaded icon" />
+        <Image width={1000} height={750} src={data} alt="Uploaded icon" />
       ) : null}
       <Button onClick={() => uploader.upload().then((key) => setImageKey(key))}>
         <UploadCloudIcon />
