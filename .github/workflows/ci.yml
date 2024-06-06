@@ -1,4 +1,6 @@
 name: CI + CD
+env:
+  NEXT_PUBLIC_NESTJS_SERVER: "http://localhost:3001"
 
 on:
   pull_request:
