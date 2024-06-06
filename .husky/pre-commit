@@ -1,2 +1,1 @@
-pnpm format:write
-pnpm lint:write
+pnpm lint-staged
