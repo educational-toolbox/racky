@@ -4,7 +4,7 @@ import { useAuth } from "@clerk/nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
-import { httpBatchLink, loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
+import { httpBatchLink, loggerLink } from "@trpc/client";
 import { useState } from "react";
 
 import { api } from "~/utils/api/client";
@@ -27,7 +27,7 @@ export function TRPCReactProvider(props: {
             staleTime: 5 * 1000,
           },
         },
-      })
+      }),
   );
 
   const [trpcClient] = useState(() =>
@@ -50,7 +50,7 @@ export function TRPCReactProvider(props: {
           },
         }),
       ],
-    })
+    }),
   );
 
   return (

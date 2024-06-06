@@ -84,13 +84,13 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
       items: state.items.map((item) =>
         (item.type === "item" ? item.href : item.id) === hrefOrId
           ? { ...item, hidden: true }
-          : item
+          : item,
       ),
     }));
   },
   getLabel(href) {
     const item = this.items.find(
-      (item) => "href" in item && item.href === href
+      (item) => "href" in item && item.href === href,
     );
     if (!item || item.type === "separator") {
       return "";
