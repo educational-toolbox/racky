@@ -1,6 +1,7 @@
-import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
+import { auth } from "@clerk/nextjs/server";
 import type { AppRouter } from "@educational-toolbox/racky-api/trpc/trpc.router";
-import Superjson from "superjson";
+import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
+import { transformer } from "./transformer";
 
 if (!process.env.NEXT_PUBLIC_NESTJS_SERVER) {
   throw new Error("NEXT_PUBLIC_NESTJS_SERVER is not defined");
@@ -15,7 +16,17 @@ export const api = createTRPCClient<AppRouter>({
     }),
     httpBatchLink({
       url: `${process.env.NEXT_PUBLIC_NESTJS_SERVER}/trpc`,
-      transformer: new Superjson(),
+      transformer,
+      async headers() {
+        const { getToken } = auth();
+        const token = await getToken();
+        if (!token) {
+          return {};
+        }
+        return {
+          Authorization: `Bearer ${token}`,
+        };
+      },
     }),
   ],
 });

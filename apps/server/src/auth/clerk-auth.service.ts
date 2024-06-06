@@ -1,11 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
-import { verifyJwt } from '@clerk/clerk-sdk-node';
-import { env } from '../server-env';
+import { clerkClient } from './clerk-client';
 
 @Injectable()
-export class ClerkAuthService implements AuthService {
+export class ClerkAuthService extends AuthService {
+  constructor(readonly _logger: Logger) {
+    super(_logger);
+  }
+
   authenticate(): Promise<boolean> {
     throw new Error('Clerk authentication happens on their end.');
   }
@@ -19,13 +22,12 @@ export class ClerkAuthService implements AuthService {
       return false;
     }
 
-    const key = env.CLERK_PUBLIC_KEY;
-
     try {
-      const decoded = await verifyJwt(token, {
-        issuer: null,
-        key,
-      });
+      let cleanedToken = token;
+      if (token.startsWith('Bearer ')) {
+        cleanedToken = token.slice(7);
+      }
+      const decoded = await clerkClient.verifyToken(cleanedToken);
       if (decoded.exp < Math.floor(Date.now() / 1000)) {
         return false;
       }
@@ -33,6 +35,7 @@ export class ClerkAuthService implements AuthService {
         return false;
       }
     } catch (_err) {
+      this._logger.error('Error validating clerk token', _err);
       return false;
     }
 
