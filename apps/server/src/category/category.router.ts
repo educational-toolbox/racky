@@ -15,7 +15,7 @@ export class CategoryRouter {
   ) {}
 
   categoryRouter = this.trpc.router({
-    getCategories: this.trpc.procedure
+    getCategories: this.trpc.protectedProcedure
       .meta({
         openapi: {
           method: 'GET',
@@ -27,7 +27,7 @@ export class CategoryRouter {
       })
       .input(z.void())
       .output(z.array(CategorySchemaRead))
-      .query(() => this.categoryService.getAllCategory('911')),
+      .query(({ ctx }) => this.categoryService.getAllCategory(ctx.clientId)),
 
     addCategory: this.trpc.protectedProcedure
       .meta({

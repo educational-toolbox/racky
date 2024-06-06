@@ -15,15 +15,20 @@ export class TrpcService {
 
   public readonly trpc = initTRPC
     .meta<OpenApiMeta>()
-    .context<{ db: DatabaseService; req: Request<any>; key: string }>()
+    .context<{
+      db: DatabaseService;
+      req: Request<any>;
+      key: string;
+      clientId?: string;
+    }>()
     .create({ transformer: this.transformer });
   public readonly procedure = this.trpc.procedure;
   public readonly protectedProcedure = this.trpc.procedure.use(async (ctx) => {
     const canActivate = await this.guard.canActivateFromRequest(ctx.ctx.req);
-    if (!canActivate) {
+    if (!canActivate || !ctx.ctx.clientId) {
       throw new TRPCError({ code: 'FORBIDDEN' });
     }
-    return ctx.next();
+    return ctx.next({ ctx: { ...ctx.ctx, clientId: ctx.ctx.clientId } });
   });
   public readonly router = this.trpc.router;
   public readonly mergeRouters = this.trpc.mergeRouters;
@@ -35,7 +40,7 @@ export const trpcServiceProvider: Provider = {
     const transformer = await (eval(`import('superjson')`) as Promise<
       typeof import('superjson')
     >);
-    const instance = new transformer.default();
+    const instance = new transformer.default({ dedupe: false });
     return new TrpcService(instance, guard);
   },
   inject: [AuthenticatedGuard],

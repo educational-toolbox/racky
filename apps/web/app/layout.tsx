@@ -1,22 +1,24 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
-import { TRPCReactProvider } from "./providers";
-import { headers } from "next/headers";
-import "./globals.css";
+import { AppProviders } from "./app-providers";
 import { Toaster } from "./components/ui/sonner";
+import "./globals.css";
 import { cn } from "./lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
 function RootLayout(props: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={cn(inter.className, "container mx-auto")}>
-        <TRPCReactProvider headers={headers()}>
-          {props.children}
-          <Toaster richColors />
-        </TRPCReactProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={cn(inter.className)}>
+          <AppProviders>
+            {props.children}
+            <Toaster richColors />
+          </AppProviders>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
 

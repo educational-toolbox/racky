@@ -1,6 +1,8 @@
+import { Logger } from '@nestjs/common';
 import { Request } from 'express';
 
 export abstract class AuthService {
+  constructor(protected readonly _logger: Logger) {}
   abstract authenticate(
     _username: string,
     _password: string,

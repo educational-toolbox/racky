@@ -1,5 +1,5 @@
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
-import { INestApplication, Injectable } from '@nestjs/common';
+import { INestApplication, Injectable, Logger } from '@nestjs/common';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import type { NextFunction, Request, Response } from 'express';
 import {
@@ -12,9 +12,11 @@ import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.ro
 import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
 import { CategoryRouter } from '@educational-toolbox/racky-api/category/category.router';
 import { ReservationRouter } from '../reservation/reservation.router';
+import { clerkClient } from '../auth/clerk-client';
 
 @Injectable()
 export class TrpcRouter {
+  private readonly logger = new Logger(TrpcRouter.name);
   readonly openapiDoc: ReturnType<typeof generateOpenApiDocument>;
 
   constructor(
@@ -35,21 +37,33 @@ export class TrpcRouter {
     reservation: this.reservationRouter.reservationRouter,
   });
 
-  private generateUniqueKey(req: Request): string {
-    return `${req.method}:${req.originalUrl}:${'TODO:user-id'}`;
+  private async getClientId(req: Request): Promise<string> {
+    // TODO: Make it dependent on AuthProvider instead of hardcoded Clerk instance
+    return (
+      await clerkClient.verifyToken(
+        req.headers['authorization']?.slice(7) as string,
+      )
+    ).sub;
+  }
+
+  private generateUniqueKey(req: Request, clientId: string): string {
+    this.logger.log(`Request from client with id "${clientId}"`);
+    return `${req.method}:${req.originalUrl}:client-${clientId}`;
   }
 
   async applyTRPCHandler(app: INestApplication) {
     app.use(
       `/trpc`,
       async (req: Request, res: Response, next: NextFunction) => {
+        const clientId = await this.getClientId(req);
         const middleware = trpcExpress.createExpressMiddleware({
           router: this.appRouter,
-          createContext: (info) => {
+          createContext: async (info) => {
             return {
+              clientId,
               db: this.databaseService,
               req,
-              key: this.generateUniqueKey(info.req) as string,
+              key: this.generateUniqueKey(info.req, clientId),
             };
           },
         });
@@ -70,11 +84,13 @@ export class TrpcRouter {
     app.use((req: Request, res: Response, next: NextFunction) => {
       const middleware = createOpenApiExpressMiddleware({
         router: this.appRouter,
-        createContext: (info) => {
+        createContext: async (info) => {
+          const clientId = await this.getClientId(info.req);
           return {
+            clientId,
             db: this.databaseService,
             req,
-            key: this.generateUniqueKey(info.req) as string,
+            key: this.generateUniqueKey(info.req, clientId),
           };
         },
       });
