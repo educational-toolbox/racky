@@ -7,9 +7,7 @@ export const AppLink = forwardRef<
   ComponentRef<typeof Link>,
   ComponentPropsWithoutRef<typeof Link>
 >(function ({ href, ...props }, ref) {
-  let finalHref =    href;
-
-
+  let finalHref = href;
 
   if (typeof finalHref === "string") {
     if (!finalHref.startsWith("http")) {
