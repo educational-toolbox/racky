@@ -1,3 +1,5 @@
 {
-  "*.ts": ["pnpm format:write", "pnpm lint:write"]
+  "*.ts": ["pnpm format:write", "pnpm lint:write"],
+  "*.json": ["pnpm format:write", "pnpm lint:write"],
+  "*.tsx": ["pnpm format:write", "pnpm lint:write"]
 }
