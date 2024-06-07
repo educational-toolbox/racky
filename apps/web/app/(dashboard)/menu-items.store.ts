@@ -1,11 +1,13 @@
 import type { Package2 } from "lucide-react";
 import {
+  CameraIcon,
   HomeIcon,
   PackageOpenIcon,
   TestTube2Icon,
   TestTubeIcon,
 } from "lucide-react";
 import { create } from "zustand";
+import { normalizeUrlPath } from "~/lib/utils";
 
 type SeparatorId = `$separator-${string}`;
 
@@ -37,7 +39,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
     type: "item",
     label: "server protected example",
-    href: "/protected/server-example",
+    href: normalizeUrlPath("/protected/server-example"),
     icon: HomeIcon,
     exact: true,
     hidden: false,
@@ -45,7 +47,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
     type: "item",
     label: "client protected example",
-    href: "/protected/client-example",
+    href: normalizeUrlPath("/protected/client-example"),
     icon: TestTube2Icon,
   },
   {
@@ -55,14 +57,21 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
     type: "item",
     label: "server public example",
-    href: "/public/server-example",
+    href: normalizeUrlPath("/public/server-example"),
     icon: PackageOpenIcon,
   },
   {
     type: "item",
     label: "client public example",
-    href: "/public/client-example",
+    href: normalizeUrlPath("/public/client-example"),
     icon: TestTubeIcon,
+  },
+  { type: "separator", id: "$separator-2" },
+  {
+    type: "item",
+    label: "upload example",
+    href: normalizeUrlPath("/media"),
+    icon: CameraIcon,
   },
 ];
 

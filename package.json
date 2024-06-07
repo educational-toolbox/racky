@@ -16,7 +16,8 @@
     "lint:write": "pnpm -F \"@educational-toolbox/racky-api\" lint:write && pnpm -F \"@educational-toolbox/racky-web-client\" lint:write",
     "typecheck": "pnpm -F \"@educational-toolbox/racky-api\" typecheck && pnpm -F \"@educational-toolbox/racky-web-client\" typecheck",
     "with-env": "dotenv -e .env --",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint-staged": "pnpm -F \"@educational-toolbox/racky-api\" lint-staged && pnpm -F \"@educational-toolbox/racky-web-client\" lint-staged"
   },
   "keywords": [],
   "author": "",

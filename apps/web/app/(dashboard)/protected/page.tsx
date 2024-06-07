@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AppLink } from "~/app-link";
 import { Button } from "~/components/ui/button";
 
 export default function ProtectedExamplesPage() {
@@ -8,12 +8,12 @@ export default function ProtectedExamplesPage() {
       <ul>
         <li>
           <Button asChild variant="link">
-            <Link href="/protected/client-example">Client Example</Link>
+            <AppLink href="/protected/client-example">Client Example</AppLink>
           </Button>
         </li>
         <li>
           <Button asChild variant="link">
-            <Link href="/protected/server-example">Server Example</Link>
+            <AppLink href="/protected/server-example">Server Example</AppLink>
           </Button>
         </li>
       </ul>

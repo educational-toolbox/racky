@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AppLink } from "~/app-link";
 import { Button } from "~/components/ui/button";
 
 export default function PublicExamplesPage() {
@@ -8,12 +8,12 @@ export default function PublicExamplesPage() {
       <ul>
         <li>
           <Button asChild variant="link">
-            <Link href="/public/client-example">Client Example</Link>
+            <AppLink href="/public/client-example">Client Example</AppLink>
           </Button>
         </li>
         <li>
           <Button asChild variant="link">
-            <Link href="/public/server-example">Server Example</Link>
+            <AppLink href="/public/server-example">Server Example</AppLink>
           </Button>
         </li>
       </ul>

@@ -27,6 +27,12 @@ const AUTH_PROVIDER = loadEnv('AUTH_PROVIDER', 'unsafe_random', [
   'clerk',
 ] as const);
 
+const AWS_REGION = loadEnv('AWS_REGION');
+const AWS_ACCESS_KEY_ID = loadEnv('AWS_ACCESS_KEY_ID');
+const AWS_SECRET_ACCESS_KEY = loadEnv('AWS_SECRET_ACCESS_KEY');
+const AWS_BUCKET_NAME = loadEnv('AWS_BUCKET');
+const AWS_S3_BUCKET_KEY = loadEnv('AWS_S3_BUCKET_KEY');
+
 const REDIS_URL = loadEnv('REDIS_URL', 'undefined') as string | undefined;
 
 export const env = {
@@ -35,4 +41,9 @@ export const env = {
   CLERK_SECRET_KEY,
   AUTH_PROVIDER,
   REDIS_URL,
+  AWS_REGION,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  AWS_BUCKET_NAME,
+  AWS_S3_BUCKET_KEY,
 };

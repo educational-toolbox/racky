@@ -4,7 +4,7 @@ import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 
 import { Package2, PanelLeft, Settings } from "lucide-react";
-import Link from "next/link";
+import { AppLink } from "~/app-link";
 
 import {
   RedirectToSignIn,
@@ -28,7 +28,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { cn, slugToTitle } from "~/lib/utils";
+import { cn, normalizeUrlPath, slugToTitle } from "~/lib/utils";
 import type { MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
 import { ThemeSwitcher } from "~/components/theme-switcher";
@@ -39,7 +39,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
   const crumbs = path.split("/").filter(Boolean);
   const { items } = useMenuItems();
 
-  const cleanPathname = path.endsWith("/") ? path : path + "/";
+  const cleanPathname = normalizeUrlPath(path);
 
   return (
     <>
@@ -104,13 +104,13 @@ function DesktopMenuWrapper(props: {
   return (
     <>
       <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-        <Link
+        <AppLink
           href="#"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
           <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
           <span className="sr-only">Acme Inc</span>
-        </Link>
+        </AppLink>
         <DesktopMenu items={props.items} pathname={props.pathname} />
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
@@ -122,13 +122,13 @@ function DesktopMenuWrapper(props: {
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link
+            <AppLink
               href="#"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
             >
               <Settings className="h-5 w-5" />
               <span className="sr-only">Settings</span>
-            </Link>
+            </AppLink>
           </TooltipTrigger>
           <TooltipContent side="right">Settings</TooltipContent>
         </Tooltip>
@@ -148,7 +148,7 @@ function DashboardBreadcrumbs({ crumbs }: { crumbs: string[] }) {
         ) : (
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/">Dashboard</Link>
+              <AppLink href="/">Dashboard</AppLink>
             </BreadcrumbLink>
           </BreadcrumbItem>
         )}
@@ -165,9 +165,13 @@ function DashboardBreadcrumbs({ crumbs }: { crumbs: string[] }) {
             <Fragment key={index}>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href={"/" + crumbs.slice(0, index - 1).join("/")}>
+                  <AppLink
+                    href={normalizeUrlPath(
+                      "/" + crumbs.slice(0, index - 1).join("/"),
+                    )}
+                  >
                     {slugToTitle(crumb)}
-                  </Link>
+                  </AppLink>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -188,16 +192,16 @@ function MobileMenu({
 }) {
   return (
     <>
-      <Link
+      <AppLink
         href="/"
         className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
       >
         <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
         <span className="sr-only">Acme Inc</span>
-      </Link>
+      </AppLink>
       {items.map((item) =>
         item.type === "item" ? (
-          <Link
+          <AppLink
             key={item.href}
             href={item.href}
             className={cn("flex items-center gap-4 px-2.5", {
@@ -210,7 +214,7 @@ function MobileMenu({
           >
             <item.icon className="h-5 w-5" />
             {item.label}
-          </Link>
+          </AppLink>
         ) : (
           <Separator key={item.id} />
         ),
@@ -232,7 +236,7 @@ function DesktopMenu({
         item.type === "item" ? (
           <Tooltip key={item.href}>
             <TooltipTrigger asChild>
-              <Link
+              <AppLink
                 href={item.href}
                 className={cn(
                   "flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8",
@@ -247,7 +251,7 @@ function DesktopMenu({
               >
                 <item.icon className="h-5 w-5" />
                 <span className="sr-only">{item.label}</span>
-              </Link>
+              </AppLink>
             </TooltipTrigger>
             <TooltipContent side="right">{item.label}</TooltipContent>
           </Tooltip>

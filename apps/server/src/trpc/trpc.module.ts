@@ -10,6 +10,7 @@ import { CatalogModule } from '@educational-toolbox/racky-api/catalog/catalog.mo
 import { ItemModule } from '@educational-toolbox/racky-api/item/item.module';
 import { CategoryModule } from '@educational-toolbox/racky-api/category/category.module';
 import { ReservationModule } from '../reservation/reservation.module';
+import { MediaModule } from '../media/media.module';
 
 @Global()
 @Module({
@@ -20,6 +21,7 @@ import { ReservationModule } from '../reservation/reservation.module';
     ItemModule,
     CategoryModule,
     ReservationModule,
+    MediaModule,
   ],
   providers: [trpcServiceProvider, TrpcRouter],
   exports: [TrpcRouter, TrpcService],
