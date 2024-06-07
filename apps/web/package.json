@@ -6,13 +6,13 @@
     "dev": "pnpm with-env next dev",
     "build": "pnpm with-env next build",
     "start": "pnpm with-env next start",
-    "lint": "pnpm with-env next lint",
-    "lint:write": "pnpm with-env next lint --fix",
+    "lint": "pnpm with-env eslint \"./app/**/*.{ts,tsx}\"",
+    "lint:write": "pnpm with-env eslint --fix \"./app/**/*.{ts,tsx}\"",
     "with-env": "dotenv -e ../../.env --",
     "typecheck": "tsc --noEmit",
     "lint-staged": "lint-staged",
-    "format": "prettier --check ./app/**/*.{ts,tsx}",
-    "format:write": "prettier --write ./app/**/*.{ts,tsx}"
+    "format": "prettier --check \"./app/**/*.{ts,tsx}\"",
+    "format:write": "prettier --write \"./app/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@clerk/nextjs": "^5.1.3",

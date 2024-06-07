@@ -8,13 +8,13 @@ import { s3 } from "~/hooks/use-s3";
 
 export default function MediaExamplePage() {
   const [imageKey, setImageKey] = useState<string | null>(
-    "racky/images//20240516_172402.jpg/1717688026618.0642"
+    "racky/images//20240516_172402.jpg/1717688026618.0642",
   );
   const { data, isLoading } = s3.useDownloadImage(
     { fileKey: imageKey! },
     {
       enabled: imageKey != null,
-    }
+    },
   );
   const uploader = s3.useUploadImage();
   return (
