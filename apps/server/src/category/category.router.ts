@@ -14,7 +14,7 @@ export class CategoryRouter {
     private readonly categoryService: CategoryService,
   ) {}
 
-  categoryRouter = this.trpc.router({
+  router = this.trpc.router({
     getCategories: this.trpc.protectedProcedure
       .meta({
         openapi: {

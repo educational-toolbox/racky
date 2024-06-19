@@ -12,7 +12,7 @@ export class CatalogRouter {
     private readonly catalogService: CatalogService,
   ) {}
 
-  catalogRouter = this.trpc.router({
+  router = this.trpc.router({
     items: this.trpc.procedure
       .meta({
         openapi: {

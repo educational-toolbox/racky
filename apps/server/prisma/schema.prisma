@@ -19,50 +19,51 @@ enum ReservationStatus {
   RETURNED
 }
 
-model Log {
-  id   Int      @id @default(autoincrement())
-  type String
-  text String
-  date DateTime @default(now())
-}
-
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  firstName    String?
-  lastName     String?
-  password     String?
-  role         Role          @default(USER)
-  client       Client?       @relation(fields: [clientId], references: [id])
-  clientId     String
-  reservations Reservation[]
+  id             String        @id @default(uuid())
+  email          String        @unique
+  firstName      String?
+  lastName       String?
+  password       String?
+  role           Role          @default(USER)
+  owns           Organization? @relation(name: "organization_owner")
+  ownsId         String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], name: "organization_users")
+  organizationId String        @map("clientId")
+  reservations   Reservation[]
 }
 
-model Client {
-  id         String     @id @default(uuid())
-  name       String     @unique
-  zone       String
-  users      User[]
-  categories Category[]
+model Organization {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  zone         String
+  users        User[]        @relation(name: "organization_users")
+  categories   Category[]
+  catalogItems CatalogItem[]
+  owner        User?         @relation(name: "organization_owner", fields: [ownerId], references: [id])
+  ownerId      String?       @unique
+
+  @@map("Client")
 }
 
 model Category {
-  id            String       @id @default(uuid())
-  name          String
-  client        Client       @relation(fields: [clientId], references: [id])
-  clientId      String
-  itemCatalog   CatalogItem? @relation(fields: [itemCatalogId], references: [id])
-  itemCatalogId String?
+  id             String       @id @default(uuid())
+  name           String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("clientId")
+  itemCatalog    CatalogItem? @relation(fields: [itemCatalogId], references: [id])
+  itemCatalogId  String?
 }
 
 model CatalogItem {
-  id          String     @id @default(uuid())
-  name        String
-  description String
-  quantity    Int
-  clientId    String
-  categories  Category[]
-  items       Item[]
+  id             String       @id @default(uuid())
+  name           String
+  description    String
+  quantity       Int
+  organizationId String       @map("clientId")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  categories     Category[]
+  items          Item[]
 }
 
 model Item {

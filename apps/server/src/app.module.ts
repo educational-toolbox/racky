@@ -5,9 +5,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { DatabaseModule } from './database/database.module';
-import { LogEntryEventController } from './events/log-entry.event.contoller';
 import { CachingModule } from './caching/caching.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -18,7 +17,7 @@ import { CachingModule } from './caching/caching.module';
     DatabaseModule,
     CachingModule,
   ],
-  controllers: [AppController, LogEntryEventController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

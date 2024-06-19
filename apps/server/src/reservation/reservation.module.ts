@@ -1,10 +1,9 @@
-import { DatabaseModule } from '@educational-toolbox/racky-api/database/database.module';
 import { Module } from '@nestjs/common';
-import { ReservationService } from './reservation.service';
 import { ReservationRouter } from './reservation.router';
+import { ReservationService } from './reservation.service';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [],
   providers: [ReservationService, ReservationRouter],
   exports: [ReservationRouter],
 })

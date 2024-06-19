@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const CategorySchemaRead = z.object({
   id: z.string(),
   name: z.string(),
-  clientId: z.string(),
+  organizationId: z.string(),
 });
 
 export type CategoryRead = z.infer<typeof CategorySchemaRead>;

@@ -10,10 +10,10 @@ import { z } from 'zod';
 export class CategoryService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  getAllCategory(clientId: string) {
+  getAllCategory(organizationId: string) {
     return this.databaseService.category.findMany({
       where: {
-        clientId: clientId,
+        organizationId,
       },
     });
   }

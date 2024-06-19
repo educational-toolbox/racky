@@ -19,6 +19,9 @@
     "prepare": "husky",
     "lint-staged": "pnpm -F \"@educational-toolbox/racky-api\" lint-staged && pnpm -F \"@educational-toolbox/racky-web-client\" lint-staged"
   },
+  "prisma": {
+    "schema": "apps/server/prisma/schema.prisma"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

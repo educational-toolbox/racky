@@ -5,13 +5,13 @@ import { DatabaseService } from '@educational-toolbox/racky-api/database/databas
 export class CatalogService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  findItemByCategory(categoryId: string, clientId: string) {
+  findItemByCategory(categoryId: string, organizationId: string) {
     return this.databaseService.item.findMany({
       where: {
         itemCatalog: {
           categories: {
             some: {
-              clientId: clientId,
+              organizationId: organizationId,
               id: categoryId,
             },
           },
@@ -20,10 +20,10 @@ export class CatalogService {
     });
   }
 
-  findCatalogueItems(clientId: string) {
+  findCatalogueItems(organizationId: string) {
     return this.databaseService.catalogItem.findMany({
       where: {
-        clientId: clientId,
+        organizationId,
       },
     });
   }

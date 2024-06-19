@@ -14,7 +14,7 @@ export class ReservationRouter {
     private readonly reservationService: ReservationService,
   ) {}
 
-  reservationRouter = this.trpc.router({
+  router = this.trpc.router({
     findAll: this.trpc.procedure
       .meta({
         openapi: {

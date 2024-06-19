@@ -13,7 +13,7 @@ export class MediaRouter {
     private readonly cacheService: CachingService,
   ) {}
 
-  mediaRouter = this.trpc.router({
+  router = this.trpc.router({
     uploadImage: this.trpc.protectedProcedure
       .meta({
         openapi: {

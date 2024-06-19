@@ -17,7 +17,7 @@ export class ItemRouter {
     private readonly cacheService: CachingService,
   ) {}
 
-  itemRouter = this.trpc.router({
+  router = this.trpc.router({
     getOne: this.trpc.procedure
       .meta({
         openapi: {

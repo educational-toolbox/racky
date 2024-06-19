@@ -14,6 +14,7 @@ import { DatabaseService } from '../database/database.service';
 import { MediaRouter } from '../media/media.router';
 import { ReservationRouter } from '../reservation/reservation.router';
 import { env } from '../server-env';
+import { OrganizationRouter } from '../organization/organization.router';
 
 @Injectable()
 export class TrpcRouter {
@@ -28,16 +29,18 @@ export class TrpcRouter {
     private readonly categoryRouter: CategoryRouter,
     private readonly reservationRouter: ReservationRouter,
     private readonly mediaRouter: MediaRouter,
+    private readonly organizationRouter: OrganizationRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
   }
 
   appRouter = this.trpc.router({
-    catalog: this.catalogRouter.catalogRouter,
-    items: this.itemRouter.itemRouter,
-    category: this.categoryRouter.categoryRouter,
-    reservation: this.reservationRouter.reservationRouter,
-    media: this.mediaRouter.mediaRouter,
+    catalog: this.catalogRouter.router,
+    items: this.itemRouter.router,
+    category: this.categoryRouter.router,
+    reservation: this.reservationRouter.router,
+    media: this.mediaRouter.router,
+    org: this.organizationRouter.router,
   });
 
   private async getClientId(req: Request): Promise<string> {
