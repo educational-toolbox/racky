@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { ThemeProvider } from "./components/theme-provider";
 import { TooltipProvider } from "./components/ui/tooltip";
+import { SessionProvider } from "./lib/auth";
 import { TRPCReactProvider } from "./trpc-providers";
 
 export function AppProviders(props: { children: React.ReactNode }) {
@@ -12,7 +13,9 @@ export function AppProviders(props: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <TRPCReactProvider headers={headers()}>
-        <TooltipProvider delayDuration={0}>{props.children}</TooltipProvider>
+        <SessionProvider>
+          <TooltipProvider delayDuration={0}>{props.children}</TooltipProvider>
+        </SessionProvider>
       </TRPCReactProvider>
     </ThemeProvider>
   );

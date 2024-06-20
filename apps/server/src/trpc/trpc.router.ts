@@ -1,10 +1,7 @@
 import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.router';
 import { CategoryRouter } from '@educational-toolbox/racky-api/category/category.router';
 import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
-import {
-  TrpcService,
-  type TrpcContext,
-} from '@educational-toolbox/racky-api/trpc/trpc.service';
+import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { INestApplication, Injectable, Logger } from '@nestjs/common';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import type { NextFunction, Request, Response } from 'express';
@@ -12,13 +9,23 @@ import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
 } from 'trpc-openapi';
-import { AuthUser } from '../auth/auth-user.type';
+import { AuthUserWithPermissions } from '../auth/auth-user.type';
 import { clerkClient } from '../auth/clerk-client';
+import { getPermissions } from '../auth/permissions';
 import { DatabaseService } from '../database/database.service';
 import { MediaRouter } from '../media/media.router';
 import { OrganizationRouter } from '../organization/organization.router';
 import { ReservationRouter } from '../reservation/reservation.router';
 import { env } from '../server-env';
+import { z } from 'zod';
+import { Role } from '@prisma/client';
+
+export type TrpcContext = {
+  db: DatabaseService;
+  req: Request<any>;
+  key: string;
+  user: AuthUserWithPermissions | undefined;
+};
 
 @Injectable()
 export class TrpcRouter {
@@ -39,6 +46,32 @@ export class TrpcRouter {
   }
 
   appRouter = this.trpc.router({
+    // I was too lazy to create another router lmao
+    auth: this.trpc.router({
+      session: this.trpc.procedure
+        .meta({
+          openapi: {
+            method: 'GET',
+            path: '/session',
+            summary: 'Get the current session',
+            tags: ['Auth'],
+          },
+        })
+        .input(z.void())
+        .output(
+          z
+            .object({
+              id: z.string(),
+              orgId: z.string(),
+              role: z.nativeEnum(Role),
+            })
+            .nullable(),
+        )
+        .query(({ ctx }) => {
+          return ctx.user !== undefined ? ctx.user : null;
+        }),
+    }),
+    // Other routers
     catalog: this.catalogRouter.router,
     items: this.itemRouter.router,
     category: this.categoryRouter.router,
@@ -47,25 +80,33 @@ export class TrpcRouter {
     org: this.organizationRouter.router,
   });
 
-  private async getUserId(req: Request): Promise<string> {
+  private async getUserId(req: Request): Promise<string | undefined> {
     // TODO: Make it dependent on AuthProvider instead of hardcoded Clerk instance
-    return (
-      await clerkClient.verifyToken(
-        req.headers['authorization']?.slice(7) as string,
-      )
-    ).sub;
+    try {
+      return (
+        await clerkClient.verifyToken(
+          req.headers['authorization']?.slice(7) as string,
+        )
+      ).sub;
+    } catch (error) {
+      return undefined;
+    }
   }
 
-  private async getUser(userId: string): Promise<AuthUser | undefined> {
+  private async getUser(
+    userId: string | undefined,
+  ): Promise<AuthUserWithPermissions | undefined> {
+    if (!userId) return undefined;
     const user = await this.databaseService.user.findUnique({
       where: { id: userId },
     });
     if (!user) return undefined;
-    return {
+    const authUser = {
       id: user.id,
       orgId: user.organizationId,
       role: user.role,
     };
+    return { ...authUser, permissions: getPermissions(authUser) };
   }
 
   private generateUniqueKey(req: Request, userId: string): string {
@@ -80,7 +121,7 @@ export class TrpcRouter {
       user,
       db: this.databaseService,
       req,
-      key: this.generateUniqueKey(req, userId),
+      key: this.generateUniqueKey(req, userId ?? 'anonymous'),
     };
   }
 

@@ -5,6 +5,12 @@ import { DatabaseService } from '../database/database.service';
 export class OrganizationService {
   constructor(private readonly databaseService: DatabaseService) {}
 
+  async get(id: string) {
+    return this.databaseService.organization.findUnique({
+      where: { id },
+    });
+  }
+
   async create(name: string, zone: string) {
     return this.databaseService.organization.create({
       data: { name, zone },

@@ -3,16 +3,12 @@
 import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 
-import { Package2, PanelLeft, Settings } from "lucide-react";
+import { Package2, PanelLeft } from "lucide-react";
 import { AppLink } from "~/app-link";
 
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { RedirectToSignIn } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
+import { ThemeSwitcher } from "~/components/theme-switcher";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -22,23 +18,22 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { SignOutButton, SignedIn, SignedOut } from "~/lib/auth";
 import { cn, normalizeUrlPath, slugToTitle } from "~/lib/utils";
 import type { MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
-import { ThemeSwitcher } from "~/components/theme-switcher";
-import { Separator } from "~/components/ui/separator";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const path = usePathname();
   const crumbs = path.split("/").filter(Boolean);
   const { items } = useMenuItems();
-
   const cleanPathname = normalizeUrlPath(path);
 
   return (
@@ -56,8 +51,8 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
             <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
               <MobileMenuWrapper items={items} pathname={cleanPathname} />
               <DashboardBreadcrumbs crumbs={crumbs} />
-              <div className="ml-auto w-7 h-7">
-                <UserButton />
+              <div className="ml-auto">
+                <SignOutButton />
               </div>
             </header>
 
@@ -89,7 +84,7 @@ function MobileMenuWrapper(props: {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="sm:max-w-xs">
-        <nav className="grid gap-6 text-lg font-medium">
+        <nav className="flex flex-col h-full gap-6 text-lg font-medium">
           <MobileMenu items={props.items} pathname={props.pathname} />
         </nav>
       </SheetContent>
@@ -119,18 +114,6 @@ function DesktopMenuWrapper(props: {
             <ThemeSwitcher />
           </TooltipTrigger>
           <TooltipContent side="right">Change theme</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <AppLink
-              href="#"
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-            >
-              <Settings className="h-5 w-5" />
-              <span className="sr-only">Settings</span>
-            </AppLink>
-          </TooltipTrigger>
-          <TooltipContent side="right">Settings</TooltipContent>
         </Tooltip>
       </nav>
     </>

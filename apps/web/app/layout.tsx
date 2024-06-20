@@ -11,7 +11,7 @@ function RootLayout(props: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={cn(inter.className)}>
+        <body className={cn(inter.className)} suppressHydrationWarning>
           <AppProviders>
             {props.children}
             <Toaster richColors />

@@ -1,24 +1,19 @@
 import type { Package2 } from "lucide-react";
-import {
-  CameraIcon,
-  HomeIcon,
-  PackageOpenIcon,
-  TestTube2Icon,
-  TestTubeIcon,
-} from "lucide-react";
 import { create } from "zustand";
-import { normalizeUrlPath } from "~/lib/utils";
 
 type SeparatorId = `$separator-${string}`;
+type ItemId = `$item-${string}`;
 
 export type MenuItem =
   | {
       type: "item";
+      id: ItemId;
       icon: typeof Package2;
       label: string;
       href: string;
       exact?: boolean;
       hidden?: boolean;
+      className?: string;
     }
   | {
       type: "separator";
@@ -30,55 +25,20 @@ export interface MenuItemsStore {
   items: readonly MenuItem[];
 
   add: (item: MenuItem, idx?: number) => void;
-  // eslint-disable-next-line @typescript-eslint/ban-types -- allow any string or template-like string (temp hack until next ts version)
-  hide: (hrefOrId: (string & {}) | SeparatorId) => void;
+  hide: (id: ItemId | SeparatorId) => void;
+  remove: (id: ItemId | SeparatorId) => void;
   getLabel: (href: string) => string;
 }
 
-const DEFAULT_MENU_ITEMS: MenuItem[] = [
-  {
-    type: "item",
-    label: "server protected example",
-    href: normalizeUrlPath("/protected/server-example"),
-    icon: HomeIcon,
-    exact: true,
-    hidden: false,
-  },
-  {
-    type: "item",
-    label: "client protected example",
-    href: normalizeUrlPath("/protected/client-example"),
-    icon: TestTube2Icon,
-  },
-  {
-    type: "separator",
-    id: "$separator-1",
-  },
-  {
-    type: "item",
-    label: "server public example",
-    href: normalizeUrlPath("/public/server-example"),
-    icon: PackageOpenIcon,
-  },
-  {
-    type: "item",
-    label: "client public example",
-    href: normalizeUrlPath("/public/client-example"),
-    icon: TestTubeIcon,
-  },
-  { type: "separator", id: "$separator-2" },
-  {
-    type: "item",
-    label: "upload example",
-    href: normalizeUrlPath("/media"),
-    icon: CameraIcon,
-  },
-];
+const DEFAULT_MENU_ITEMS: MenuItem[] = [];
 
 export const useMenuItems = create<MenuItemsStore>((set) => ({
   items: DEFAULT_MENU_ITEMS,
   add(item, idx) {
     set((state) => {
+      if (state.items.some((i) => i.id === item.id)) {
+        return state;
+      }
       const items = [...state.items];
       if (idx !== undefined) {
         items.splice(idx, 0, item);
@@ -88,12 +48,20 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
       return { items };
     });
   },
-  hide(hrefOrId) {
+  remove(id) {
+    set((state) => {
+      if (!state.items.some((i) => i.id === id)) {
+        return state;
+      }
+      return {
+        items: state.items.filter((item) => item.id !== id),
+      };
+    });
+  },
+  hide(id) {
     set((state) => ({
       items: state.items.map((item) =>
-        (item.type === "item" ? item.href : item.id) === hrefOrId
-          ? { ...item, hidden: true }
-          : item,
+        item.id === id ? { ...item, hidden: true } : item,
       ),
     }));
   },

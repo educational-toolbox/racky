@@ -1,18 +1,9 @@
 import { Injectable, Provider } from '@nestjs/common';
-import { OpenApiMeta } from 'trpc-openapi';
 import { TRPCError, initTRPC } from '@trpc/server';
 import type SuperJSON from 'superjson';
-import { DatabaseService } from '../database/database.service';
+import { OpenApiMeta } from 'trpc-openapi';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
-import type { Request } from 'express';
-import type { AuthUser } from '../auth/auth-user.type';
-
-export type TrpcContext = {
-  db: DatabaseService;
-  req: Request<any>;
-  key: string;
-  user: AuthUser | undefined;
-};
+import { TrpcContext } from './trpc.router';
 
 @Injectable()
 export class TrpcService {
