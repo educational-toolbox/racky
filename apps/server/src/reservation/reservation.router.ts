@@ -57,7 +57,7 @@ export class ReservationRouter {
       .input(reservationSchemaWrite)
       .output(reservationSchemaRead)
       .mutation(({ input, ctx }) =>
-        this.reservationService.create(input, ctx.clientId),
+        this.reservationService.create(input, ctx.user.orgId),
       ),
 
     update: this.trpc.protectedProcedure
@@ -73,7 +73,7 @@ export class ReservationRouter {
       .input(reservationSchemaRead)
       .output(reservationSchemaRead)
       .mutation(({ input, ctx }) =>
-        this.reservationService.update(input, ctx.clientId),
+        this.reservationService.update(input, ctx.user.orgId),
       ),
 
     delete: this.trpc.protectedProcedure

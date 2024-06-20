@@ -5,6 +5,14 @@ import type SuperJSON from 'superjson';
 import { DatabaseService } from '../database/database.service';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import type { Request } from 'express';
+import type { AuthUser } from '../auth/auth-user.type';
+
+export type TrpcContext = {
+  db: DatabaseService;
+  req: Request<any>;
+  key: string;
+  user: AuthUser | undefined;
+};
 
 @Injectable()
 export class TrpcService {
@@ -15,20 +23,21 @@ export class TrpcService {
 
   public readonly trpc = initTRPC
     .meta<OpenApiMeta>()
-    .context<{
-      db: DatabaseService;
-      req: Request<any>;
-      key: string;
-      clientId?: string;
-    }>()
+    .context<TrpcContext>()
     .create({ transformer: this.transformer });
   public readonly procedure = this.trpc.procedure;
   public readonly protectedProcedure = this.trpc.procedure.use(async (ctx) => {
     const canActivate = await this.guard.canActivateFromRequest(ctx.ctx.req);
-    if (!canActivate || !ctx.ctx.clientId) {
+    if (!canActivate || !ctx.ctx.user) {
       throw new TRPCError({ code: 'FORBIDDEN' });
     }
-    return ctx.next({ ctx: { ...ctx.ctx, clientId: ctx.ctx.clientId } });
+    return ctx.next({ ctx: { ...ctx.ctx, user: ctx.ctx.user! } });
+  });
+  public readonly adminProcedure = this.protectedProcedure.use(async (ctx) => {
+    if (ctx.ctx.user.role !== 'ADMIN') {
+      throw new TRPCError({ code: 'FORBIDDEN' });
+    }
+    return ctx.next(ctx);
   });
   public readonly router = this.trpc.router;
   public readonly mergeRouters = this.trpc.mergeRouters;

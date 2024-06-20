@@ -27,7 +27,7 @@ export class CategoryRouter {
       })
       .input(z.void())
       .output(z.array(CategorySchemaRead))
-      .query(({ ctx }) => this.categoryService.getAllCategory(ctx.clientId)),
+      .query(({ ctx }) => this.categoryService.getAllCategory(ctx.user.orgId)),
 
     addCategory: this.trpc.protectedProcedure
       .meta({

@@ -13,7 +13,7 @@ export class CatalogRouter {
   ) {}
 
   router = this.trpc.router({
-    items: this.trpc.procedure
+    items: this.trpc.protectedProcedure
       .meta({
         openapi: {
           method: 'GET',
@@ -28,7 +28,7 @@ export class CatalogRouter {
       .query(async ({ input, ctx }) => {
         const result = await this.catalogService.findItemByCategory(
           input.categoryId,
-          ctx.clientId ?? '911',
+          ctx.user.orgId ?? '911',
         );
         return result;
       }),
@@ -45,6 +45,8 @@ export class CatalogRouter {
       })
       .input(z.void())
       .output(z.array(CatalogItemSchemaRead))
-      .query(({ ctx }) => this.catalogService.findCatalogueItems(ctx.clientId)),
+      .query(({ ctx }) =>
+        this.catalogService.findCatalogueItems(ctx.user.orgId),
+      ),
   });
 }

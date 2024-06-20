@@ -1,7 +1,10 @@
 import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.router';
 import { CategoryRouter } from '@educational-toolbox/racky-api/category/category.router';
 import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
-import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
+import {
+  TrpcService,
+  type TrpcContext,
+} from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { INestApplication, Injectable, Logger } from '@nestjs/common';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import type { NextFunction, Request, Response } from 'express';
@@ -9,12 +12,13 @@ import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
 } from 'trpc-openapi';
+import { AuthUser } from '../auth/auth-user.type';
 import { clerkClient } from '../auth/clerk-client';
 import { DatabaseService } from '../database/database.service';
 import { MediaRouter } from '../media/media.router';
+import { OrganizationRouter } from '../organization/organization.router';
 import { ReservationRouter } from '../reservation/reservation.router';
 import { env } from '../server-env';
-import { OrganizationRouter } from '../organization/organization.router';
 
 @Injectable()
 export class TrpcRouter {
@@ -43,7 +47,7 @@ export class TrpcRouter {
     org: this.organizationRouter.router,
   });
 
-  private async getClientId(req: Request): Promise<string> {
+  private async getUserId(req: Request): Promise<string> {
     // TODO: Make it dependent on AuthProvider instead of hardcoded Clerk instance
     return (
       await clerkClient.verifyToken(
@@ -52,26 +56,41 @@ export class TrpcRouter {
     ).sub;
   }
 
-  private generateUniqueKey(req: Request, clientId: string): string {
-    this.logger.log(`Request from client with id "${clientId}"`);
-    return `${req.method}:${req.originalUrl}:client-${clientId}`;
+  private async getUser(userId: string): Promise<AuthUser | undefined> {
+    const user = await this.databaseService.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) return undefined;
+    return {
+      id: user.id,
+      orgId: user.organizationId,
+      role: user.role,
+    };
+  }
+
+  private generateUniqueKey(req: Request, userId: string): string {
+    this.logger.log(`Request from client with id "${userId}"`);
+    return `${req.method}:${req.originalUrl}:user-${userId}`;
+  }
+
+  private async createContext(req: Request): Promise<TrpcContext> {
+    const userId = await this.getUserId(req);
+    const user = await this.getUser(userId);
+    return {
+      user,
+      db: this.databaseService,
+      req,
+      key: this.generateUniqueKey(req, userId),
+    };
   }
 
   async applyTRPCHandler(app: INestApplication) {
     app.use(
       `/trpc`,
       async (req: Request, res: Response, next: NextFunction) => {
-        const clientId = await this.getClientId(req);
         const middleware = trpcExpress.createExpressMiddleware({
           router: this.appRouter,
-          createContext: async (info) => {
-            return {
-              clientId,
-              db: this.databaseService,
-              req,
-              key: this.generateUniqueKey(info.req, clientId),
-            };
-          },
+          createContext: (info) => this.createContext(info.req),
         });
         return middleware(req, res, next);
       },
@@ -90,15 +109,7 @@ export class TrpcRouter {
     app.use((req: Request, res: Response, next: NextFunction) => {
       const middleware = createOpenApiExpressMiddleware({
         router: this.appRouter,
-        createContext: async (info) => {
-          const clientId = await this.getClientId(info.req);
-          return {
-            clientId,
-            db: this.databaseService,
-            req,
-            key: this.generateUniqueKey(info.req, clientId),
-          };
-        },
+        createContext: (info) => this.createContext(info.req),
       });
       if (req.path in this.openapiDoc.paths) {
         return middleware(req, res);
