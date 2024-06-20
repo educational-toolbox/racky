@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { useState } from "react";
-
 import { api } from "~/utils/api/client";
 import { transformer } from "./utils/api/transformer";
 

@@ -1,14 +1,13 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { LogOutIcon, ShieldCheckIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useContext, useEffect } from "react";
 import { Button } from "~/components/ui/button";
+import Icon from "~/components/ui/icon";
 import { api } from "~/utils/api/client";
 import type { Session } from "./session.type";
-import { useMenuItems } from "~/(dashboard)/menu-items.store";
-import { useRouter } from "next/navigation";
 
 const sessionContext = createContext<Session>({
   state: "loading",
@@ -45,27 +44,6 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       invalidate,
     };
   }
-
-  // Can't think of a better solution for now...
-  const { add, remove } = useMenuItems();
-  useEffect(() => {
-    if (value.state === "authenticated" && value.user.role === "ADMIN") {
-      add({
-        type: "separator",
-        id: "$separator-admin",
-      });
-      add({
-        type: "item",
-        id: "$item-admin-ashboard",
-        href: "/admin",
-        label: "Admin Dashboard",
-        icon: ShieldCheckIcon,
-      });
-    } else {
-      remove("$separator-admin");
-      remove("$item-admin-ashboard");
-    }
-  }, [add, remove, value]);
 
   return (
     <sessionContext.Provider value={value}>{children}</sessionContext.Provider>
@@ -108,7 +86,7 @@ export const SignOutButton = () => {
       size="icon"
       variant="outline"
     >
-      <LogOutIcon />
+      <Icon name="LogOut" />
     </Button>
   );
 };
@@ -126,7 +104,9 @@ export const RequireAccessLevel = ({
   const allowed =
     session.state === "authenticated" && session.user.role === role;
   useEffect(() => {
-    if (!allowed) router.replace(onFailRedirectTo);
+    if (!allowed && onFailRedirectTo !== undefined) {
+      router.replace(onFailRedirectTo);
+    }
   }, [allowed, onFailRedirectTo, router]);
   if (allowed) {
     return <>{children}</>;

@@ -1,4 +1,4 @@
-import type { Package2 } from "lucide-react";
+import type { icons } from "lucide-react";
 import { create } from "zustand";
 
 type SeparatorId = `$separator-${string}`;
@@ -8,7 +8,7 @@ export type MenuItem =
   | {
       type: "item";
       id: ItemId;
-      icon: typeof Package2;
+      icon: keyof typeof icons;
       label: string;
       href: string;
       exact?: boolean;

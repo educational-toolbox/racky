@@ -8,6 +8,7 @@ import {
   organizationSchema,
 } from './organization.schema';
 import { OrganizationService } from './organization.service';
+import { z } from 'zod';
 
 @Injectable()
 export class OrganizationRouter {
@@ -17,6 +18,21 @@ export class OrganizationRouter {
   ) {}
 
   router = this.trpc.router({
+    list: this.trpc.adminProcedure
+      .meta({
+        openapi: {
+          method: 'GET',
+          path: '/org/list',
+          summary: 'List organizations',
+          enabled: false,
+          protect: true,
+        },
+      })
+      .input(z.void())
+      .output(organizationSchema.array())
+      .query(() => {
+        return this.organizationService.getAll();
+      }),
     create: this.trpc.adminProcedure
       .meta({
         openapi: {
@@ -30,11 +46,10 @@ export class OrganizationRouter {
       })
       .input(createOrganizationSchema)
       .output(organizationSchema)
-
       .mutation(({ input }) => {
         return this.organizationService.create(input.name, input.zone);
       }),
-    editOrganizationSchema: this.trpc.protectedProcedure
+    edit: this.trpc.protectedProcedure
       .meta({
         openapi: {
           method: 'PUT',

@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import type { AppRouter } from "@educational-toolbox/racky-api/trpc/trpc.router";
 import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { transformer } from "./transformer";
 
 if (!process.env.NEXT_PUBLIC_NESTJS_SERVER) {
@@ -30,3 +31,6 @@ export const api = createTRPCClient<AppRouter>({
     }),
   ],
 });
+
+export type RouterInputs = inferRouterInputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;

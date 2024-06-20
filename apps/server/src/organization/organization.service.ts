@@ -5,6 +5,10 @@ import { DatabaseService } from '../database/database.service';
 export class OrganizationService {
   constructor(private readonly databaseService: DatabaseService) {}
 
+  async getAll() {
+    return this.databaseService.organization.findMany();
+  }
+
   async get(id: string) {
     return this.databaseService.organization.findUnique({
       where: { id },

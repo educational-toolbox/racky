@@ -3,7 +3,6 @@
 import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 
-import { Package2, PanelLeft } from "lucide-react";
 import { AppLink } from "~/app-link";
 
 import { RedirectToSignIn } from "@clerk/nextjs";
@@ -18,6 +17,7 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
+import Icon from "~/components/ui/icon";
 import { Separator } from "~/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import {
@@ -25,7 +25,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { SignOutButton, SignedIn, SignedOut } from "~/lib/auth";
+import {
+  RequireAccessLevel,
+  SignOutButton,
+  SignedIn,
+  SignedOut,
+} from "~/lib/auth";
 import { cn, normalizeUrlPath, slugToTitle } from "~/lib/utils";
 import type { MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
@@ -51,8 +56,16 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
             <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
               <MobileMenuWrapper items={items} pathname={cleanPathname} />
               <DashboardBreadcrumbs crumbs={crumbs} />
-              <div className="ml-auto">
-                <SignOutButton />
+              <div className="ml-auto space-x-1">
+                <RequireAccessLevel level="ADMIN">
+                  <SignOutButton />
+                  <Button size="icon" variant="destructive" asChild>
+                    <AppLink href="/admin">
+                      <Icon name="ShieldCheck" />
+                      <span className="sr-only">Admin panel</span>
+                    </AppLink>
+                  </Button>
+                </RequireAccessLevel>
               </div>
             </header>
 
@@ -79,7 +92,7 @@ function MobileMenuWrapper(props: {
     <Sheet>
       <SheetTrigger asChild>
         <Button size="icon" variant="outline" className="sm:hidden">
-          <PanelLeft className="h-5 w-5" />
+          <Icon name="PanelLeft" className="h-5 w-5" />
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
@@ -103,7 +116,10 @@ function DesktopMenuWrapper(props: {
           href="#"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
-          <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
+          <Icon
+            name="Package2"
+            className="h-4 w-4 transition-all group-hover:scale-110"
+          />
           <span className="sr-only">Acme Inc</span>
         </AppLink>
         <DesktopMenu items={props.items} pathname={props.pathname} />
@@ -179,7 +195,10 @@ function MobileMenu({
         href="/"
         className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
       >
-        <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
+        <Icon
+          name="Package2"
+          className="h-5 w-5 transition-all group-hover:scale-110"
+        />
         <span className="sr-only">Acme Inc</span>
       </AppLink>
       {items.map((item) =>
@@ -195,7 +214,7 @@ function MobileMenu({
               "text-foreground": isLinkActive(item, pathname),
             })}
           >
-            <item.icon className="h-5 w-5" />
+            <Icon name={item.icon} className="h-5 w-5" />
             {item.label}
           </AppLink>
         ) : (
@@ -232,7 +251,7 @@ function DesktopMenu({
                   },
                 )}
               >
-                <item.icon className="h-5 w-5" />
+                <Icon name={item.icon} className="h-5 w-5" />
                 <span className="sr-only">{item.label}</span>
               </AppLink>
             </TooltipTrigger>
