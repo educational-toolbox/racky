@@ -15,6 +15,7 @@ import { Icon } from "~/components/ui/app-icon";
 import { Button } from "~/components/ui/button";
 import { ToastAction } from "~/components/ui/toast";
 import { useToast } from "~/components/ui/use-toast";
+import { useSession } from "~/lib/auth";
 import { api } from "~/utils/api/client";
 import type { RouterOutputs } from "~/utils/api/server";
 
@@ -26,6 +27,7 @@ export const DeleteOrganization = ({
   const { toast } = useToast();
   const ctx = api.useUtils();
   const deleteMutation = api.org.delete.useMutation();
+  const session = useSession();
 
   const onDelete = async () => {
     try {
@@ -50,6 +52,10 @@ export const DeleteOrganization = ({
       });
     }
   };
+
+  if (session.user?.orgId === org.id) {
+    return null;
+  }
 
   return (
     <AlertDialog>
