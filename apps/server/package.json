@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "postinstall": "pnpm patch-package && pnpm prisma generate",
+    "postinstall": "pnpm patch-package",
     "build": "pnpm with-env nest build",
     "start": "pnpm with-env nest start",
     "dev": "pnpm with-env nest start --watch",

@@ -7,6 +7,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator lambda {
+  provider = "prisma-client-js"
+  output   = "../../lambda/functions/client"
+  binaryTargets = ["rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
+}
+
 enum Role {
   USER
   ADMIN
