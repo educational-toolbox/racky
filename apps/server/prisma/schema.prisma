@@ -8,8 +8,8 @@ generator client {
 }
 
 generator lambda {
-  provider = "prisma-client-js"
-  output   = "../../lambda/functions/client"
+  provider      = "prisma-client-js"
+  output        = "../../lambda/functions/client"
   binaryTargets = ["rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
 }
 
@@ -35,7 +35,7 @@ model User {
   owns           Organization? @relation(name: "organization_owner")
   ownsId         String?
   organization   Organization? @relation(fields: [organizationId], references: [id], name: "organization_users")
-  organizationId String
+  organizationId String?
   reservations   Reservation[]
 }
 

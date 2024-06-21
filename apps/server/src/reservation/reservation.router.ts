@@ -44,7 +44,7 @@ export class ReservationRouter {
       .output(reservationSchemaRead.nullable())
       .query(({ input }) => this.reservationService.findOne(input.id)),
 
-    create: this.trpc.protectedProcedure
+    create: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: {
           method: 'POST',
@@ -60,7 +60,7 @@ export class ReservationRouter {
         this.reservationService.create(input, ctx.user.orgId),
       ),
 
-    update: this.trpc.protectedProcedure
+    update: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: {
           method: 'PUT',

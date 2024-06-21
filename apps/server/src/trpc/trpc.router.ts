@@ -62,13 +62,13 @@ export class TrpcRouter {
           z
             .object({
               id: z.string(),
-              orgId: z.string(),
+              orgId: z.string().nullable(),
               role: z.nativeEnum(Role),
             })
             .nullable(),
         )
         .query(({ ctx }) => {
-          return ctx.user !== undefined ? ctx.user : null;
+          return ctx.user ?? null;
         }),
     }),
     // Other routers

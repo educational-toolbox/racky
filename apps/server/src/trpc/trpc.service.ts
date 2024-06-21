@@ -24,6 +24,22 @@ export class TrpcService {
     }
     return ctx.next({ ctx: { ...ctx.ctx, user: ctx.ctx.user! } });
   });
+  public readonly assignedToOrgProcedure = this.protectedProcedure.use(
+    async (ctx) => {
+      if (!ctx.ctx.user || ctx.ctx.user.orgId == null) {
+        throw new TRPCError({ code: 'FORBIDDEN' });
+      }
+      return ctx.next({
+        ctx: {
+          ...ctx.ctx,
+          user: {
+            ...ctx.ctx.user,
+            orgId: ctx.ctx.user.orgId!,
+          },
+        },
+      });
+    },
+  );
   public readonly adminProcedure = this.protectedProcedure.use(async (ctx) => {
     if (ctx.ctx.user.role !== 'ADMIN') {
       throw new TRPCError({ code: 'FORBIDDEN' });

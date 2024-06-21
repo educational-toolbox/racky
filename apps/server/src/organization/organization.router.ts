@@ -49,7 +49,7 @@ export class OrganizationRouter {
       .mutation(({ input }) => {
         return this.organizationService.create(input.name, input.zone);
       }),
-    edit: this.trpc.protectedProcedure
+    edit: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: {
           method: 'PUT',

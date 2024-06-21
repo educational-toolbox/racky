@@ -15,7 +15,7 @@ export class CategoryRouter {
   ) {}
 
   router = this.trpc.router({
-    getCategories: this.trpc.protectedProcedure
+    getCategories: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: {
           method: 'GET',
@@ -29,7 +29,7 @@ export class CategoryRouter {
       .output(z.array(CategorySchemaRead))
       .query(({ ctx }) => this.categoryService.getAllCategory(ctx.user.orgId)),
 
-    addCategory: this.trpc.protectedProcedure
+    addCategory: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: {
           method: 'POST',
@@ -43,7 +43,7 @@ export class CategoryRouter {
       .output(CategorySchemaRead)
       .query(({ input }) => this.categoryService.createCategory(input)),
 
-    editCategory: this.trpc.protectedProcedure
+    editCategory: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: {
           method: 'PUT',
@@ -57,7 +57,7 @@ export class CategoryRouter {
       .output(CategorySchemaRead)
       .query(({ input }) => this.categoryService.editCategory(input)),
 
-    deleteCategory: this.trpc.protectedProcedure
+    deleteCategory: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: {
           method: 'DELETE',

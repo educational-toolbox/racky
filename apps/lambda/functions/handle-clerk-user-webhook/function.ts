@@ -2,7 +2,7 @@ import type { PrismaClient } from './prisma';
 import type { Handler } from 'aws-lambda';
 import { Webhook } from 'svix';
 import { client } from './prisma';
-import { z } from 'zod';
+import { webhookEventSchema, type WebhookData } from './parse-webhook';
 
 interface Event {
   rawQueryString: string;
@@ -13,32 +13,7 @@ interface Event {
 
 const INVAID_WEBHOOK_EVENT = new Error('Invalid webhook event');
 
-const webhookEventSchema = z.object({
-  type: z.enum(['user.created', 'user.updated']),
-  data: z.object({
-    email_addresses: z.array(
-      z.object({
-        email_address: z.string(),
-        verification: z.object({
-          status: z.string(),
-        }),
-      }),
-    ),
-    first_name: z.string(),
-    last_name: z.string(),
-    object: z.literal('user_email_address'),
-    image_url: z.string(),
-    id: z.string(),
-  }),
-});
-
-type WebhookData = z.infer<typeof webhookEventSchema>['data'];
-
 export const handler: Handler<Event> = async (event, _context) => {
-  if (1 === 1) {
-    const data = await client.organization.count();
-    return { statusCode: 200, body: JSON.stringify({ message: 'OK', count: data }) };
-  }
   try {
     if (!['GET', 'POST'].includes(event.requestContext.http.method)) {
       throw new Error('Unsupported method');
@@ -80,7 +55,10 @@ const validateWebhookEvent = (event: Event) => {
   return parsed.data;
 };
 
-const handleUserCreated = async (data: WebhookData, client: PrismaClient) => {
+const handleUserCreated = async (
+  data: WebhookData['data'],
+  client: PrismaClient,
+) => {
   await client.user.create({
     data: {
       email: data.email_addresses[0].email_address,
@@ -92,7 +70,10 @@ const handleUserCreated = async (data: WebhookData, client: PrismaClient) => {
   });
 };
 
-const handleUserUpdated = async (data: WebhookData, client: PrismaClient) => {
+const handleUserUpdated = async (
+  data: WebhookData['data'],
+  client: PrismaClient,
+) => {
   await client.user.update({
     where: { id: data.id },
     data: {
