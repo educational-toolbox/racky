@@ -1,9 +1,9 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
 import { AppProviders } from "./app-providers";
-import { Toaster } from "./components/ui/sonner";
 import "./globals.css";
 import { cn } from "./lib/utils";
+import { Toaster } from "./components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,10 +12,8 @@ function RootLayout(props: { children: React.ReactNode }) {
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={cn(inter.className)} suppressHydrationWarning>
-          <AppProviders>
-            {props.children}
-            <Toaster richColors />
-          </AppProviders>
+          <AppProviders>{props.children}</AppProviders>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

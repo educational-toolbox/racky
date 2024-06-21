@@ -1,5 +1,5 @@
-import type { icons } from "lucide-react";
 import { create } from "zustand";
+import type { IconName } from "~/components/ui/app-icon";
 
 type SeparatorId = `$separator-${string}`;
 type ItemId = `$item-${string}`;
@@ -8,7 +8,7 @@ export type MenuItem =
   | {
       type: "item";
       id: ItemId;
-      icon: keyof typeof icons;
+      icon: IconName;
       label: string;
       href: string;
       exact?: boolean;
@@ -24,9 +24,9 @@ export type MenuItem =
 export interface MenuItemsStore {
   items: readonly MenuItem[];
 
-  add: (item: MenuItem, idx?: number) => void;
-  hide: (id: ItemId | SeparatorId) => void;
-  remove: (id: ItemId | SeparatorId) => void;
+  add: (item: MenuItem, idx?: number) => MenuItem["id"];
+  hide: (id: ItemId | SeparatorId) => MenuItem["id"];
+  remove: (id: ItemId | SeparatorId) => MenuItem["id"];
   getLabel: (href: string) => string;
 }
 
@@ -47,6 +47,7 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
       }
       return { items };
     });
+    return item.id;
   },
   remove(id) {
     set((state) => {
@@ -57,6 +58,7 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
         items: state.items.filter((item) => item.id !== id),
       };
     });
+    return id;
   },
   hide(id) {
     set((state) => ({
@@ -64,6 +66,7 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
         item.id === id ? { ...item, hidden: true } : item,
       ),
     }));
+    return id;
   },
   getLabel(href) {
     const item = this.items.find(

@@ -4,8 +4,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { AppLink } from "~/app-link";
 import { Button } from "~/components/ui/button";
 import { DataTableColumnHeader } from "~/components/ui/data-table/column-header";
-import Icon from "~/components/ui/icon";
+import { Icon } from "~/components/ui/app-icon";
 import type { RouterOutputs } from "~/utils/api/server";
+import { EditOrganization } from "./edit-organization";
 
 export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
   {
@@ -52,7 +53,7 @@ export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
       />
     ),
     cell: ({ row }) => {
-      const _organization = row.original;
+      const organization = row.original;
       return (
         <div className="space-x-1 flex items-center justify-end">
           <Button
@@ -63,14 +64,7 @@ export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
           >
             <Icon name="UserCheck" />
           </Button>
-          <Button
-            variant="outline"
-            tooltip="Edit organization"
-            size="icon"
-            disabled
-          >
-            <Icon name="Pencil" />
-          </Button>
+          <EditOrganization org={organization} />
           <Button
             variant="destructive"
             tooltip="Delete organization"

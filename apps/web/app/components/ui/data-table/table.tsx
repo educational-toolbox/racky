@@ -65,14 +65,22 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: withSearch ? getFilteredRowModel() : undefined,
   });
 
+  const someColumnsHideable = table
+    .getAllColumns()
+    .some((column) => column.getCanHide());
+
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between">
-        {withSearch && <DataTableSearch table={table} />}
-        <div className="ml-auto">
-          <DataTableViewOptions table={table} />
+      {(withSearch ?? someColumnsHideable) && (
+        <div className="flex items-center justify-between">
+          {withSearch && <DataTableSearch table={table} />}
+          {someColumnsHideable && (
+            <div className="ml-auto">
+              <DataTableViewOptions table={table} />
+            </div>
+          )}
         </div>
-      </div>
+      )}
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

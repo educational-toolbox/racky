@@ -1,4 +1,3 @@
-import type { icons } from "lucide-react";
 import { AppLink } from "~/app-link";
 import {
   Card,
@@ -6,7 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import Icon from "~/components/ui/icon";
+import { Icon } from "~/components/ui/app-icon";
+import type { IconName } from "~/components/ui/app-icon";
 
 export default function AdminDashboard() {
   return (
@@ -28,7 +28,7 @@ const AdminLink = ({
   icon,
 }: {
   href: string;
-  icon: keyof typeof icons;
+  icon: IconName;
   title: string;
   description: string;
 }) => (

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useContext, useEffect } from "react";
 import { Button } from "~/components/ui/button";
-import Icon from "~/components/ui/icon";
+import { Icon } from "~/components/ui/app-icon";
 import { api } from "~/utils/api/client";
 import type { Session } from "./session.type";
 

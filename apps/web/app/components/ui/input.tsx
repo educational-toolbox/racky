@@ -1,11 +1,11 @@
-import type { icons } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "~/lib/utils";
-import Icon from "./icon";
+import { Icon } from "./app-icon";
+import type { IconName } from "./app-icon";
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  icon?: keyof typeof icons;
+  icon?: IconName;
 };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(

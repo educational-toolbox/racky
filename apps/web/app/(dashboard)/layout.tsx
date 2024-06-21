@@ -17,7 +17,7 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
-import Icon from "~/components/ui/icon";
+import { Icon } from "~/components/ui/app-icon";
 import { Separator } from "~/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import {
@@ -59,7 +59,12 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
               <div className="ml-auto space-x-1">
                 <RequireAccessLevel level="ADMIN">
                   <SignOutButton />
-                  <Button size="icon" variant="destructive" asChild>
+                  <Button
+                    size="icon"
+                    variant="destructive"
+                    tooltip="Go to admin panel"
+                    asChild
+                  >
                     <AppLink href="/admin">
                       <Icon name="ShieldCheck" />
                       <span className="sr-only">Admin panel</span>

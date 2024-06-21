@@ -7,20 +7,21 @@ import { useMenuItems } from "../menu-items.store";
 export default function AdminLayout({ children }: PropsWithChildren) {
   const { add, remove } = useMenuItems();
   useEffect(() => {
-    add({
-      type: "separator",
-      id: "$separator-admin",
-    });
-    add({
-      type: "item",
-      id: "$item-admin-organizations",
-      href: "/admin/organizations",
-      label: "Organizations",
-      icon: "Building",
-    });
+    const ids = [
+      add({
+        type: "separator",
+        id: "$separator-admin",
+      }),
+      add({
+        type: "item",
+        id: "$item-admin-organizations",
+        href: "/admin/organizations",
+        label: "Organizations",
+        icon: "Building",
+      }),
+    ];
     return () => {
-      remove("$separator-admin");
-      remove("$item-admin-organizations");
+      ids.forEach(remove);
     };
   }, [add, remove]);
 

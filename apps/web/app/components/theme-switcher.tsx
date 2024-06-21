@@ -5,7 +5,7 @@ import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import { forwardRef, useCallback } from "react";
 
 import { Button } from "~/components/ui/button";
-import Icon from "./ui/icon";
+import { Icon } from "./ui/app-icon";
 
 export const ThemeSwitcher = forwardRef<
   ComponentRef<typeof Button>,
