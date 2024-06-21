@@ -53,7 +53,8 @@ export const DeleteOrganization = ({
     }
   };
 
-  const disabled = session.user?.orgId === org.id;
+  const disabled =
+    session.user?.orgId === process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID;
 
   return (
     <AlertDialog>
