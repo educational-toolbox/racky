@@ -53,14 +53,17 @@ export const DeleteOrganization = ({
     }
   };
 
-  if (session.user?.orgId === org.id) {
-    return null;
-  }
+  const disabled = session.user?.orgId === org.id;
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" tooltip="Delete organization" size="icon">
+        <Button
+          variant="destructive"
+          tooltip="Delete organization"
+          size="icon"
+          disabled={disabled}
+        >
           <Icon name="Trash2" />
         </Button>
       </AlertDialogTrigger>
