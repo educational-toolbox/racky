@@ -75,5 +75,23 @@ export class OrganizationRouter {
         }
         return this.organizationService.edit(input.id, input.name, input.zone);
       }),
+    delete: this.trpc.adminProcedure
+      .meta({
+        openapi: {
+          method: 'DELETE',
+          path: '/org/{id}',
+          summary: 'Delete an organization',
+          protect: true,
+          tags: ['Organization'],
+        },
+      })
+      .input(z.object({ id: z.string() }))
+      .output(z.void())
+      .mutation(async ({ input }) => {
+        const deleted = await this.organizationService.delete([input.id]);
+        if (deleted.count === 0) {
+          throw new TRPCError({ code: 'NOT_FOUND' });
+        }
+      }),
   });
 }

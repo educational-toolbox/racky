@@ -7,6 +7,7 @@ import { DataTableColumnHeader } from "~/components/ui/data-table/column-header"
 import { Icon } from "~/components/ui/app-icon";
 import type { RouterOutputs } from "~/utils/api/server";
 import { EditOrganization } from "./edit-organization";
+import { DeleteOrganization } from "./delete-organization";
 
 export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
   {
@@ -65,14 +66,7 @@ export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
             <Icon name="UserCheck" />
           </Button>
           <EditOrganization org={organization} />
-          <Button
-            variant="destructive"
-            tooltip="Delete organization"
-            size="icon"
-            disabled
-          >
-            <Icon name="Trash2" />
-          </Button>
+          <DeleteOrganization org={organization} />
         </div>
       );
     },

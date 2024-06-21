@@ -28,6 +28,12 @@ export class OrganizationService {
     });
   }
 
+  delete(ids: string[]) {
+    return this.databaseService.organization.deleteMany({
+      where: { id: { in: ids } },
+    });
+  }
+
   async addUser(organizationId: string, userId: string) {
     return this.databaseService.organization.update({
       where: { id: organizationId },
