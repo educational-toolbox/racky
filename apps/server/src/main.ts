@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { env } from './server-env';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { AppService } from './app.service';
 
 export const getPort = () => {
   const url = env.NEXT_PUBLIC_NESTJS_SERVER;
@@ -20,6 +21,8 @@ async function bootstrap() {
   app.enableCors();
   app.use(cookieParser());
   const trpc = app.get(TrpcRouter);
+  const appService = app.get(AppService);
+  await appService.ensureDefaultOrgCreated();
   trpc.applyOpenAPIMiddleware(app);
   trpc.applyTRPCHandler(app);
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
