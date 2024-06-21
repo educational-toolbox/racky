@@ -102,5 +102,8 @@ rm -rf $temp_folder
 # Delete installed dependencies
 rm -rf $root_folder/node_modules
 
+# Delete auto-generated package-lock.json
+rm -f $root_folder/package-lock.json
+
 # Install all dependencies
 pnpm install -F "$project_name"
