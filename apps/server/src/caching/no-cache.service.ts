@@ -13,21 +13,17 @@ function debounce<T extends (...arg: any[]) => any>(func: T, timeout = 300) {
 }
 
 @Injectable()
-export class FakeCachingService implements CachingService {
-  private logger: Logger = new Logger(FakeCachingService.name);
+export class FakeCachingService extends CachingService {
   private cache = new Map<string, string>();
 
   constructor() {
+    super(new Logger(FakeCachingService.name));
     this.logger.log('FakeCache Client Connected');
   }
 
   get<T = any>(key: string): Promise<T | null> {
     const value = this.cache.get(key);
-    if (value == null) {
-      this.logger.warn(`Cache miss for key: ${key}`);
-    } else {
-      this.logger.log(`Cache hit for key: ${key}`);
-    }
+    this.log('get', key, !!value);
     return Promise.resolve(value ? (JSON.parse(value) as T) : null);
   }
 
@@ -36,18 +32,18 @@ export class FakeCachingService implements CachingService {
     value: T,
     ttlInMilliseconds = TIME.THIRTY_MINUTES,
   ): Promise<void> {
-    this.logger.log(`Setting cache for key: ${key}`);
+    this.log('set', key);
     try {
       this.cache.set(key, JSON.stringify(value));
       debounce(() => this.cache.delete(key), ttlInMilliseconds)();
     } catch (error) {
-      this.logger.error('Error while setting item in cache', error);
+      this.logger.error('[ERROR]', error);
     }
     return Promise.resolve();
   }
 
   del(key: string): Promise<void> {
-    this.logger.log(`Deleting cache for key: ${key}`);
+    this.log('delete', key);
     this.cache.delete(key);
     return Promise.resolve();
   }

@@ -5,14 +5,13 @@ import { env } from '../server-env';
 import { TIME } from '../CONSTANTS';
 
 @Injectable()
-export class RedisCachingService implements CachingService {
+export class RedisCachingService extends CachingService {
   private client = createClient({
     url: env.REDIS_URL,
   });
 
-  private logger: Logger = new Logger(RedisCachingService.name);
-
   constructor() {
+    super(new Logger(RedisCachingService.name));
     this.client.on('error', (err) =>
       this.logger.error('Redis Client Error', err),
     );
@@ -24,11 +23,7 @@ export class RedisCachingService implements CachingService {
 
   async get<T = any>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
-    if (value == null) {
-      this.logger.warn(`Cache miss for key: ${key}`);
-    } else {
-      this.logger.log(`Cache hit for key: ${key}`);
-    }
+    this.log('get', key, !!value);
     return value ? (JSON.parse(value) as T) : null;
   }
 
@@ -37,7 +32,7 @@ export class RedisCachingService implements CachingService {
     value: T,
     ttlInMilliseconds = TIME.THIRTY_MINUTES,
   ): Promise<void> {
-    this.logger.log(`Setting cache for key: ${key}`);
+    this.log('set', key);
     try {
       await this.client.set(key, JSON.stringify(value));
       await this.client.expire(key, ttlInMilliseconds / 1000);
@@ -47,7 +42,7 @@ export class RedisCachingService implements CachingService {
   }
 
   async del(key: string): Promise<void> {
-    this.logger.log(`Deleting cache for key: ${key}`);
+    this.log('delete', key);
     await this.client.del(key);
   }
 }
