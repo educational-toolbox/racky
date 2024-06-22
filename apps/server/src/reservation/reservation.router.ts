@@ -15,7 +15,7 @@ export class ReservationRouter {
   ) {}
 
   router = this.trpc.router({
-    findAll: this.trpc.procedure
+    findAll: this.trpc.publicProcedure
       .meta({
         openapi: {
           method: 'GET',
@@ -29,7 +29,7 @@ export class ReservationRouter {
       .output(z.array(reservationSchemaRead))
       .query(() => this.reservationService.findAll()),
 
-    findOne: this.trpc.procedure
+    findOne: this.trpc.publicProcedure
       .meta({
         openapi: {
           method: 'GET',

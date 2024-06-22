@@ -1,16 +1,14 @@
 import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { CachingService } from '../caching/caching.service';
-import { MediaService } from './media.service';
 import { TIME } from '../CONSTANTS';
+import { MediaService } from './media.service';
 
 @Injectable()
 export class MediaRouter {
   constructor(
     private readonly trpc: TrpcService,
     private readonly mediaService: MediaService,
-    private readonly cacheService: CachingService,
   ) {}
 
   router = this.trpc.router({
@@ -36,7 +34,7 @@ export class MediaRouter {
         }),
       )
       .mutation(({ input }) => this.mediaService.upload(input.fileId)),
-    getImage: this.trpc.procedure
+    getImage: this.trpc.publicProcedure
       .meta({
         openapi: {
           method: 'GET',
@@ -45,14 +43,12 @@ export class MediaRouter {
           summary: 'Get an image',
           description: 'Get an image from the server by id',
         },
+        caching: { ttl: TIME.ONE_HOUR },
       })
       .input(z.object({ fileKey: z.string() }))
       .output(z.string())
-      .query(async ({ input, ctx }) => {
-        const cached = await this.cacheService.get(ctx.key);
-        if (cached != null) return cached;
+      .query(async ({ input }) => {
         const image = await this.mediaService.get(input.fileKey);
-        await this.cacheService.set(ctx.key, image, TIME.THIRTY_MINUTES);
         return image;
       }),
   });

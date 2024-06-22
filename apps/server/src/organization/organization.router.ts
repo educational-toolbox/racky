@@ -27,6 +27,7 @@ export class OrganizationRouter {
           enabled: false,
           protect: true,
         },
+        caching: true,
       })
       .input(z.void())
       .output(organizationSchema.array())

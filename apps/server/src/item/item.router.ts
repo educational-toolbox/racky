@@ -1,24 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
-import { z } from 'zod';
-import { ItemService } from '@educational-toolbox/racky-api/item/item.service';
 import {
   ItemSchemaRead,
   ItemSchemaWrite,
 } from '@educational-toolbox/racky-api/item/item.schema';
-import { CachingService } from '../caching/caching.service';
+import { ItemService } from '@educational-toolbox/racky-api/item/item.service';
+import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
+import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 
 @Injectable()
 export class ItemRouter {
   constructor(
     private readonly trpc: TrpcService,
     private readonly itemService: ItemService,
-    private readonly cacheService: CachingService,
   ) {}
 
   router = this.trpc.router({
-    getOne: this.trpc.procedure
+    getOne: this.trpc.publicProcedure
       .meta({
         openapi: {
           method: 'GET',
@@ -27,15 +25,13 @@ export class ItemRouter {
           summary: 'Get an item',
           description: 'Get an item from the database by id',
         },
+        caching: true,
       })
       .input(z.object({ id: z.string() }))
       .output(ItemSchemaRead.or(z.null()))
-      .mutation(async ({ input, ctx: { key } }) => {
-        const cachedItem = await this.cacheService.get(key);
-        if (cachedItem != null) return ItemSchemaRead.parse(cachedItem);
+      .mutation(async ({ input }) => {
         const item = await this.itemService.getItemById(input.id);
         if (item == null) throw new TRPCError({ code: 'NOT_FOUND' });
-        await this.cacheService.set(key, item);
         return item;
       }),
 

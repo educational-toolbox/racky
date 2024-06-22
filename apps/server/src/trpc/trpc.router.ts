@@ -23,7 +23,6 @@ import { Role } from '@prisma/client';
 export type TrpcContext = {
   db: DatabaseService;
   req: Request<any>;
-  key: string;
   user: AuthUserWithPermissions | undefined;
 };
 
@@ -48,7 +47,7 @@ export class TrpcRouter {
   appRouter = this.trpc.router({
     // I was too lazy to create another router lmao
     auth: this.trpc.router({
-      session: this.trpc.procedure
+      session: this.trpc.publicProcedure
         .meta({
           openapi: {
             method: 'GET',
@@ -109,11 +108,6 @@ export class TrpcRouter {
     return { ...authUser, permissions: getPermissions(authUser) };
   }
 
-  private generateUniqueKey(req: Request, userId: string): string {
-    this.logger.log(`Request from client with id "${userId}"`);
-    return `${req.method}:${req.originalUrl}:user-${userId}`;
-  }
-
   private async createContext(req: Request): Promise<TrpcContext> {
     const userId = await this.getUserId(req);
     const user = await this.getUser(userId);
@@ -121,7 +115,6 @@ export class TrpcRouter {
       user,
       db: this.databaseService,
       req,
-      key: this.generateUniqueKey(req, userId ?? 'anonymous'),
     };
   }
 
