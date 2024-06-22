@@ -38,18 +38,10 @@ export class TrpcService {
           ok: true as const,
         };
       }
-      const oldMeta = request.meta;
-      const newMeta: TrpcMeta | undefined = { ...oldMeta };
-      if (oldMeta?.openapi != null) {
-        newMeta.openapi = {
-          ...oldMeta.openapi,
-          tags: [...(oldMeta.openapi.tags ?? []), 'CACHE-ENABLED'],
-        };
-      }
-      const nextRequest: typeof request = {
-        ...request,
-        meta: newMeta,
-      };
+      const nextRequest = this.requestWithAddedMetaTags(
+        request,
+        'CACHE-ENABLED',
+      );
       const nextResult = await request.next(nextRequest);
       const data = 'data' in nextResult ? nextResult.data : undefined;
       if (data) {
@@ -64,37 +56,44 @@ export class TrpcService {
     return request.next(request);
   });
 
-  public readonly protectedProcedure = this.publicProcedure.use(async (ctx) => {
-    const canActivate = await this.guard.canActivateFromRequest(ctx.ctx.req);
-    if (!canActivate || !ctx.ctx.user) {
-      throw new TRPCError({ code: 'FORBIDDEN' });
-    }
-    return ctx.next({ ctx: { ...ctx.ctx, user: ctx.ctx.user } });
-  });
-
-  public readonly assignedToOrgProcedure = this.protectedProcedure.use(
-    async (ctx) => {
-      if (!ctx.ctx.user || ctx.ctx.user.orgId == null) {
+  public readonly protectedProcedure = this.publicProcedure.use(
+    async (request) => {
+      const canActivate = await this.guard.canActivateFromRequest(
+        request.ctx.req,
+      );
+      if (!canActivate || !request.ctx.user) {
         throw new TRPCError({ code: 'FORBIDDEN' });
       }
-      return ctx.next({
+      return request.next({ ctx: { ...request.ctx, user: request.ctx.user } });
+    },
+  );
+
+  public readonly assignedToOrgProcedure = this.protectedProcedure.use(
+    async (request) => {
+      if (!request.ctx.user || request.ctx.user.orgId == null) {
+        throw new TRPCError({ code: 'FORBIDDEN' });
+      }
+      return request.next({
         ctx: {
-          ...ctx.ctx,
+          ...request.ctx,
           user: {
-            ...ctx.ctx.user,
-            orgId: ctx.ctx.user.orgId,
+            ...request.ctx.user,
+            orgId: request.ctx.user.orgId,
           },
         },
       });
     },
   );
 
-  public readonly adminProcedure = this.protectedProcedure.use(async (ctx) => {
-    if (ctx.ctx.user.role !== 'ADMIN') {
-      throw new TRPCError({ code: 'FORBIDDEN' });
-    }
-    return ctx.next(ctx);
-  });
+  public readonly adminProcedure = this.protectedProcedure.use(
+    async (request) => {
+      if (request.ctx.user.role !== 'ADMIN') {
+        throw new TRPCError({ code: 'FORBIDDEN' });
+      }
+      const nextRequest = this.requestWithAddedMetaTags(request, 'ADMIN-ONLY');
+      return request.next(nextRequest);
+    },
+  );
 
   public readonly router = this.trpc.router;
   public readonly mergeRouters = this.trpc.mergeRouters;
@@ -115,15 +114,39 @@ export class TrpcService {
     }
     return parts.join('|');
   }
+
+  private requestWithAddedMetaTags(
+    request: Omit<
+      Parameters<Parameters<typeof this.trpc.middleware>['0']>['0'],
+      'next'
+    >,
+    ...tags: [string, ...string[]]
+  ): Omit<
+    Parameters<Parameters<typeof this.trpc.middleware>['0']>['0'],
+    'next'
+  > {
+    const oldMeta = request.meta;
+    const newMeta: TrpcMeta | undefined = { ...oldMeta };
+    if (oldMeta?.openapi != null) {
+      newMeta.openapi = {
+        ...oldMeta.openapi,
+        tags: [...(oldMeta.openapi.tags ?? []), ...tags],
+      };
+    }
+    const nextRequest: typeof request = {
+      ...request,
+      meta: newMeta,
+    };
+    return nextRequest;
+  }
 }
 
 export const trpcServiceProvider: Provider = {
   provide: TrpcService,
   async useFactory(guard: AuthenticatedGuard, cache: CachingService) {
-    const transformer = await (eval(`import('superjson')`) as Promise<
-      // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- won't work without this
-      typeof import('superjson')
-    >);
+    const transformer = await (eval(`import('superjson')`) as Promise<{
+      default: new (data: { dedupe: boolean }) => SuperJSON;
+    }>);
     const instance = new transformer.default({ dedupe: false });
     return new TrpcService(instance, guard, cache);
   },

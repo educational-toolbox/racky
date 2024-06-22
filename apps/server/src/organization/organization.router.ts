@@ -24,8 +24,8 @@ export class OrganizationRouter {
           method: 'GET',
           path: '/org/list',
           summary: 'List organizations',
-          enabled: false,
           protect: true,
+          tags: ['Organization'],
         },
         caching: true,
       })
@@ -41,7 +41,6 @@ export class OrganizationRouter {
           path: '/org',
           summary: 'Create an organization',
           protect: true,
-          enabled: false,
           tags: ['Organization'],
         },
       })
