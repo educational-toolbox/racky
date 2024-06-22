@@ -41,6 +41,13 @@ export class OrganizationService {
     });
   }
 
+  async getUsers(organizationId: string) {
+    const users = await this.databaseService.organization
+      .findUnique({ where: { id: organizationId } })
+      .users();
+    return users ?? [];
+  }
+
   async removeUser(organizationId: string, userId: string) {
     return this.databaseService.organization.update({
       where: { id: organizationId },

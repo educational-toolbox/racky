@@ -20,6 +20,7 @@ import {
 import { DataTablePagination } from "./pagination";
 import { DataTableViewOptions } from "./view-options";
 import { DataTableSearch } from "./table-search";
+import type { ReactNode } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,6 +32,7 @@ export function DataTable<TData, TValue>({
   data,
   withPagination,
   withSearch,
+  extra,
 }: DataTableProps<TData, TValue> & {
   withPagination?:
     | boolean
@@ -39,6 +41,7 @@ export function DataTable<TData, TValue>({
         selectableRows?: boolean;
       };
   withSearch?: boolean;
+  extra?: ReactNode;
 }) {
   const showPagination = withPagination !== false;
   const paginationOptions = {
@@ -71,8 +74,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-1">
-      {(withSearch ?? someColumnsHideable) && (
-        <div className="flex items-center justify-between">
+      {(withSearch ?? someColumnsHideable ?? extra) && (
+        <div className="flex items-center justify-between gap-1">
+          {extra}
           {withSearch && <DataTableSearch table={table} />}
           {someColumnsHideable && (
             <div className="ml-auto">

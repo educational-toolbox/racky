@@ -5,9 +5,9 @@ import { Fragment } from "react";
 
 import { AppLink } from "~/app-link";
 
-import { RedirectToSignIn } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { ThemeSwitcher } from "~/components/theme-switcher";
+import { Icon } from "~/components/ui/app-icon";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,7 +17,6 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
-import { Icon } from "~/components/ui/app-icon";
 import { Separator } from "~/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import {
@@ -25,12 +24,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import {
-  RequireAccessLevel,
-  SignOutButton,
-  SignedIn,
-  SignedOut,
-} from "~/lib/auth";
+import { RequireAccessLevel, SignOutButton } from "~/lib/auth";
 import { cn, normalizeUrlPath, slugToTitle } from "~/lib/utils";
 import type { MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
@@ -42,50 +36,41 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
   const cleanPathname = normalizeUrlPath(path);
 
   return (
-    <>
-      {/* ON SIGNED IN */}
-      <SignedIn>
-        <div className="flex min-h-screen w-full flex-col bg-muted/40">
-          {/* DESKTOP MENU */}
-          <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-            <DesktopMenuWrapper items={items} pathname={cleanPathname} />
-          </aside>
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+      {/* DESKTOP MENU */}
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+        <DesktopMenuWrapper items={items} pathname={cleanPathname} />
+      </aside>
 
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-            {/* MOBILE MENU */}
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-              <MobileMenuWrapper items={items} pathname={cleanPathname} />
-              <DashboardBreadcrumbs crumbs={crumbs} />
-              <div className="ml-auto space-x-1">
-                <SignOutButton />
-                <RequireAccessLevel level="ADMIN">
-                  <Button
-                    size="icon"
-                    variant="destructive"
-                    tooltip="Go to admin panel"
-                    asChild
-                  >
-                    <AppLink href="/admin">
-                      <Icon name="ShieldCheck" />
-                      <span className="sr-only">Admin panel</span>
-                    </AppLink>
-                  </Button>
-                </RequireAccessLevel>
-              </div>
-            </header>
-
-            {/* MAIN SECTION */}
-            <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-              {children}
-            </main>
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+        {/* MOBILE MENU */}
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <MobileMenuWrapper items={items} pathname={cleanPathname} />
+          <DashboardBreadcrumbs crumbs={crumbs} />
+          <div className="ml-auto space-x-1">
+            <SignOutButton />
+            <RequireAccessLevel level="ADMIN">
+              <Button
+                size="icon"
+                variant="destructive"
+                tooltip="Go to admin panel"
+                asChild
+              >
+                <AppLink href="/admin">
+                  <Icon name="ShieldCheck" />
+                  <span className="sr-only">Admin panel</span>
+                </AppLink>
+              </Button>
+            </RequireAccessLevel>
           </div>
-        </div>
-      </SignedIn>
-      {/* ON SIGNED OUT */}
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-    </>
+        </header>
+
+        {/* MAIN SECTION */}
+        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }
 

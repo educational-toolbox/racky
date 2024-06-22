@@ -33,7 +33,7 @@ export const UserCard = ({
   }
   return (
     <Wrapper
-      href={`/users/${user.id}`}
+      href={`/social/users/${user.id}`}
       className={cn(CardClasses.root, "p-2 flex gap-1 items-center", className)}
     >
       <Avatar>

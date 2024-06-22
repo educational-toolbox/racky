@@ -10,6 +10,7 @@ import {
   organizationSchema,
 } from './organization.schema';
 import { OrganizationService } from './organization.service';
+import { Organization, Role } from '@prisma/client';
 
 const openapi = new OpenapiMetaBuilder('organization').tags('Organization');
 
@@ -90,6 +91,41 @@ export class OrganizationRouter {
         if (deleted.count === 0) {
           throw new TRPCError({ code: 'NOT_FOUND' });
         }
+      }),
+    getUsers: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi
+          .clone()
+          .method('GET')
+          .segments('{id}', 'users')
+          .summary('Get users in an organization')
+          .protected()
+          .build(),
+      })
+      .input(z.object({ id: z.string() }))
+      .output(
+        z.array(
+          z.object({
+            id: z.string(),
+            email: z.string(),
+            firstName: z.string().nullable(),
+            lastName: z.string().nullable(),
+            role: z.nativeEnum(Role),
+          }),
+        ),
+      )
+      .query(async ({ input, ctx }) => {
+        if (
+          ctx.user.permissions.organization.cannot(
+            'read',
+            subject('Organization', {
+              id: input.id,
+            } as Organization),
+          )
+        ) {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        return this.organizationService.getUsers(input.id);
       }),
   });
 }
