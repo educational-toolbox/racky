@@ -32,7 +32,7 @@ export class RedisCachingService implements CachingService {
   async set<T = any>(
     key: string,
     value: T,
-    ttlInMilliseconds = TIME.FIVE_SECONDS,
+    ttlInMilliseconds = TIME.THIRTY_MINUTES,
   ): Promise<void> {
     this.logger.log(`Setting cache for key: ${key}`);
     try {
