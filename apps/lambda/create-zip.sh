@@ -106,4 +106,4 @@ rm -rf $root_folder/node_modules
 rm -f $root_folder/package-lock.json
 
 # Install all dependencies
-pnpm install -F "$project_name"
+pnpm install
