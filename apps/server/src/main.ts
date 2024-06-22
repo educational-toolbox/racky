@@ -30,4 +30,7 @@ async function bootstrap() {
   await app.listen(getPort());
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

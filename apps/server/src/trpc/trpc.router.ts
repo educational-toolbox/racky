@@ -20,11 +20,11 @@ import { env } from '../server-env';
 import { z } from 'zod';
 import { Role } from '@prisma/client';
 
-export type TrpcContext = {
+export interface TrpcContext {
   db: DatabaseService;
-  req: Request<any>;
+  req: Request;
   user: AuthUserWithPermissions | undefined;
-};
+}
 
 @Injectable()
 export class TrpcRouter {
@@ -82,11 +82,9 @@ export class TrpcRouter {
   private async getUserId(req: Request): Promise<string | undefined> {
     // TODO: Make it dependent on AuthProvider instead of hardcoded Clerk instance
     try {
-      return (
-        await clerkClient.verifyToken(
-          req.headers['authorization']?.slice(7) as string,
-        )
-      ).sub;
+      const token = req.headers.authorization?.slice(7);
+      if (!token) return undefined;
+      return (await clerkClient.verifyToken(token)).sub;
     } catch (error) {
       return undefined;
     }
@@ -118,17 +116,14 @@ export class TrpcRouter {
     };
   }
 
-  async applyTRPCHandler(app: INestApplication) {
-    app.use(
-      `/trpc`,
-      async (req: Request, res: Response, next: NextFunction) => {
-        const middleware = trpcExpress.createExpressMiddleware({
-          router: this.appRouter,
-          createContext: (info) => this.createContext(info.req),
-        });
-        return middleware(req, res, next);
-      },
-    );
+  applyTRPCHandler(app: INestApplication) {
+    app.use(`/trpc`, (req: Request, res: Response, next: NextFunction) => {
+      const middleware = trpcExpress.createExpressMiddleware({
+        router: this.appRouter,
+        createContext: (info) => this.createContext(info.req),
+      });
+      return middleware(req, res, next);
+    });
   }
 
   generateTRPCOpenAPIDocument(): ReturnType<typeof generateOpenApiDocument> {
@@ -139,7 +134,7 @@ export class TrpcRouter {
     });
   }
 
-  async applyOpenAPIMiddleware(app: INestApplication) {
+  applyOpenAPIMiddleware(app: INestApplication) {
     app.use((req: Request, res: Response, next: NextFunction) => {
       const middleware = createOpenApiExpressMiddleware({
         router: this.appRouter,

@@ -14,7 +14,9 @@ function loadEnv<T extends readonly string[] = readonly string[]>(
     throw new Error(`Expected ${label} to be defined`);
   }
   if (allowedValues && !allowedValues.includes(x)) {
-    throw new Error(`Expected ${label} to be of values: ${allowedValues}`);
+    throw new Error(
+      `Expected ${label} to be of values: ${allowedValues.join(', ')}`,
+    );
   }
   return x;
 }

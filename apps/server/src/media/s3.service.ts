@@ -35,7 +35,8 @@ export class S3MediaService implements MediaService {
     return { url, key: params.Key };
   }
 
-  async delete(fileKey: string): Promise<void> {
+  delete(fileKey: string): Promise<void> {
     this.logger.log(`Deleting file: ${fileKey}`);
+    return Promise.resolve();
   }
 }

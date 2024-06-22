@@ -15,23 +15,23 @@ function debounce<T extends (...arg: any[]) => any>(func: T, timeout = 300) {
 @Injectable()
 export class FakeCachingService implements CachingService {
   private logger: Logger = new Logger(FakeCachingService.name);
-  private cache: Map<string, string> = new Map();
+  private cache = new Map<string, string>();
 
   constructor() {
     this.logger.log('FakeCache Client Connected');
   }
 
-  async get(key: string): Promise<string | null> {
+  get<T = any>(key: string): Promise<T | null> {
     const value = this.cache.get(key);
     if (value == null) {
       this.logger.warn(`Cache miss for key: ${key}`);
     } else {
       this.logger.log(`Cache hit for key: ${key}`);
     }
-    return value ? JSON.parse(value) : null;
+    return Promise.resolve(value ? (JSON.parse(value) as T) : null);
   }
 
-  async set<T = any>(
+  set<T = any>(
     key: string,
     value: T,
     ttlInMilliseconds = TIME.THIRTY_MINUTES,
@@ -43,10 +43,12 @@ export class FakeCachingService implements CachingService {
     } catch (error) {
       this.logger.error('Error while setting item in cache', error);
     }
+    return Promise.resolve();
   }
 
-  async del(key: string): Promise<void> {
+  del(key: string): Promise<void> {
     this.logger.log(`Deleting cache for key: ${key}`);
     this.cache.delete(key);
+    return Promise.resolve();
   }
 }

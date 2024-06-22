@@ -1,4 +1,8 @@
 {
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": true
+  },
   "plugins": ["@typescript-eslint", "import"],
   "root": true,
   "extends": [
@@ -18,10 +22,6 @@
     "dist",
     "pnpm-lock.yaml"
   ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": true
-  },
   "rules": {
     "react/prop-types": "off",
     "@next/next/no-html-link-for-pages": "off",

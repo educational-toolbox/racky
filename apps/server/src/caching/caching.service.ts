@@ -1,5 +1,5 @@
 export abstract class CachingService {
-  abstract get(key: string): Promise<string | null>;
+  abstract get<T>(key: string): Promise<T | null>;
   abstract set<T>(
     key: string,
     value: T,

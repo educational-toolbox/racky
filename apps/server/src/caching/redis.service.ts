@@ -16,17 +16,20 @@ export class RedisCachingService implements CachingService {
     this.client.on('error', (err) =>
       this.logger.error('Redis Client Error', err),
     );
-    this.client.connect().then(() => this.logger.log('Redis Client Connected'));
+    this.client
+      .connect()
+      .then(() => this.logger.log('Redis Client Connected'))
+      .catch((err) => this.logger.error('Error connecting to Redis', err));
   }
 
-  async get(key: string): Promise<string | null> {
+  async get<T = any>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
     if (value == null) {
       this.logger.warn(`Cache miss for key: ${key}`);
     } else {
       this.logger.log(`Cache hit for key: ${key}`);
     }
-    return value ? JSON.parse(value) : null;
+    return value ? (JSON.parse(value) as T) : null;
   }
 
   async set<T = any>(

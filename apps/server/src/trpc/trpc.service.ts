@@ -3,8 +3,8 @@ import { TRPCError, initTRPC } from '@trpc/server';
 import type SuperJSON from 'superjson';
 import { OpenApiMeta } from 'trpc-openapi';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
-import { TrpcContext } from './trpc.router';
 import { CachingService } from '../caching/caching.service';
+import { TrpcContext } from './trpc.router';
 
 export type TrpcMeta = OpenApiMeta & {
   caching?: true | { ttl?: number; common?: true };
@@ -26,10 +26,7 @@ export class TrpcService {
   public readonly publicProcedure = this.trpc.procedure.use(async (request) => {
     const caching = request.meta?.caching;
     if (request.type === 'query' && caching !== undefined) {
-      const key = await this.getCacheKey(
-        request,
-        caching !== true && caching.common,
-      );
+      const key = this.getCacheKey(request, caching !== true && caching.common);
       const cached = await this.cache.get(key);
       if (cached) {
         return {
@@ -41,7 +38,19 @@ export class TrpcService {
           ok: true as const,
         };
       }
-      const nextResult = await request.next(request);
+      const oldMeta = request.meta;
+      const newMeta: TrpcMeta | undefined = { ...oldMeta };
+      if (oldMeta?.openapi != null) {
+        newMeta.openapi = {
+          ...oldMeta.openapi,
+          tags: [...(oldMeta.openapi.tags ?? []), 'CACHE-ENABLED'],
+        };
+      }
+      const nextRequest: typeof request = {
+        ...request,
+        meta: newMeta,
+      };
+      const nextResult = await request.next(nextRequest);
       const data = 'data' in nextResult ? nextResult.data : undefined;
       if (data) {
         await this.cache.set(
@@ -60,7 +69,7 @@ export class TrpcService {
     if (!canActivate || !ctx.ctx.user) {
       throw new TRPCError({ code: 'FORBIDDEN' });
     }
-    return ctx.next({ ctx: { ...ctx.ctx, user: ctx.ctx.user! } });
+    return ctx.next({ ctx: { ...ctx.ctx, user: ctx.ctx.user } });
   });
 
   public readonly assignedToOrgProcedure = this.protectedProcedure.use(
@@ -73,7 +82,7 @@ export class TrpcService {
           ...ctx.ctx,
           user: {
             ...ctx.ctx.user,
-            orgId: ctx.ctx.user.orgId!,
+            orgId: ctx.ctx.user.orgId,
           },
         },
       });
@@ -90,13 +99,13 @@ export class TrpcService {
   public readonly router = this.trpc.router;
   public readonly mergeRouters = this.trpc.mergeRouters;
 
-  private async getCacheKey(
+  private getCacheKey(
     request: Omit<
       Parameters<Parameters<typeof this.trpc.middleware>['0']>['0'],
       'next'
     >,
     common = false,
-  ): Promise<string> {
+  ): string {
     const parts = [
       `trpc:${request.type}:${request.path}`,
       `query:${JSON.stringify(request.input)}`,
