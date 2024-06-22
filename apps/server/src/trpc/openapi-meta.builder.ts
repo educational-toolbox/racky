@@ -36,7 +36,7 @@ export class OpenapiMetaBuilder {
   }
 
   tags(...tags: [string, ...string[]]): OpenapiMetaBuilder {
-    this.meta.tags = this._unique([...(this.meta.tags ?? []), ...tags]);
+    this.meta.tags = [...(this.meta.tags ?? []), ...tags];
     return this;
   }
 
@@ -60,15 +60,29 @@ export class OpenapiMetaBuilder {
     return this;
   }
 
+  withCache(): OpenapiMetaBuilder {
+    this.meta.tags?.push('Cached');
+    return this;
+  }
+
+  adminOnly(): OpenapiMetaBuilder {
+    this.meta.tags?.push('Admin');
+    return this;
+  }
+
   clone(): OpenapiMetaBuilder {
     return new OpenapiMetaBuilder(this.root, this.meta);
   }
 
   build(): NonNullable<OpenApiMeta['openapi']> {
-    return this.meta;
+    return {
+      ...this.meta,
+      tags: this._unique(this.meta.tags),
+    };
   }
 
-  private _unique(arr: string[]) {
+  private _unique(arr: string[] | undefined) {
+    if (!arr) return arr;
     return [...new Set(arr)];
   }
 }

@@ -8,6 +8,7 @@ import { DataTableColumnHeader } from "~/components/ui/data-table/column-header"
 import type { RouterOutputs } from "~/utils/api/server";
 import { DeleteOrganization } from "./delete-organization";
 import { EditOrganization } from "./edit-organization";
+import { api } from "~/utils/api/client";
 
 export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
   {
@@ -32,25 +33,15 @@ export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
       <DataTableColumnHeader column={column} title="Owner" />
     ),
     cell: ({ row }) => {
-      const _organization = row.original;
-      // const { data: user, isLoading } = {
-      //   data: undefined as undefined | { id: string; name: string },
-      //   isLoading: false,
-      // }; // api.user.get.useQuery(organization.ownerId, { enabled: !!organization.ownerId });
-      const isLoading = false;
-      if (isLoading) return "Loading...";
-      return (
-        <UserCard
-          user={{
-            id: "user.id",
-            email: "user.email",
-            firstName: "user.firstName",
-            lastName: "user.lastName",
-          }}
-          className="max-w-fit pr-4"
-          link
-        />
+      const organization = row.original;
+      const { data: owner, isLoading } = api.user.getUser.useQuery(
+        { id: organization.ownerId! },
+        { enabled: !!organization.ownerId },
       );
+      console.log(owner);
+      if (isLoading) return "Loading...";
+      if (!owner) return "N/A";
+      return <UserCard user={owner} className="max-w-fit pr-4" link />;
     },
   },
   {

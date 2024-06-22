@@ -1,14 +1,17 @@
 import { subject } from '@casl/ability';
-import { TrpcService } from '..//trpc/trpc.service';
 import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+import { TrpcService } from '..//trpc/trpc.service';
+import { OpenapiMetaBuilder } from '../trpc/openapi-meta.builder';
 import {
   createOrganizationSchema,
   editOrganizationSchema,
   organizationSchema,
 } from './organization.schema';
 import { OrganizationService } from './organization.service';
-import { z } from 'zod';
+
+const openapi = new OpenapiMetaBuilder('organization').tags('Organization');
 
 @Injectable()
 export class OrganizationRouter {
@@ -20,29 +23,25 @@ export class OrganizationRouter {
   router = this.trpc.router({
     list: this.trpc.adminProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/org/list',
-          summary: 'List organizations',
-          protect: true,
-          tags: ['Organization'],
-        },
+        openapi: openapi
+          .clone()
+          .segments('list')
+          .summary('List organizations')
+          .protected()
+          .withCache()
+          .build(),
         caching: true,
       })
       .input(z.void())
       .output(organizationSchema.array())
-      .query(() => {
-        return this.organizationService.getAll();
-      }),
+      .query(() => this.organizationService.getAll()),
     create: this.trpc.adminProcedure
       .meta({
-        openapi: {
-          method: 'POST',
-          path: '/org',
-          summary: 'Create an organization',
-          protect: true,
-          tags: ['Organization'],
-        },
+        openapi: openapi
+          .clone()
+          .summary('Create an organization')
+          .protected()
+          .build(),
       })
       .input(createOrganizationSchema)
       .output(organizationSchema)
@@ -51,13 +50,13 @@ export class OrganizationRouter {
       }),
     edit: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'PUT',
-          path: '/org/{id}',
-          summary: 'Edit an organization',
-          protect: true,
-          tags: ['Organization'],
-        },
+        openapi: openapi
+          .clone()
+          .method('PUT')
+          .segments('{id}')
+          .summary('Edit an organization')
+          .protected()
+          .build(),
       })
       .input(editOrganizationSchema)
       .output(organizationSchema)
@@ -77,13 +76,12 @@ export class OrganizationRouter {
       }),
     delete: this.trpc.adminProcedure
       .meta({
-        openapi: {
-          method: 'DELETE',
-          path: '/org/{id}',
-          summary: 'Delete an organization',
-          protect: true,
-          tags: ['Organization'],
-        },
+        openapi: openapi
+          .method('DELETE')
+          .segments('{id}')
+          .summary('Delete an organization')
+          .protected()
+          .build(),
       })
       .input(z.object({ id: z.string() }))
       .output(z.void())

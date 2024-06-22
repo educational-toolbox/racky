@@ -38,11 +38,7 @@ export class TrpcService {
           ok: true as const,
         };
       }
-      const nextRequest = this.requestWithAddedMetaTags(
-        request,
-        'CACHE-ENABLED',
-      );
-      const nextResult = await request.next(nextRequest);
+      const nextResult = await request.next(request);
       const data = 'data' in nextResult ? nextResult.data : undefined;
       if (data) {
         await this.cache.set(
@@ -90,8 +86,7 @@ export class TrpcService {
       if (request.ctx.user.role !== 'ADMIN') {
         throw new TRPCError({ code: 'FORBIDDEN' });
       }
-      const nextRequest = this.requestWithAddedMetaTags(request, 'ADMIN-ONLY');
-      return request.next(nextRequest);
+      return request.next(request);
     },
   );
 
@@ -113,31 +108,6 @@ export class TrpcService {
       parts.push(`user:${request.ctx.user?.id ?? 'anonymous'}`);
     }
     return parts.join('|');
-  }
-
-  private requestWithAddedMetaTags(
-    request: Omit<
-      Parameters<Parameters<typeof this.trpc.middleware>['0']>['0'],
-      'next'
-    >,
-    ...tags: [string, ...string[]]
-  ): Omit<
-    Parameters<Parameters<typeof this.trpc.middleware>['0']>['0'],
-    'next'
-  > {
-    const oldMeta = request.meta;
-    const newMeta: TrpcMeta | undefined = { ...oldMeta };
-    if (oldMeta?.openapi != null) {
-      newMeta.openapi = {
-        ...oldMeta.openapi,
-        tags: [...(oldMeta.openapi.tags ?? []), ...tags],
-      };
-    }
-    const nextRequest: typeof request = {
-      ...request,
-      meta: newMeta,
-    };
-    return nextRequest;
   }
 }
 

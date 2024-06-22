@@ -6,8 +6,8 @@ import { cn } from "~/lib/utils";
 export interface UserCardProps {
   user: {
     id: string;
-    firstName: string;
-    lastName: string;
+    firstName: string | null;
+    lastName: string | null;
     email: string;
     avatarUrl?: string;
   };
@@ -21,6 +21,16 @@ export const UserCard = ({
   className = "",
 }: UserCardProps) => {
   const Wrapper = link ? AppLink : "div";
+  let fallback = "AN";
+  if (user.firstName) {
+    fallback = user.firstName.slice(0, 2);
+  }
+  if (user.lastName) {
+    fallback = user.lastName.slice(0, 2);
+  }
+  if (user.firstName && user.lastName) {
+    fallback = user.firstName[0] + user.lastName[0];
+  }
   return (
     <Wrapper
       href={`/users/${user.id}`}
@@ -28,16 +38,13 @@ export const UserCard = ({
     >
       <Avatar>
         <AvatarImage src={user.avatarUrl} />
-        <AvatarFallback>
-          {user.firstName[0].toLocaleUpperCase()}
-          {user.lastName[0].toLocaleUpperCase()}
-        </AvatarFallback>
+        <AvatarFallback>{fallback.toLocaleUpperCase()}</AvatarFallback>
       </Avatar>
       <div>
-        <CardTitle>
+        <CardTitle className="leading-none">
           {user.firstName} {user.lastName}
         </CardTitle>
-        <CardDescription>{user.email}</CardDescription>
+        <CardDescription className="leading-none">{user.email}</CardDescription>
       </div>
     </Wrapper>
   );
