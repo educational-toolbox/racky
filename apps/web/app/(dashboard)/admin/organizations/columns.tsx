@@ -38,7 +38,6 @@ export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
         { id: organization.ownerId! },
         { enabled: !!organization.ownerId },
       );
-      console.log(owner);
       if (isLoading) return "Loading...";
       if (!owner) return "N/A";
       return <UserCard user={owner} className="max-w-fit pr-4" link />;

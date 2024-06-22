@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+// import { auth } from "@clerk/nextjs/server";
 import type { AppRouter } from "@educational-toolbox/racky-api/trpc/trpc.router";
 import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
@@ -18,16 +18,16 @@ export const api = createTRPCClient<AppRouter>({
     httpBatchLink({
       url: `${process.env.NEXT_PUBLIC_NESTJS_SERVER}/trpc`,
       transformer,
-      async headers() {
-        const { getToken } = auth();
-        const token = await getToken();
-        if (!token) {
-          return {};
-        }
-        return {
-          Authorization: `Bearer ${token}`,
-        };
-      },
+      // async headers() {
+      // const { getToken } = auth();
+      // const token = await getToken();
+      // if (!token) {
+      //   return {};
+      // }
+      // return {
+      //   Authorization: `Bearer ${token}`,
+      // };
+      // },
     }),
   ],
 });

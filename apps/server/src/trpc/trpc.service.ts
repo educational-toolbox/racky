@@ -26,7 +26,10 @@ export class TrpcService {
   public readonly publicProcedure = this.trpc.procedure.use(async (request) => {
     const caching = request.meta?.caching;
     if (request.type === 'query' && caching !== undefined) {
-      const key = this.getCacheKey(request, caching !== true && caching.common);
+      const key = await this.getCacheKey(
+        request,
+        caching !== true && caching.common,
+      );
       const cached = await this.cache.get(key);
       if (cached) {
         return {
@@ -93,16 +96,17 @@ export class TrpcService {
   public readonly router = this.trpc.router;
   public readonly mergeRouters = this.trpc.mergeRouters;
 
-  private getCacheKey(
+  private async getCacheKey(
     request: Omit<
       Parameters<Parameters<typeof this.trpc.middleware>['0']>['0'],
       'next'
     >,
     common = false,
-  ): string {
+  ): Promise<string> {
+    const input = await request.getRawInput();
     const parts = [
       `trpc:${request.type}:${request.path}`,
-      `query:${JSON.stringify(request.input)}`,
+      `query:${JSON.stringify(input)}`,
     ];
     if (!common) {
       parts.push(`user:${request.ctx.user?.id ?? 'anonymous'}`);
