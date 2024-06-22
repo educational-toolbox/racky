@@ -1,5 +1,6 @@
 import { subject } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
+import { Organization, OrganizationInvite, Role } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { TrpcService } from '..//trpc/trpc.service';
@@ -10,7 +11,6 @@ import {
   organizationSchema,
 } from './organization.schema';
 import { OrganizationService } from './organization.service';
-import { Organization, Role } from '@prisma/client';
 
 const openapi = new OpenapiMetaBuilder('organization').tags('Organization');
 
@@ -126,6 +126,42 @@ export class OrganizationRouter {
           throw new TRPCError({ code: 'FORBIDDEN' });
         }
         return this.organizationService.getUsers(input.id);
+      }),
+    createInvite: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi
+          .clone()
+          .method('POST')
+          .segments('{id}', 'invite')
+          .summary('Invite a user to an organization')
+          .protected()
+          .build(),
+      })
+      .input(z.object({ id: z.string(), email: z.string().email() }))
+      .output(
+        z.object({
+          result: z.enum(['success', 'already_invited']),
+        }),
+      )
+      .mutation(async ({ input, ctx }) => {
+        if (
+          ctx.user.permissions.organization.cannot(
+            'create',
+            subject('OrganizationInvite', {
+              organizationId: input.id,
+            } as OrganizationInvite),
+          )
+        ) {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        const exists = await this.organizationService.checkInviteExistence(
+          input.email,
+        );
+        if (exists) {
+          return { result: 'already_invited' } as const;
+        }
+        await this.organizationService.createInvite(input.email, input.id);
+        return { result: 'success' } as const;
       }),
   });
 }

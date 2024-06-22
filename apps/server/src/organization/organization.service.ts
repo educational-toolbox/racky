@@ -61,9 +61,14 @@ export class OrganizationService {
     });
   }
 
-  async checkInviteExistence(inviteId: string) {
-    return this.databaseService.organizationInvite.findUnique({
-      where: { id: inviteId, valid: true },
+  async checkInviteExistence(inviteIdOrEmail: string) {
+    return this.databaseService.organizationInvite.findFirst({
+      where: {
+        OR: [
+          { id: inviteIdOrEmail, valid: true },
+          { email: inviteIdOrEmail, valid: true },
+        ],
+      },
       select: { id: true },
     });
   }

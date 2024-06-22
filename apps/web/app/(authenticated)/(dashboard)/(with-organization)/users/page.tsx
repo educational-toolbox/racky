@@ -5,12 +5,12 @@ import { DataTable } from "~/components/ui/data-table/table";
 import { api } from "~/utils/api/client";
 import { useOrganizationId } from "../../organization-context";
 import { columns } from "./columns";
-import { Button } from "~/components/ui/button";
-import { Icon } from "~/components/ui/app-icon";
+import { InviteUser } from "./invite-user";
 
 const OrganizationUsersPage = () => {
   const orgId = useOrganizationId({ strict: true });
   const { data: users, isLoading } = api.org.getUsers.useQuery({ id: orgId });
+
   if (isLoading) return <div className="w-full text-center">Loading...</div>;
   return (
     <Card>
@@ -22,11 +22,7 @@ const OrganizationUsersPage = () => {
             pageSizes: [10, 50, 100],
           }}
           withSearch
-          extra={
-            <Button size="icon">
-              <Icon name="UserPlus" />
-            </Button>
-          }
+          extra={<InviteUser orgId={orgId} />}
         />
       </CardHeader>
     </Card>
