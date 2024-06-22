@@ -57,8 +57,8 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
               <MobileMenuWrapper items={items} pathname={cleanPathname} />
               <DashboardBreadcrumbs crumbs={crumbs} />
               <div className="ml-auto space-x-1">
+                <SignOutButton />
                 <RequireAccessLevel level="ADMIN">
-                  <SignOutButton />
                   <Button
                     size="icon"
                     variant="destructive"
