@@ -1,9 +1,6 @@
-import {
-  ItemSchemaRead,
-  ItemSchemaWrite,
-} from '@educational-toolbox/racky-api/item/item.schema';
-import { ItemService } from '@educational-toolbox/racky-api/item/item.service';
-import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
+import { ItemSchemaRead, ItemSchemaWrite } from '..//item/item.schema';
+import { ItemService } from '..//item/item.service';
+import { TrpcService } from '..//trpc/trpc.service';
 import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';

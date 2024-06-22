@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
+import { TrpcService } from '..//trpc/trpc.service';
 import { z } from 'zod';
-import { CategoryService } from '@educational-toolbox/racky-api/category/category.service';
+import { CategoryService } from '..//category/category.service';
 import {
   CategorySchemaRead,
   CategorySchemaWrite,
-} from '@educational-toolbox/racky-api/category/category.schema';
+} from '..//category/category.schema';
 
 @Injectable()
 export class CategoryRouter {

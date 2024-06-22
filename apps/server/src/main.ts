@@ -1,4 +1,4 @@
-import { TrpcRouter } from '@educational-toolbox/racky-api/trpc/trpc.router';
+import { TrpcRouter } from './trpc/trpc.router';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';

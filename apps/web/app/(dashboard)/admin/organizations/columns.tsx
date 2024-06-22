@@ -1,13 +1,13 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { AppLink } from "~/app-link";
+import { UserCard } from "~/components/shared/user/user-card";
+import { Icon } from "~/components/ui/app-icon";
 import { Button } from "~/components/ui/button";
 import { DataTableColumnHeader } from "~/components/ui/data-table/column-header";
-import { Icon } from "~/components/ui/app-icon";
 import type { RouterOutputs } from "~/utils/api/server";
-import { EditOrganization } from "./edit-organization";
 import { DeleteOrganization } from "./delete-organization";
+import { EditOrganization } from "./edit-organization";
 
 export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
   {
@@ -33,13 +33,24 @@ export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
     ),
     cell: ({ row }) => {
       const _organization = row.original;
-      const { data: user, isLoading } = {
-        data: undefined as undefined | { id: string; name: string },
-        isLoading: false,
-      }; // api.user.get.useQuery(organization.ownerId, { enabled: !!organization.ownerId });
+      // const { data: user, isLoading } = {
+      //   data: undefined as undefined | { id: string; name: string },
+      //   isLoading: false,
+      // }; // api.user.get.useQuery(organization.ownerId, { enabled: !!organization.ownerId });
+      const isLoading = false;
       if (isLoading) return "Loading...";
-      if (!user) return "N/A";
-      return <AppLink href={`/admin/users/${user.id}`}>{user.name}</AppLink>;
+      return (
+        <UserCard
+          user={{
+            id: "user.id",
+            email: "user.email",
+            firstName: "user.firstName",
+            lastName: "user.lastName",
+          }}
+          className="max-w-fit pr-4"
+          link
+        />
+      );
     },
   },
   {

@@ -1,10 +1,7 @@
-import { CatalogRouter } from '@educational-toolbox/racky-api/catalog/catalog.router';
-import { CategoryRouter } from '@educational-toolbox/racky-api/category/category.router';
-import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
-import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { INestApplication, Injectable, Logger } from '@nestjs/common';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import type { NextFunction, Request, Response } from 'express';
+import type { OpenApiMethod } from 'trpc-openapi';
 import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
@@ -12,13 +9,16 @@ import {
 import { AuthUserWithPermissions } from '../auth/auth-user.type';
 import { clerkClient } from '../auth/clerk-client';
 import { getPermissions } from '../auth/permissions';
+import { CatalogRouter } from '../catalog/catalog.router';
+import { CategoryRouter } from '../category/category.router';
 import { DatabaseService } from '../database/database.service';
+import { ItemRouter } from '../item/item.router';
 import { MediaRouter } from '../media/media.router';
 import { OrganizationRouter } from '../organization/organization.router';
 import { ReservationRouter } from '../reservation/reservation.router';
 import { env } from '../server-env';
-import { z } from 'zod';
-import { Role } from '@prisma/client';
+import { TrpcService } from '../trpc/trpc.service';
+import { UserRouter } from '../user/user.router';
 
 export interface TrpcContext {
   db: DatabaseService;
@@ -26,10 +26,16 @@ export interface TrpcContext {
   user: AuthUserWithPermissions | undefined;
 }
 
+interface OpenapiPath {
+  method: OpenApiMethod;
+  segments: string[];
+}
+
 @Injectable()
 export class TrpcRouter {
   private readonly logger = new Logger(TrpcRouter.name);
   readonly openapiDoc: ReturnType<typeof generateOpenApiDocument>;
+  private readonly openapiDefinedPaths: OpenapiPath[] = [];
 
   constructor(
     private readonly trpc: TrpcService,
@@ -40,37 +46,49 @@ export class TrpcRouter {
     private readonly reservationRouter: ReservationRouter,
     private readonly mediaRouter: MediaRouter,
     private readonly organizationRouter: OrganizationRouter,
+    private readonly userRouter: UserRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
+    this.openapiDefinedPaths = [];
+    for (const path in this.openapiDoc.paths) {
+      const meta = this.openapiDoc.paths[path];
+      if (!meta) continue;
+      const pathSegments = path.split('/').slice(1);
+      if (meta.get) {
+        this.openapiDefinedPaths.push({
+          method: 'GET',
+          segments: pathSegments,
+        });
+      }
+      if (meta.post) {
+        this.openapiDefinedPaths.push({
+          method: 'POST',
+          segments: pathSegments,
+        });
+      }
+      if (meta.put) {
+        this.openapiDefinedPaths.push({
+          method: 'PUT',
+          segments: pathSegments,
+        });
+      }
+      if (meta.delete) {
+        this.openapiDefinedPaths.push({
+          method: 'DELETE',
+          segments: pathSegments,
+        });
+      }
+      if (meta.patch) {
+        this.openapiDefinedPaths.push({
+          method: 'PATCH',
+          segments: pathSegments,
+        });
+      }
+    }
   }
 
   appRouter = this.trpc.router({
-    // I was too lazy to create another router lmao
-    auth: this.trpc.router({
-      session: this.trpc.publicProcedure
-        .meta({
-          openapi: {
-            method: 'GET',
-            path: '/session',
-            summary: 'Get the current session',
-            tags: ['Auth'],
-          },
-        })
-        .input(z.void())
-        .output(
-          z
-            .object({
-              id: z.string(),
-              orgId: z.string().nullable(),
-              role: z.nativeEnum(Role),
-            })
-            .nullable(),
-        )
-        .query(({ ctx }) => {
-          return ctx.user ?? null;
-        }),
-    }),
-    // Other routers
+    user: this.userRouter.router,
     catalog: this.catalogRouter.router,
     items: this.itemRouter.router,
     category: this.categoryRouter.router,
@@ -135,16 +153,57 @@ export class TrpcRouter {
   }
 
   applyOpenAPIMiddleware(app: INestApplication) {
+    const allowedMethods: OpenApiMethod[] = [
+      'DELETE',
+      'GET',
+      'PATCH',
+      'POST',
+      'PUT',
+    ];
     app.use((req: Request, res: Response, next: NextFunction) => {
+      const segments = req.path.split('/').slice(1);
+      if (!allowedMethods.includes(req.method as OpenApiMethod)) {
+        return next();
+      }
+      const matching = this.openapiDefinitionHasMatchingPath(
+        segments,
+        req.method as OpenApiMethod,
+      );
+      if (!matching) {
+        return next();
+      }
       const middleware = createOpenApiExpressMiddleware({
         router: this.appRouter,
         createContext: (info) => this.createContext(info.req),
       });
-      if (req.path in this.openapiDoc.paths) {
-        return middleware(req, res);
-      }
-      return next();
+      return middleware(req, res);
     });
+  }
+
+  private openapiDefinitionHasMatchingPath(
+    pathSegments: string[],
+    method: OpenApiMethod,
+  ): boolean {
+    for (const definedPath of this.openapiDefinedPaths) {
+      if (definedPath.method !== method) continue;
+      if (definedPath.segments.length !== pathSegments.length) continue;
+      let match = true;
+      for (let i = 0; i < definedPath.segments.length; i++) {
+        const requestSegment = pathSegments[i];
+        const definedSegment = definedPath.segments[i];
+        const isParam = definedSegment.startsWith('{');
+        if (isParam) continue;
+        if (definedSegment === undefined || requestSegment === undefined) {
+          continue;
+        }
+        if (requestSegment !== definedSegment) {
+          match = false;
+          break;
+        }
+      }
+      return match;
+    }
+    return false;
   }
 }
 

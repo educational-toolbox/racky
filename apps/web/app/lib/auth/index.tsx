@@ -18,7 +18,7 @@ const sessionContext = createContext<Session>({
 });
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
-  const { data: user, isLoading, refetch } = api.auth.session.useQuery();
+  const { data: user, isLoading, refetch } = api.user.whoami.useQuery();
 
   const invalidate = useCallback<Session["invalidate"]>(async () => {
     await refetch();

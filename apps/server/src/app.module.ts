@@ -1,4 +1,4 @@
-import { TrpcModule } from '@educational-toolbox/racky-api/trpc/trpc.module';
+import { TrpcModule } from './trpc/trpc.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';

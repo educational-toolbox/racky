@@ -1,5 +1,5 @@
-import { ItemRouter } from '@educational-toolbox/racky-api/item/item.router';
-import { ItemService } from '@educational-toolbox/racky-api/item/item.service';
+import { ItemRouter } from '..//item/item.router';
+import { ItemService } from '..//item/item.service';
 import { Module } from '@nestjs/common';
 
 @Module({

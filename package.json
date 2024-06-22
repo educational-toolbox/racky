@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "clean": "pnpm run clean:workspaces && pnpm run clean:root",
+    "clean:workspaces": "pnpm -rc exec rimraf dist .next node_modules",
+    "clean:root": "rimraf node_modules",
     "dev": "pnpm run --parallel dev",
     "test": "pnpm with-env pnpm run --parallel test",
     "build:server": "pnpm -F \"@educational-toolbox/racky-api\" build",
@@ -26,7 +29,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv-cli": "^7.4.1"
+    "dotenv-cli": "^7.4.1",
+    "rimraf": "^5.0.7"
   },
   "packageManager": "pnpm@8.13.1",
   "devDependencies": {

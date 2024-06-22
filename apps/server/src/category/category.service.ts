@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@educational-toolbox/racky-api/database/database.service';
+import { DatabaseService } from '..//database/database.service';
 import {
   CategorySchemaRead,
   CategoryWrite,
-} from '@educational-toolbox/racky-api/category/category.schema';
+} from '..//category/category.schema';
 import { z } from 'zod';
 
 @Injectable()

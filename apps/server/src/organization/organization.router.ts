@@ -1,5 +1,5 @@
 import { subject } from '@casl/ability';
-import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
+import { TrpcService } from '..//trpc/trpc.service';
 import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import {

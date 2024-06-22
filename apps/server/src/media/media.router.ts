@@ -1,4 +1,4 @@
-import { TrpcService } from '@educational-toolbox/racky-api/trpc/trpc.service';
+import { TrpcService } from '..//trpc/trpc.service';
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { TIME } from '../CONSTANTS';

@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@educational-toolbox/racky-api/database/database.service';
-import {
-  ItemRead,
-  ItemWrite,
-} from '@educational-toolbox/racky-api/item/item.schema';
+import { DatabaseService } from '..//database/database.service';
+import { ItemRead, ItemWrite } from '..//item/item.schema';
 
 @Injectable()
 export class ItemService {
