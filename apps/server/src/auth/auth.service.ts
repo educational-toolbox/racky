@@ -1,5 +1,5 @@
-import { Logger } from '@nestjs/common';
-import { Request } from 'express';
+import type { Logger } from '@nestjs/common';
+import type { Request } from 'express';
 
 export abstract class AuthService {
   constructor(protected readonly _logger: Logger) {}

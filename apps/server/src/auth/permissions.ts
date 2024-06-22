@@ -1,5 +1,5 @@
 import { organizationPermissionsFor } from '../organization/organization.permissions';
-import { AuthUser } from './auth-user.type';
+import type { AuthUser } from './auth-user.type';
 
 export const getPermissions = (user: AuthUser) => {
   return {

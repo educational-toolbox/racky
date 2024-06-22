@@ -1,6 +1,8 @@
-import { AbilityBuilder, PureAbility } from '@casl/ability';
-import { PrismaQuery, Subjects, createPrismaAbility } from '@casl/prisma';
-import {
+import type { PureAbility } from '@casl/ability';
+import { AbilityBuilder } from '@casl/ability';
+import type { PrismaQuery, Subjects } from '@casl/prisma';
+import { createPrismaAbility } from '@casl/prisma';
+import type {
   CatalogItem,
   Category,
   Item,

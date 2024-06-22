@@ -112,6 +112,7 @@ export const trpcServiceProvider: Provider = {
   provide: TrpcService,
   async useFactory(guard: AuthenticatedGuard, cache: CachingService) {
     const transformer = await (eval(`import('superjson')`) as Promise<
+      // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- won't work without this
       typeof import('superjson')
     >);
     const instance = new transformer.default({ dedupe: false });
