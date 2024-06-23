@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '..//database/database.service';
+import { DatabaseService } from '~/database/database.service';
 import {
   CategorySchemaRead,
   CategoryWrite,
-} from '..//category/category.schema';
+} from '~/business/category/category.schema';
 import { z } from 'zod';
 
 @Injectable()

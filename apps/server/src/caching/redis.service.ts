@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CachingService } from './caching.service';
 import { createClient } from 'redis';
-import { env } from '../server-env';
-import { TIME } from '../CONSTANTS';
+import { env } from '~/server-env';
+import { TIME } from '~/CONSTANTS';
 
 @Injectable()
 export class RedisCachingService extends CachingService {

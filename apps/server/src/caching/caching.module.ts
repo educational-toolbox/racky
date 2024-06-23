@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { CachingService } from './caching.service';
 import { RedisCachingService } from './redis.service';
-import { env } from '../server-env';
+import { env } from '~/server-env';
 import { FakeCachingService } from './no-cache.service';
 
 @Global()

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { OrganizationInvite } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { TrpcService } from '../../trpc/trpc.service';
+import { TrpcService } from '~/trpc/trpc.service';
 import { openapi } from '../organization.router';
 import { OrganizationService } from '../organization.service';
 

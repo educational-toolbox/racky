@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { z } from 'zod';
-import { TIME } from '../CONSTANTS';
-import { OpenapiMetaBuilder } from '../trpc/openapi-meta.builder';
-import { TrpcService } from '../trpc/trpc.service';
+import { TIME } from '~/CONSTANTS';
+import { OpenapiMetaBuilder } from '~/trpc/openapi-meta.builder';
+import { TrpcService } from '~/trpc/trpc.service';
 import { UserService } from './user.service';
 
 const openapi = new OpenapiMetaBuilder('user').tags('User');

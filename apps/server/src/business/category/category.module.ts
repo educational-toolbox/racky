@@ -1,5 +1,5 @@
-import { CategoryRouter } from '..//category/category.router';
-import { CategoryService } from '..//category/category.service';
+import { CategoryRouter } from '~/business/category/category.router';
+import { CategoryService } from '~/business/category/category.service';
 import { Module } from '@nestjs/common';
 
 @Module({

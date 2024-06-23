@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TrpcService } from '..//trpc/trpc.service';
+import { TrpcService } from '~/trpc/trpc.service';
 import { ReservationService } from './reservation.service';
 import {
   reservationSchemaRead,

@@ -1,14 +1,14 @@
-import { CatalogModule } from '../catalog/catalog.module';
-import { CategoryModule } from '../category/category.module';
-import { ItemModule } from '../item/item.module';
-import { TrpcRouter } from './trpc.router';
-import { TrpcService, trpcServiceProvider } from './trpc.service';
 import { Global, Module } from '@nestjs/common';
-import { AuthModule } from '../auth/auth.module';
-import { MediaModule } from '../media/media.module';
-import { OrganizationModule } from '../organization/organization.module';
-import { ReservationModule } from '../reservation/reservation.module';
-import { UsersModule } from '../user/user.module';
+import { AuthModule } from '~/auth/auth.module';
+import { CatalogModule } from '~/business/catalog/catalog.module';
+import { CategoryModule } from '~/business/category/category.module';
+import { ItemModule } from '~/business/item/item.module';
+import { MediaModule } from '~/business/media/media.module';
+import { OrganizationModule } from '~/business/organization/organization.module';
+import { ReservationModule } from '~/business/reservation/reservation.module';
+import { UsersModule } from '~/business/user/user.module';
+import { TrpcService, trpcServiceProvider } from '~/trpc/trpc.service';
+import { TrpcRouter } from '~/trpc/trpc.router';
 
 @Global()
 @Module({

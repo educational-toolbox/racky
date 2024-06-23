@@ -1,6 +1,6 @@
 import type { SubstituteOf } from '@fluffy-spoon/substitute';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
-import type { DatabaseService } from '../database/database.service';
+import type { DatabaseService } from '~/database/database.service';
 import { ItemService } from './item.service';
 
 describe('item service tests', () => {

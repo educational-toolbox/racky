@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Organization, Role } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { TrpcService } from '..//trpc/trpc.service';
-import { OpenapiMetaBuilder } from '../trpc/openapi-meta.builder';
+import { TrpcService } from '~/trpc/trpc.service';
+import { OpenapiMetaBuilder } from '~/trpc/openapi-meta.builder';
 import { OrganizationInviteRouter } from './invites/organization-invite.router';
 import {
   createOrganizationSchema,

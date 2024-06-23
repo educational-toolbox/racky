@@ -3,7 +3,7 @@ import { MediaService } from './media.service';
 import { getBucketParams, s3client } from './s3.client';
 import * as s3RequestPresigner from '@aws-sdk/s3-request-presigner';
 import * as aws from '@aws-sdk/client-s3';
-import { env } from '../server-env';
+import { env } from '~/server-env';
 
 @Injectable()
 export class S3MediaService implements MediaService {

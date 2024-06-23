@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CachingService } from './caching.service';
-import { TIME } from '../CONSTANTS';
+import { TIME } from '~/CONSTANTS';
 
 function debounce<T extends (...arg: any[]) => any>(func: T, timeout = 300) {
   let timer: NodeJS.Timeout;

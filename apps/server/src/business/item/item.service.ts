@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '..//database/database.service';
-import { ItemRead, ItemWrite } from '..//item/item.schema';
+import { DatabaseService } from '~/database/database.service';
+import { ItemRead, ItemWrite } from '~/business/item/item.schema';
 
 @Injectable()
 export class ItemService {
