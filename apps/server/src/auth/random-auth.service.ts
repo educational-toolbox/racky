@@ -13,4 +13,8 @@ export class RandomAuthService extends AuthService {
   validate(): boolean {
     return Math.random() >= 0.5;
   }
+
+  getUserId(): string {
+    return Math.random().toString();
+  }
 }

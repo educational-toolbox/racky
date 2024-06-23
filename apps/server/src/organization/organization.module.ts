@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
+import { OrganizationInviteRouter } from './invites/organization-invite.router';
 import { OrganizationRouter } from './organization.router';
 import { OrganizationService } from './organization.service';
 
 @Module({
-  providers: [OrganizationRouter, OrganizationService],
+  providers: [
+    OrganizationService,
+    OrganizationInviteRouter,
+    OrganizationRouter,
+  ],
   exports: [OrganizationRouter],
 })
 export class OrganizationModule {}

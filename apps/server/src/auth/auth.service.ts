@@ -8,4 +8,7 @@ export abstract class AuthService {
     _password: string,
   ): boolean | Promise<boolean>;
   abstract validate(request: Request): boolean | Promise<boolean>;
+  abstract getUserId(
+    request: Request,
+  ): string | undefined | Promise<string | undefined>;
 }

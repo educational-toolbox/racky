@@ -7,7 +7,6 @@ import {
   generateOpenApiDocument,
 } from 'trpc-openapi';
 import { AuthUserWithPermissions } from '../auth/auth-user.type';
-import { clerkClient } from '../auth/clerk-client';
 import { getPermissions } from '../auth/permissions';
 import { CatalogRouter } from '../catalog/catalog.router';
 import { CategoryRouter } from '../category/category.router';
@@ -19,6 +18,7 @@ import { ReservationRouter } from '../reservation/reservation.router';
 import { env } from '../server-env';
 import { TrpcService } from '../trpc/trpc.service';
 import { UserRouter } from '../user/user.router';
+import { AuthService } from '../auth/auth.service';
 
 export interface TrpcContext {
   db: DatabaseService;
@@ -39,6 +39,7 @@ export class TrpcRouter {
 
   constructor(
     private readonly trpc: TrpcService,
+    private readonly authService: AuthService,
     private readonly databaseService: DatabaseService,
     private readonly catalogRouter: CatalogRouter,
     private readonly itemRouter: ItemRouter,
@@ -49,42 +50,8 @@ export class TrpcRouter {
     private readonly userRouter: UserRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
-    this.openapiDefinedPaths = [];
-    for (const path in this.openapiDoc.paths) {
-      const meta = this.openapiDoc.paths[path];
-      if (!meta) continue;
-      const pathSegments = path.split('/').slice(1);
-      if (meta.get) {
-        this.openapiDefinedPaths.push({
-          method: 'GET',
-          segments: pathSegments,
-        });
-      }
-      if (meta.post) {
-        this.openapiDefinedPaths.push({
-          method: 'POST',
-          segments: pathSegments,
-        });
-      }
-      if (meta.put) {
-        this.openapiDefinedPaths.push({
-          method: 'PUT',
-          segments: pathSegments,
-        });
-      }
-      if (meta.delete) {
-        this.openapiDefinedPaths.push({
-          method: 'DELETE',
-          segments: pathSegments,
-        });
-      }
-      if (meta.patch) {
-        this.openapiDefinedPaths.push({
-          method: 'PATCH',
-          segments: pathSegments,
-        });
-      }
-    }
+    this.defineOpenApiPaths();
+    this.logOpenApiPaths();
   }
 
   appRouter = this.trpc.router({
@@ -96,43 +63,6 @@ export class TrpcRouter {
     media: this.mediaRouter.router,
     org: this.organizationRouter.router,
   });
-
-  private async getUserId(req: Request): Promise<string | undefined> {
-    // TODO: Make it dependent on AuthProvider instead of hardcoded Clerk instance
-    try {
-      const token = req.headers.authorization?.slice(7);
-      if (!token) return undefined;
-      return (await clerkClient.verifyToken(token)).sub;
-    } catch (error) {
-      return undefined;
-    }
-  }
-
-  private async getUser(
-    userId: string | undefined,
-  ): Promise<AuthUserWithPermissions | undefined> {
-    if (!userId) return undefined;
-    const user = await this.databaseService.user.findUnique({
-      where: { id: userId },
-    });
-    if (!user) return undefined;
-    const authUser = {
-      id: user.id,
-      orgId: user.organizationId,
-      role: user.role,
-    };
-    return { ...authUser, permissions: getPermissions(authUser) };
-  }
-
-  private async createContext(req: Request): Promise<TrpcContext> {
-    const userId = await this.getUserId(req);
-    const user = await this.getUser(userId);
-    return {
-      user,
-      db: this.databaseService,
-      req,
-    };
-  }
 
   applyTRPCHandler(app: INestApplication) {
     app.use(`/trpc`, (req: Request, res: Response, next: NextFunction) => {
@@ -178,6 +108,77 @@ export class TrpcRouter {
       });
       return middleware(req, res);
     });
+  }
+
+  private defineOpenApiPaths() {
+    for (const path in this.openapiDoc.paths) {
+      const meta = this.openapiDoc.paths[path];
+      if (!meta) continue;
+      const pathSegments = path.split('/').slice(1);
+      if (meta.get) {
+        this.openapiDefinedPaths.push({
+          method: 'GET',
+          segments: pathSegments,
+        });
+      }
+      if (meta.post) {
+        this.openapiDefinedPaths.push({
+          method: 'POST',
+          segments: pathSegments,
+        });
+      }
+      if (meta.put) {
+        this.openapiDefinedPaths.push({
+          method: 'PUT',
+          segments: pathSegments,
+        });
+      }
+      if (meta.delete) {
+        this.openapiDefinedPaths.push({
+          method: 'DELETE',
+          segments: pathSegments,
+        });
+      }
+      if (meta.patch) {
+        this.openapiDefinedPaths.push({
+          method: 'PATCH',
+          segments: pathSegments,
+        });
+      }
+    }
+  }
+
+  private logOpenApiPaths() {
+    for (const path of this.openapiDefinedPaths) {
+      this.logger.log(`Mapped {/${path.segments.join('/')}, ${path.method}}`);
+    }
+  }
+
+  private async getUser(
+    userId: string | undefined,
+  ): Promise<AuthUserWithPermissions | undefined> {
+    if (!userId) return undefined;
+    const user = await this.databaseService.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) return undefined;
+    const authUser = {
+      id: user.id,
+      orgId: user.organizationId,
+      role: user.role,
+    };
+    return { ...authUser, permissions: getPermissions(authUser) };
+  }
+
+  private async createContext(req: Request): Promise<TrpcContext> {
+    const userId = await this.authService.getUserId(req);
+    console.log('userId', userId);
+    const user = await this.getUser(userId);
+    return {
+      user,
+      db: this.databaseService,
+      req,
+    };
   }
 
   private openapiDefinitionHasMatchingPath(

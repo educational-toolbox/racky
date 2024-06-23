@@ -12,10 +12,10 @@ import { DatabaseModule } from './database/database.module';
   imports: [
     ConfigModule.forRoot(),
     EventEmitterModule.forRoot(),
-    TrpcModule,
+    CachingModule,
     AuthModule,
     DatabaseModule,
-    CachingModule,
+    TrpcModule,
   ],
   controllers: [AppController],
   providers: [AppService],

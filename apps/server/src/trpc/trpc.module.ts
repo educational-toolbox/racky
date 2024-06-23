@@ -23,6 +23,6 @@ import { UsersModule } from '../user/user.module';
     OrganizationModule,
   ],
   providers: [trpcServiceProvider, TrpcRouter],
-  exports: [TrpcRouter, TrpcService],
+  exports: [TrpcService, TrpcRouter],
 })
 export class TrpcModule {}
