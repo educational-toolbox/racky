@@ -13,6 +13,7 @@
     "paths": {
       "@educational-toolbox/racky-api/*": ["./apps/server/src/*"],
       "@educational-toolbox/racky-web-client/*": ["./apps/web/*"],
+      // "@educational-toolbox/transactional/*": ["./libs/transactional/*"]
     }
   }
 }

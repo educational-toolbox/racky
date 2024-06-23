@@ -160,8 +160,34 @@ export class OrganizationRouter {
         if (exists) {
           return { result: 'already_invited' } as const;
         }
+        // TODO: Send invite email
         await this.organizationService.createInvite(input.email, input.id);
         return { result: 'success' } as const;
+      }),
+    getInvite: this.trpc.publicProcedure
+      .meta({
+        openapi: openapi
+          .clone()
+          .segments('invite', '{id}')
+          .summary('Get an organization invite')
+          .build(),
+      })
+      .input(z.object({ id: z.string() }))
+      .output(
+        z.object({
+          organizationName: z.string(),
+        }),
+      )
+      .query(async ({ input }) => {
+        const invite = await this.organizationService.checkInviteExistence(
+          input.id,
+        );
+        if (!invite) {
+          throw new TRPCError({ code: 'NOT_FOUND' });
+        }
+        return {
+          organizationName: invite.organization.name,
+        };
       }),
   });
 }

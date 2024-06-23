@@ -6,6 +6,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
+    "jsx": "react-jsx",
     "outDir": "./dist"
   }
 }

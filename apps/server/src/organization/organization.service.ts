@@ -69,7 +69,7 @@ export class OrganizationService {
           { email: inviteIdOrEmail, valid: true },
         ],
       },
-      select: { id: true },
+      select: { id: true, organization: { select: { name: true } } },
     });
   }
 
