@@ -81,8 +81,8 @@ export class OpenapiMetaBuilder {
     };
   }
 
-  private _unique(arr: string[] | undefined) {
+  private _unique(arr: string[] | undefined): string[] | undefined {
     if (!arr) return arr;
-    return [...new Set(arr)];
+    return Array.from(new Set(arr));
   }
 }
