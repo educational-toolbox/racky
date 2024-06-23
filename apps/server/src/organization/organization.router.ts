@@ -189,5 +189,28 @@ export class OrganizationRouter {
           organizationName: invite.organization.name,
         };
       }),
+    acceptInvite: this.trpc.protectedProcedure
+      .meta({
+        openapi: openapi
+          .clone()
+          .segments('invite', '{id}', 'accept')
+          .summary('Accept an organization invite')
+          .build(),
+      })
+      .input(z.object({ id: z.string() }))
+      .output(z.void())
+      .mutation(async ({ input, ctx }) => {
+        const invite = await this.organizationService.checkInviteExistence(
+          input.id,
+        );
+        if (!invite) {
+          throw new TRPCError({ code: 'NOT_FOUND' });
+        }
+        await this.organizationService.addUser(
+          invite.organization.id,
+          ctx.user.id,
+        );
+        await this.organizationService.validateInvite(input.id);
+      }),
   });
 }

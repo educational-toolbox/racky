@@ -4,23 +4,26 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useContext, useEffect } from "react";
-import { Button } from "~/components/ui/button";
 import { Icon } from "~/components/ui/app-icon";
+import { Button } from "~/components/ui/button";
 import { api } from "~/utils/api/client";
-import type { Session } from "./session.type";
+import type {
+  AuthenticatedSession,
+  LoadingSession,
+  Session,
+} from "./session.type";
 
 const sessionContext = createContext<Session>({
   state: "loading",
   user: undefined,
-  invalidate() {
-    throw new Error("Not implemented");
-  },
 });
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
   const { data: user, isLoading, refetch } = api.user.whoami.useQuery();
 
-  const invalidate = useCallback<Session["invalidate"]>(async () => {
+  const invalidate = useCallback<
+    AuthenticatedSession["invalidate"]
+  >(async () => {
     await refetch();
   }, [refetch]);
 
@@ -29,7 +32,6 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     value = {
       state: "loading",
       user: undefined,
-      invalidate,
     };
   } else if (user != null) {
     value = {
@@ -50,7 +52,20 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const useSession = () => useContext(sessionContext);
+export function useSession(params: {
+  enforce: true;
+}): LoadingSession | AuthenticatedSession;
+export function useSession(params?: { enforce: boolean }): Session;
+export function useSession({ enforce = false } = {}) {
+  const session = useContext(sessionContext);
+  if (enforce && session.state === "unauthenticated") {
+    throw new Error("User is not authenticated");
+  }
+  if (enforce) {
+    return session as LoadingSession | AuthenticatedSession;
+  }
+  return session;
+}
 
 export const SignedIn = ({ children }: PropsWithChildren) => {
   const session = useSession();
@@ -81,7 +96,9 @@ export const SignOutButton = () => {
     <Button
       onClick={async () => {
         await auth.signOut();
-        await session.invalidate();
+        if (session.state !== "loading") {
+          await session.invalidate();
+        }
       }}
       size="icon"
       variant="outline"

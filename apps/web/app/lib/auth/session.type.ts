@@ -8,15 +8,16 @@ export interface LoadingSession {
 export interface UnauthenticatedSession {
   user: undefined;
   state: "unauthenticated";
+  invalidate: () => Promise<void>;
 }
 
 export interface AuthenticatedSession {
   user: AuthUser;
   state: "authenticated";
+  invalidate: () => Promise<void>;
 }
 
-export type Session = (
+export type Session =
   | LoadingSession
   | UnauthenticatedSession
-  | AuthenticatedSession
-) & { invalidate: () => Promise<void> };
+  | AuthenticatedSession;

@@ -35,9 +35,11 @@ export class OrganizationService {
   }
 
   async addUser(organizationId: string, userId: string) {
-    return this.databaseService.organization.update({
-      where: { id: organizationId },
-      data: { users: { connect: { id: userId } } },
+    return this.databaseService.user.update({
+      where: { id: userId },
+      data: {
+        organization: { connect: { id: organizationId } },
+      },
     });
   }
 
@@ -69,7 +71,7 @@ export class OrganizationService {
           { email: inviteIdOrEmail, valid: true },
         ],
       },
-      select: { id: true, organization: { select: { name: true } } },
+      select: { id: true, organization: { select: { name: true, id: true } } },
     });
   }
 
