@@ -1,5 +1,5 @@
 import * as aws from '@aws-sdk/client-s3';
-import { env } from '~/server-env';
+import { env } from '../../server-env';
 
 export const s3client = new aws.S3({
   region: env.AWS_REGION,

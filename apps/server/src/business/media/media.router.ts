@@ -1,7 +1,7 @@
-import { TrpcService } from '~/trpc/trpc.service';
+import { TrpcService } from '../../trpc/trpc.service';
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { TIME } from '~/CONSTANTS';
+import { TIME } from '../../CONSTANTS';
 import { MediaService } from './media.service';
 import { openapi } from './media.openapi';
 

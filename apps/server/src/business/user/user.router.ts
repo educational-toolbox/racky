@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { z } from 'zod';
-import { TIME } from '~/CONSTANTS';
-import { TrpcService } from '~/trpc/trpc.service';
+import { TIME } from '../../CONSTANTS';
+import { TrpcService } from '../../trpc/trpc.service';
 import { openapi } from './user.openapi';
 import { UserService } from './user.service';
 

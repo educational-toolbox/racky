@@ -1,5 +1,5 @@
-import { abilities } from '~/auth/ability-factory';
-import type { AuthUser } from '~/auth/auth-user.type';
+import { abilities } from '../../auth/ability-factory';
+import type { AuthUser } from '../../auth/auth-user.type';
 
 export const organizationPermissionsFor = (user: AuthUser) => {
   abilities.can('read', 'Organization', { users: { some: { id: user.id } } });

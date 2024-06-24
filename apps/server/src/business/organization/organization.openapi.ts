@@ -1,4 +1,4 @@
-import { OpenapiMetaBuilder } from '~/trpc/openapi-meta.builder';
+import { OpenapiMetaBuilder } from '../../trpc/openapi-meta.builder';
 
 const base = new OpenapiMetaBuilder('organization').tags('Organization');
 

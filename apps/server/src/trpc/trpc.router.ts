@@ -6,19 +6,19 @@ import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
 } from 'trpc-openapi';
-import { AuthUserWithPermissions } from '~/auth/auth-user.type';
-import { getPermissions } from '~/auth/permissions';
-import { CatalogRouter } from '~/business/catalog/catalog.router';
-import { CategoryRouter } from '~/business/category/category.router';
-import { DatabaseService } from '~/database/database.service';
-import { ItemRouter } from '~/business/item/item.router';
-import { MediaRouter } from '~/business/media/media.router';
-import { OrganizationRouter } from '~/business/organization/organization.router';
-import { ReservationRouter } from '~/business/reservation/reservation.router';
-import { env } from '~/server-env';
-import { TrpcService } from '~/trpc/trpc.service';
-import { UserRouter } from '~/business/user/user.router';
-import { AuthService } from '~/auth/auth.service';
+import { AuthUserWithPermissions } from '../auth/auth-user.type';
+import { getPermissions } from '../auth/permissions';
+import { CatalogRouter } from '../business/catalog/catalog.router';
+import { CategoryRouter } from '../business/category/category.router';
+import { DatabaseService } from '../database/database.service';
+import { ItemRouter } from '../business/item/item.router';
+import { MediaRouter } from '../business/media/media.router';
+import { OrganizationRouter } from '../business/organization/organization.router';
+import { ReservationRouter } from '../business/reservation/reservation.router';
+import { env } from '../server-env';
+import { TrpcService } from '../trpc/trpc.service';
+import { UserRouter } from '../business/user/user.router';
+import { AuthService } from '../auth/auth.service';
 
 export interface TrpcContext {
   db: DatabaseService;

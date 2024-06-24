@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TrpcService } from '~/trpc/trpc.service';
+import { TrpcService } from '../../trpc/trpc.service';
 import { z } from 'zod';
 import { CatalogService } from './catalog.service';
-import { ItemSchemaRead } from '~/business/item/item.schema';
+import { ItemSchemaRead } from '../../business/item/item.schema';
 import { CatalogItemSchemaRead } from './catalog.schema';
 import { openapi } from './catalog.openapi';
 

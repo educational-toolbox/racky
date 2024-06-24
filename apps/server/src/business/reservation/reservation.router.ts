@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { TrpcService } from '~/trpc/trpc.service';
+import { TrpcService } from '../../trpc/trpc.service';
 import { openapi } from './reservation.openapi';
 import {
   reservationSchemaRead,

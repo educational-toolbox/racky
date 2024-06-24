@@ -6,11 +6,9 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
+    "composite": true,
     "jsx": "react-jsx",
     "outDir": "./dist",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"]
-    }
+    "baseUrl": "."
   }
 }

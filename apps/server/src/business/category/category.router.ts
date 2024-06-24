@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { TrpcService } from '~/trpc/trpc.service';
+import { TrpcService } from '../../trpc/trpc.service';
 import { z } from 'zod';
-import { CategoryService } from '~/business/category/category.service';
+import { CategoryService } from '../../business/category/category.service';
 import {
   CategorySchemaRead,
   CategorySchemaWrite,
-} from '~/business/category/category.schema';
+} from '../../business/category/category.schema';
 import { openapi } from './category.openapi';
 
 @Injectable()
