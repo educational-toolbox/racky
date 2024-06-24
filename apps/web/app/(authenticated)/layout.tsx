@@ -5,14 +5,15 @@ import { useEffect } from "react";
 import type { PropsWithChildren } from "react";
 import { useMenuItems } from "~/(authenticated)/(dashboard)/menu-items.store";
 import { SignedIn, SignedOut } from "~/lib/auth";
-import { useOrganizationId } from "./(dashboard)/organization-context";
+import {
+  OrganizationIdProvider,
+  useOrganizationId,
+} from "./(dashboard)/organization-context";
 
 const AuthenticatedLayout = ({ children }: PropsWithChildren) => {
   const { add, remove } = useMenuItems();
-  const orgId = useOrganizationId();
-
+  const orgId = useOrganizationId({ strict: true });
   useEffect(() => {
-    if (orgId == null) return;
     const ids = [
       add({
         href: "/users",
@@ -38,4 +39,12 @@ const AuthenticatedLayout = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default AuthenticatedLayout;
+const Inner = ({ children }: PropsWithChildren) => {
+  return (
+    <OrganizationIdProvider>
+      <AuthenticatedLayout>{children}</AuthenticatedLayout>
+    </OrganizationIdProvider>
+  );
+};
+
+export default Inner;

@@ -8,11 +8,9 @@ const organizationIdContext = createContext<string | undefined>(undefined);
 
 export const OrganizationIdProvider = ({
   children,
-  strict: enforce = false,
 }: PropsWithChildren<{ strict?: boolean }>) => {
   const session = useSession();
   if (session.state !== "authenticated") return null;
-  if (enforce && !session.user.orgId) return null;
   return (
     <organizationIdContext.Provider value={session.user.orgId ?? undefined}>
       {children}
@@ -21,11 +19,11 @@ export const OrganizationIdProvider = ({
 };
 
 export function useOrganizationId(params: { strict: true }): string;
-export function useOrganizationId(params?: {
-  strict: false;
-}): string | undefined;
-export function useOrganizationId({ strict }: { strict?: boolean } = {}) {
+export function useOrganizationId(params?: { strict: false }): string;
+export function useOrganizationId(params: { strict?: boolean } = {}) {
   const orgID = useContext(organizationIdContext);
-  if (strict && !orgID) throw new Error("Organization ID not found");
+  if (params && params.strict === true && !orgID) {
+    throw new Error("Organization ID not found");
+  }
   return orgID;
 }

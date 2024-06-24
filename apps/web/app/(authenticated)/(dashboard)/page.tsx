@@ -1,19 +1,8 @@
 "use client";
 
-import {
-  OrganizationIdProvider,
-  useOrganizationId,
-} from "./organization-context";
+import { useOrganizationId } from "./organization-context";
 
 export default function Home() {
-  return (
-    <OrganizationIdProvider>
-      <Inner />
-    </OrganizationIdProvider>
-  );
-}
-
-const Inner = () => {
   const orgId = useOrganizationId();
   if (!orgId)
     return (
@@ -23,4 +12,4 @@ const Inner = () => {
       </div>
     );
   return <div>{orgId}</div>;
-};
+}
