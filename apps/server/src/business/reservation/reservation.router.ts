@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { z } from 'zod';
 import { TrpcService } from '~/trpc/trpc.service';
-import { ReservationService } from './reservation.service';
+import { openapi } from './reservation.openapi';
 import {
   reservationSchemaRead,
   reservationSchemaWrite,
 } from './reservation.schema';
-import { z } from 'zod';
+import { ReservationService } from './reservation.service';
 
 @Injectable()
 export class ReservationRouter {
@@ -17,13 +18,7 @@ export class ReservationRouter {
   router = this.trpc.router({
     findAll: this.trpc.publicProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/reservations',
-          tags: ['Reservation'],
-          summary: 'Get all reservations',
-          description: 'Get all reservations from the database',
-        },
+        openapi: openapi().summary('Get all reservations').build(),
       })
       .input(z.void())
       .output(z.array(reservationSchemaRead))
@@ -31,14 +26,10 @@ export class ReservationRouter {
 
     findOne: this.trpc.publicProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/reservation/{id}',
-          example: { request: { id: '1' } },
-          tags: ['Reservation'],
-          summary: 'Get a reservation by id',
-          description: 'Get a reservation from the database by id',
-        },
+        openapi: openapi()
+          .segments('{id}')
+          .summary('Get a reservation by id')
+          .build(),
       })
       .input(z.object({ id: z.string() }))
       .output(reservationSchemaRead.nullable())
@@ -46,13 +37,10 @@ export class ReservationRouter {
 
     create: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'POST',
-          path: '/reservation',
-          tags: ['Reservation'],
-          summary: 'Create a reservation',
-          description: 'Create a reservation in the database',
-        },
+        openapi: openapi()
+          .method('POST')
+          .summary('Create a reservation')
+          .build(),
       })
       .input(reservationSchemaWrite)
       .output(reservationSchemaRead)
@@ -62,13 +50,11 @@ export class ReservationRouter {
 
     update: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'PUT',
-          path: '/reservation',
-          tags: ['Reservation'],
-          summary: 'Update a reservation',
-          description: 'Update a reservation in the database by id',
-        },
+        openapi: openapi()
+          .method('PUT')
+          .segments('{id}')
+          .summary('Update a reservation')
+          .build(),
       })
       .input(reservationSchemaRead)
       .output(reservationSchemaRead)
@@ -78,13 +64,11 @@ export class ReservationRouter {
 
     delete: this.trpc.protectedProcedure
       .meta({
-        openapi: {
-          method: 'DELETE',
-          path: '/reservation',
-          tags: ['Reservation'],
-          summary: 'Delete a reservation',
-          description: 'Delete a reservation from the database by id',
-        },
+        openapi: openapi()
+          .method('DELETE')
+          .segments('{id}')
+          .summary('Delete a reservation')
+          .build(),
       })
       .input(z.object({ id: z.string() }))
       .output(reservationSchemaRead)

@@ -4,7 +4,7 @@ import { OrganizationInvite } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { TrpcService } from '~/trpc/trpc.service';
-import { openapi } from '../organization.router';
+import { openapi } from '../organization.openapi';
 import { OrganizationService } from '../organization.service';
 
 @Injectable()
@@ -16,8 +16,7 @@ export class OrganizationInviteRouter {
   router = this.trpc.router({
     createInvite: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
           .method('POST')
           .segments('{id}', 'invite')
           .summary('Invite a user to an organization')
@@ -53,8 +52,7 @@ export class OrganizationInviteRouter {
       }),
     getInvite: this.trpc.publicProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
           .segments('invite', '{id}')
           .summary('Get an organization invite')
           .build(),
@@ -78,8 +76,8 @@ export class OrganizationInviteRouter {
       }),
     acceptInvite: this.trpc.protectedProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
+          .method('POST')
           .segments('invite', '{id}', 'accept')
           .summary('Accept an organization invite')
           .build(),

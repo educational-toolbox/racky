@@ -13,11 +13,15 @@ export class OpenapiMetaBuilder {
   ) {
     this.meta = {
       method: 'GET',
-      path: `/${root}`,
+      path: `/${root.startsWith('/') ? root.slice(1) : root}`,
       enabled: true,
       protect: false,
       ...override,
     };
+  }
+
+  clone(): OpenapiMetaBuilder {
+    return new OpenapiMetaBuilder(this.root, this.meta);
   }
 
   method(method: OpenApiMethod): OpenapiMetaBuilder {
@@ -68,10 +72,6 @@ export class OpenapiMetaBuilder {
   adminOnly(): OpenapiMetaBuilder {
     this.meta.tags?.push('Admin');
     return this;
-  }
-
-  clone(): OpenapiMetaBuilder {
-    return new OpenapiMetaBuilder(this.root, this.meta);
   }
 
   build(): NonNullable<OpenApiMeta['openapi']> {

@@ -29,6 +29,7 @@ export interface TrpcContext {
 interface OpenapiPath {
   method: OpenApiMethod;
   segments: string[];
+  protected?: boolean;
 }
 
 @Injectable()
@@ -114,43 +115,31 @@ export class TrpcRouter {
     for (const path in this.openapiDoc.paths) {
       const meta = this.openapiDoc.paths[path];
       if (!meta) continue;
+      const requiresAuth = (p: NonNullable<(typeof meta)['get']>) => {
+        return p.security && p.security.length > 0;
+      };
+      const handleMeta = (m: (typeof meta)['get'], method: OpenApiMethod) => {
+        if (!m) return;
+        this.openapiDefinedPaths.push({
+          method,
+          segments: pathSegments,
+          protected: requiresAuth(m),
+        });
+      };
       const pathSegments = path.split('/').slice(1);
-      if (meta.get) {
-        this.openapiDefinedPaths.push({
-          method: 'GET',
-          segments: pathSegments,
-        });
-      }
-      if (meta.post) {
-        this.openapiDefinedPaths.push({
-          method: 'POST',
-          segments: pathSegments,
-        });
-      }
-      if (meta.put) {
-        this.openapiDefinedPaths.push({
-          method: 'PUT',
-          segments: pathSegments,
-        });
-      }
-      if (meta.delete) {
-        this.openapiDefinedPaths.push({
-          method: 'DELETE',
-          segments: pathSegments,
-        });
-      }
-      if (meta.patch) {
-        this.openapiDefinedPaths.push({
-          method: 'PATCH',
-          segments: pathSegments,
-        });
-      }
+      handleMeta(meta.get, 'GET');
+      handleMeta(meta.post, 'POST');
+      handleMeta(meta.put, 'PUT');
+      handleMeta(meta.patch, 'PATCH');
+      handleMeta(meta.delete, 'DELETE');
     }
   }
 
   private logOpenApiPaths() {
     for (const path of this.openapiDefinedPaths) {
-      this.logger.log(`Mapped {/${path.segments.join('/')}, ${path.method}}`);
+      this.logger.log(
+        `Mapped {${path.protected ? '🔒' : '  '} /${path.segments.join('/')}, ${path.method}}`,
+      );
     }
   }
 

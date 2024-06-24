@@ -6,6 +6,7 @@ import {
   CategorySchemaRead,
   CategorySchemaWrite,
 } from '~/business/category/category.schema';
+import { openapi } from './category.openapi';
 
 @Injectable()
 export class CategoryRouter {
@@ -17,13 +18,7 @@ export class CategoryRouter {
   router = this.trpc.router({
     getCategories: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/categories',
-          tags: ['Category'],
-          summary: 'Get all categories',
-          description: 'Get all categories from the database',
-        },
+        openapi: openapi().summary('Get all categories').build(),
       })
       .input(z.void())
       .output(z.array(CategorySchemaRead))
@@ -31,13 +26,7 @@ export class CategoryRouter {
 
     addCategory: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'POST',
-          path: '/category',
-          tags: ['Category'],
-          summary: 'Create a category',
-          description: 'Create a category in the database',
-        },
+        openapi: openapi().method('POST').summary('Create a category').build(),
       })
       .input(CategorySchemaWrite)
       .output(CategorySchemaRead)
@@ -45,13 +34,11 @@ export class CategoryRouter {
 
     editCategory: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'PUT',
-          path: '/category',
-          tags: ['Category'],
-          summary: 'Update a category',
-          description: 'Update a category in the database',
-        },
+        openapi: openapi()
+          .method('PUT')
+          .segments('{id}')
+          .summary('Update a category')
+          .build(),
       })
       .input(CategorySchemaRead)
       .output(CategorySchemaRead)
@@ -59,13 +46,11 @@ export class CategoryRouter {
 
     deleteCategory: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'DELETE',
-          path: '/category',
-          tags: ['Category'],
-          summary: 'Delete a category',
-          description: 'Delete a category from the database',
-        },
+        openapi: openapi()
+          .method('DELETE')
+          .segments('{id}')
+          .summary('Delete a category')
+          .build(),
       })
       .input(z.object({ id: z.string() }))
       .output(CategorySchemaRead)

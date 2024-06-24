@@ -4,18 +4,14 @@ import { Organization, Role } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { TrpcService } from '~/trpc/trpc.service';
-import { OpenapiMetaBuilder } from '~/trpc/openapi-meta.builder';
 import { OrganizationInviteRouter } from './invites/organization-invite.router';
+import { openapi } from './organization.openapi';
 import {
   createOrganizationSchema,
   editOrganizationSchema,
   organizationSchema,
 } from './organization.schema';
 import { OrganizationService } from './organization.service';
-
-export const openapi = new OpenapiMetaBuilder('organization').tags(
-  'Organization',
-);
 
 @Injectable()
 export class OrganizationRouter {
@@ -28,9 +24,7 @@ export class OrganizationRouter {
   organizationRouter = this.trpc.router({
     list: this.trpc.adminProcedure
       .meta({
-        openapi: openapi
-          .clone()
-          .segments('list')
+        openapi: openapi()
           .summary('List organizations')
           .protected()
           .withCache()
@@ -42,8 +36,8 @@ export class OrganizationRouter {
       .query(() => this.organizationService.getAll()),
     create: this.trpc.adminProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
+          .method('POST')
           .summary('Create an organization')
           .protected()
           .build(),
@@ -55,8 +49,7 @@ export class OrganizationRouter {
       }),
     edit: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
           .method('PUT')
           .segments('{id}')
           .summary('Edit an organization')
@@ -81,7 +74,7 @@ export class OrganizationRouter {
       }),
     delete: this.trpc.adminProcedure
       .meta({
-        openapi: openapi
+        openapi: openapi()
           .method('DELETE')
           .segments('{id}')
           .summary('Delete an organization')
@@ -98,8 +91,7 @@ export class OrganizationRouter {
       }),
     getUsers: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
           .method('GET')
           .segments('{id}', 'users')
           .summary('Get users in an organization')

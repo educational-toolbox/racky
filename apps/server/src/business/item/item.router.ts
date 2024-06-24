@@ -4,6 +4,7 @@ import { TrpcService } from '~/trpc/trpc.service';
 import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { openapi } from './item.openapi';
 
 @Injectable()
 export class ItemRouter {
@@ -15,13 +16,7 @@ export class ItemRouter {
   router = this.trpc.router({
     getOne: this.trpc.publicProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/item',
-          tags: ['Item'],
-          summary: 'Get an item',
-          description: 'Get an item from the database by id',
-        },
+        openapi: openapi().segments('{id}').summary('Get an item').build(),
         caching: true,
       })
       .input(z.object({ id: z.string() }))
@@ -34,13 +29,7 @@ export class ItemRouter {
 
     addItem: this.trpc.protectedProcedure
       .meta({
-        openapi: {
-          method: 'POST',
-          path: '/item',
-          tags: ['Item'],
-          summary: 'Create a new item',
-          description: 'Create a new item in the database',
-        },
+        openapi: openapi().method('POST').summary('Create a new item').build(),
       })
       .input(ItemSchemaWrite)
       .output(ItemSchemaRead)
@@ -48,13 +37,11 @@ export class ItemRouter {
 
     editItem: this.trpc.protectedProcedure
       .meta({
-        openapi: {
-          method: 'PUT',
-          path: '/item',
-          tags: ['Item'],
-          summary: 'Update an item',
-          description: 'Update an item in the database by id',
-        },
+        openapi: openapi()
+          .segments('{id}')
+          .method('PUT')
+          .summary('Update an item')
+          .build(),
       })
       .input(ItemSchemaRead)
       .output(ItemSchemaRead)
@@ -62,13 +49,11 @@ export class ItemRouter {
 
     deleteItem: this.trpc.protectedProcedure
       .meta({
-        openapi: {
-          method: 'DELETE',
-          path: '/item',
-          tags: ['Item'],
-          summary: 'Delete an item',
-          description: 'Delete an item in the database by id',
-        },
+        openapi: openapi()
+          .method('DELETE')
+          .segments('{id}')
+          .summary('Delete an item')
+          .build(),
       })
       .input(z.object({ id: z.string() }))
       .output(ItemSchemaRead)

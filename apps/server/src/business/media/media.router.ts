@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { TIME } from '~/CONSTANTS';
 import { MediaService } from './media.service';
+import { openapi } from './media.openapi';
 
 @Injectable()
 export class MediaRouter {
@@ -14,13 +15,7 @@ export class MediaRouter {
   router = this.trpc.router({
     uploadImage: this.trpc.protectedProcedure
       .meta({
-        openapi: {
-          method: 'POST',
-          path: '/media/upload',
-          tags: ['Media'],
-          summary: 'Upload an image',
-          description: 'Upload an image to the server',
-        },
+        openapi: openapi().method('POST').summary('Upload an image').build(),
       })
       .input(
         z.object({
@@ -36,13 +31,10 @@ export class MediaRouter {
       .mutation(({ input }) => this.mediaService.upload(input.fileId)),
     getImage: this.trpc.publicProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/media',
-          tags: ['Media'],
-          summary: 'Get an image',
-          description: 'Get an image from the server by id',
-        },
+        openapi: openapi()
+          .segments('{fileKey}')
+          .summary('Get an image')
+          .build(),
         caching: { ttl: TIME.ONE_HOUR },
       })
       .input(z.object({ fileKey: z.string() }))

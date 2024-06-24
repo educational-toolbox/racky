@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { z } from 'zod';
 import { TIME } from '~/CONSTANTS';
-import { OpenapiMetaBuilder } from '~/trpc/openapi-meta.builder';
 import { TrpcService } from '~/trpc/trpc.service';
+import { openapi } from './user.openapi';
 import { UserService } from './user.service';
-
-const openapi = new OpenapiMetaBuilder('user').tags('User');
 
 @Injectable()
 export class UserRouter {
@@ -18,8 +16,7 @@ export class UserRouter {
   router = this.trpc.router({
     whoami: this.trpc.publicProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
           .summary('Get current user session')
           .segments('whoami')
           .build(),
@@ -39,8 +36,7 @@ export class UserRouter {
       }),
     getUser: this.trpc.publicProcedure
       .meta({
-        openapi: openapi
-          .clone()
+        openapi: openapi()
           .summary('Get user')
           .segments('get', '{id}')
           .withCache()
