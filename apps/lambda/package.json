@@ -1,0 +1,33 @@
+{
+  "name": "@educational-toolbox/racky-lambda-functions",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "with-env": "dotenv -e ../../.env --",
+    "typecheck": "tsc --noEmit",
+    "lint-staged": "lint-staged",
+    "format": "prettier --check \"./functions/**/*.ts\"",
+    "format:write": "prettier --write \"./functions/**/*.ts\"",
+    "format:write:staged": "prettier --write ",
+    "build:webhook-fn": "bash create-zip.sh -p -f handle-clerk-user-webhook"
+  },
+  "prisma": {
+    "schema": "../server/prisma/schema.prisma",
+    "generator": "lambda"
+  },
+  "dependencies": {
+    "svix": "^1.24.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "aws-lambda": "^1.0.7",
+    "prisma": "^5.9.1",
+    "@types/node": "20.11.28",
+    "@types/aws-lambda": "^8.10.140",
+    "dotenv-cli": "^7.4.1",
+    "lint-staged": "^15.2.5",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.2"
+  }
+}

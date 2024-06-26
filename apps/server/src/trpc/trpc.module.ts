@@ -1,29 +1,28 @@
-import { TrpcRouter } from '@educational-toolbox/racky-api/trpc/trpc.router';
-import {
-  TrpcService,
-  trpcServiceProvider,
-} from '@educational-toolbox/racky-api/trpc/trpc.service';
 import { Global, Module } from '@nestjs/common';
-import { DatabaseModule } from '../database/database.module';
 import { AuthModule } from '../auth/auth.module';
-import { CatalogModule } from '@educational-toolbox/racky-api/catalog/catalog.module';
-import { ItemModule } from '@educational-toolbox/racky-api/item/item.module';
-import { CategoryModule } from '@educational-toolbox/racky-api/category/category.module';
-import { ReservationModule } from '../reservation/reservation.module';
-import { MediaModule } from '../media/media.module';
+import { CatalogModule } from '../business/catalog/catalog.module';
+import { CategoryModule } from '../business/category/category.module';
+import { ItemModule } from '../business/item/item.module';
+import { MediaModule } from '../business/media/media.module';
+import { OrganizationModule } from '../business/organization/organization.module';
+import { ReservationModule } from '../business/reservation/reservation.module';
+import { UsersModule } from '../business/user/user.module';
+import { TrpcService, trpcServiceProvider } from '../trpc/trpc.service';
+import { TrpcRouter } from '../trpc/trpc.router';
 
 @Global()
 @Module({
   imports: [
-    DatabaseModule,
     AuthModule,
+    UsersModule,
     CatalogModule,
     ItemModule,
     CategoryModule,
     ReservationModule,
     MediaModule,
+    OrganizationModule,
   ],
   providers: [trpcServiceProvider, TrpcRouter],
-  exports: [TrpcRouter, TrpcService],
+  exports: [TrpcService, TrpcRouter],
 })
 export class TrpcModule {}

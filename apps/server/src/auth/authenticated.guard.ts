@@ -7,7 +7,7 @@ export class AuthenticatedGuard implements CanActivate {
   constructor(private authService: AuthService) {}
 
   canActivate(context: ExecutionContext) {
-    const req = context.switchToHttp().getRequest();
+    const req: Request = context.switchToHttp().getRequest();
     return this.canActivateFromRequest(req);
   }
 

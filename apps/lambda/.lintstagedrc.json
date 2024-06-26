@@ -1,0 +1,4 @@
+{
+  "*.ts": ["pnpm format:write:staged"],
+  "*.json": ["pnpm format:write:staged"]
+}

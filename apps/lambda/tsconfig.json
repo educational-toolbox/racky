@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "strict": true,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "declaration": false,
+    "outDir": "./dist",
+    "rootDir": "./functions"
+  },
+  "include": ["./functions/**/*.ts", "./functions/**/*.js"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+}

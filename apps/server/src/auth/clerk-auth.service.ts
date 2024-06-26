@@ -14,7 +14,7 @@ export class ClerkAuthService extends AuthService {
   }
 
   async validate(request: Request): Promise<boolean> {
-    const tokenFromCookie: string | undefined = request.cookies?.['__session'];
+    const tokenFromCookie = request.cookies?.__session as string | undefined;
     const tokenFromHeader = request.headers.authorization;
 
     const token = tokenFromHeader ? tokenFromHeader : tokenFromCookie;
@@ -40,5 +40,15 @@ export class ClerkAuthService extends AuthService {
     }
 
     return true;
+  }
+
+  async getUserId(req: Request): Promise<string | undefined> {
+    try {
+      const token = req.headers.authorization?.slice(7);
+      if (!token) return undefined;
+      return (await clerkClient.verifyToken(token)).sub;
+    } catch (error) {
+      return undefined;
+    }
   }
 }

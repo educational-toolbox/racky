@@ -14,18 +14,33 @@ function loadEnv<T extends readonly string[] = readonly string[]>(
     throw new Error(`Expected ${label} to be defined`);
   }
   if (allowedValues && !allowedValues.includes(x)) {
-    throw new Error(`Expected ${label} to be of values: ${allowedValues}`);
+    throw new Error(
+      `Expected ${label} to be of values: ${allowedValues.join(', ')}`,
+    );
   }
   return x;
 }
 
 const NEXT_PUBLIC_NESTJS_SERVER = loadEnv('NEXT_PUBLIC_NESTJS_SERVER');
+
 const CLERK_PUBLIC_KEY = loadEnv('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY');
 const CLERK_SECRET_KEY = loadEnv('CLERK_SECRET_KEY');
 const AUTH_PROVIDER = loadEnv('AUTH_PROVIDER', 'unsafe_random', [
   'unsafe_random',
   'clerk',
 ] as const);
+
+const NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID = loadEnv(
+  'NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID',
+);
+const DEFAULT_ORGANIZATION_NAME = loadEnv(
+  'DEFAULT_ORGANIZATION_NAME',
+  'Racky Team',
+);
+const DEFAULT_ORGANIZATION_ZONE = loadEnv(
+  'DEFAULT_ORGANIZATION_ZONE',
+  'Online',
+);
 
 const AWS_REGION = loadEnv('AWS_REGION');
 const AWS_ACCESS_KEY_ID = loadEnv('AWS_ACCESS_KEY_ID');
@@ -40,6 +55,9 @@ export const env = {
   CLERK_PUBLIC_KEY,
   CLERK_SECRET_KEY,
   AUTH_PROVIDER,
+  NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
+  DEFAULT_ORGANIZATION_NAME,
+  DEFAULT_ORGANIZATION_ZONE,
   REDIS_URL,
   AWS_REGION,
   AWS_ACCESS_KEY_ID,

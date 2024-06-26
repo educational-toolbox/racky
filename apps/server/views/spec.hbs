@@ -1,14 +1,23 @@
 <html>
+  <head>
+    <title>Racky API Docs</title>
+  </head>
   <body>
     <style>
       body,html { margin: 0; padding: 0; }
     </style>
-    <script
-      src='https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'
-    ></script>
+    <link
+      href='https://cdn.jsdelivr.net/npm/redark-theme@1.0.3/redark.min.css'
+      rel='stylesheet'
+    />
+    <script src='https://cdn.jsdelivr.net/npm/redark-theme@1.0.3/redark.min.js'>
+    </script>
+    <script src='https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'>
+    </script>
     <redoc></redoc>
     <script>
-      Redoc.init( 'http://localhost:{{port}}/api/openapi.json')
+      Redoc.init('http://localhost:{{port}}/api/openapi.json', { theme: redark
+      })
     </script>
   </body>
 </html>

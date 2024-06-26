@@ -1,5 +1,5 @@
-import { Logger } from '@nestjs/common';
-import { Request } from 'express';
+import type { Logger } from '@nestjs/common';
+import type { Request } from 'express';
 
 export abstract class AuthService {
   constructor(protected readonly _logger: Logger) {}
@@ -8,4 +8,7 @@ export abstract class AuthService {
     _password: string,
   ): boolean | Promise<boolean>;
   abstract validate(request: Request): boolean | Promise<boolean>;
+  abstract getUserId(
+    request: Request,
+  ): string | undefined | Promise<string | undefined>;
 }
