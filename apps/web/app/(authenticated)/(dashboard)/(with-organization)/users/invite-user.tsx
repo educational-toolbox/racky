@@ -56,16 +56,18 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
           id: orgId,
           email: data.email,
         });
+        const inviteUrl = new URL(window.location as unknown as string);
+        inviteUrl.pathname = `/accept-invite/${result.id}`;
+        const inviteLink = inviteUrl.toString();
         if (result.result === "already_invited") {
           toast({
             title: "User already invited",
-            description:
-              "The user has already been invited to the organization",
+            description: `The user has already been invited to the organization (${inviteLink})`,
             icon: "info",
           });
         } else {
           toast({
-            title: "Inivtation sent",
+            title: `Inivtation sent (${inviteLink})`,
             icon: "success",
           });
         }

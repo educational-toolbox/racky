@@ -27,6 +27,7 @@ export class OrganizationInviteRouter {
       .output(
         z.object({
           result: z.enum(['success', 'already_invited']),
+          id: z.string(),
         }),
       )
       .mutation(async ({ input, ctx }) => {
@@ -44,11 +45,14 @@ export class OrganizationInviteRouter {
           input.email,
         );
         if (exists) {
-          return { result: 'already_invited' } as const;
+          return { result: 'already_invited', id: exists.id } as const;
         }
         // TODO: Send invite email
-        await this.organizationService.createInvite(input.email, input.id);
-        return { result: 'success' } as const;
+        const created = await this.organizationService.createInvite(
+          input.email,
+          input.id,
+        );
+        return { result: 'success', id: created.id } as const;
       }),
     getInvite: this.trpc.publicProcedure
       .meta({
