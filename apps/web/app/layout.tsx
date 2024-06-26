@@ -12,8 +12,10 @@ function RootLayout(props: { children: React.ReactNode }) {
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={cn(inter.className)} suppressHydrationWarning>
-          <AppProviders>{props.children}</AppProviders>
-          <Toaster />
+          <AppProviders>
+            {props.children}
+            <Toaster />
+          </AppProviders>
         </body>
       </html>
     </ClerkProvider>

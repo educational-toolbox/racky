@@ -1,33 +1,9 @@
-"use client";
-
 import { RedirectToSignIn } from "@clerk/nextjs";
-import { useEffect } from "react";
 import type { PropsWithChildren } from "react";
-import { useMenuItems } from "~/(authenticated)/(dashboard)/menu-items.store";
 import { SignedIn, SignedOut } from "~/lib/auth";
-import {
-  OrganizationIdProvider,
-  useOrganizationId,
-} from "./(dashboard)/organization-context";
+import { OrganizationIdProvider } from "./(dashboard)/organization-context";
 
-const AuthenticatedLayout = ({ children }: PropsWithChildren) => {
-  const { add, remove } = useMenuItems();
-  const orgId = useOrganizationId({ strict: true });
-  useEffect(() => {
-    const ids = [
-      add({
-        href: "/users",
-        icon: "UserSearch",
-        id: "$item-users-management",
-        label: "Manage users",
-        type: "item",
-      }),
-    ];
-    return () => {
-      for (const id of ids) remove(id);
-    };
-  }, [add, orgId, remove]);
-
+const Inner = ({ children }: PropsWithChildren) => {
   return (
     <>
       <SignedIn>{children}</SignedIn>
@@ -39,12 +15,12 @@ const AuthenticatedLayout = ({ children }: PropsWithChildren) => {
   );
 };
 
-const Inner = ({ children }: PropsWithChildren) => {
+const AuthenticatedLayout = ({ children }: PropsWithChildren) => {
   return (
     <OrganizationIdProvider>
-      <AuthenticatedLayout>{children}</AuthenticatedLayout>
+      <Inner>{children}</Inner>
     </OrganizationIdProvider>
   );
 };
 
-export default Inner;
+export default AuthenticatedLayout;

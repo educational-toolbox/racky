@@ -10,7 +10,7 @@ export const OrganizationIdProvider = ({
   children,
 }: PropsWithChildren<{ strict?: boolean }>) => {
   const session = useSession();
-  if (session.state !== "authenticated") return null;
+  if (session.state !== "authenticated") return <>{children}</>;
   return (
     <organizationIdContext.Provider value={session.user.orgId ?? undefined}>
       {children}
