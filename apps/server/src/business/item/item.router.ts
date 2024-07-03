@@ -30,6 +30,22 @@ export class ItemRouter {
         return item;
       }),
 
+    getItemByCategory: this.trpc.protectedProcedure
+      .meta({
+        openapi: {
+          method: 'GET',
+          path: '/item/category',
+          tags: ['Item'],
+          summary: 'Get items by category',
+          description: 'Get items from the database by category',
+        },
+      })
+      .input(z.object({ category: z.string() }))
+      .output(z.array(ItemSchemaRead))
+      .query(({ input }) =>
+        this.itemService.getItemsByCategory(input.category),
+      ),
+
     addItem: this.trpc.protectedProcedure
       .meta({
         openapi: openapi().method('POST').summary('Create a new item').build(),

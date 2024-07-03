@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
-import { ItemRead, ItemWrite } from '../../business/item/item.schema';
+import { ItemRead, ItemWrite } from './item.schema';
 
 @Injectable()
 export class ItemService {
@@ -9,6 +9,12 @@ export class ItemService {
   async getItemById(itemId: string) {
     return await this.databaseService.item.findUnique({
       where: { id: itemId },
+    });
+  }
+
+  async getItemsByCategory(catalogId: string) {
+    return await this.databaseService.item.findMany({
+      where: { itemCatalogId: catalogId },
     });
   }
 
