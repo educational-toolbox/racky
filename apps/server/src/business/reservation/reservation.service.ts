@@ -16,6 +16,12 @@ export class ReservationService {
     });
   }
 
+  findByUserId(userId: string) {
+    return this.databaseService.reservation.findMany({
+      where: { userId },
+    });
+  }
+
   create(reservation: ReservationWrite, userId: string) {
     return this.databaseService.reservation.create({
       data: {
