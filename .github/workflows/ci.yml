@@ -22,7 +22,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node 18
@@ -51,7 +51,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node 18
@@ -81,7 +81,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node 18
@@ -111,7 +111,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node 18
@@ -142,7 +142,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node 18
@@ -173,7 +173,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node 18
@@ -207,7 +207,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
+        uses: pnpm/action-setup@v4
         with:
           version: 8
       - name: Setup Node 18
