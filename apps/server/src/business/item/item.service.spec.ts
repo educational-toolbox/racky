@@ -4,8 +4,13 @@ import type { DatabaseService } from '../../database/database.service';
 import { ItemService } from './item.service';
 
 describe('item service tests', () => {
+  /**
+   * Mocks the database service and item repository. This way we control the
+   * behavior of the database service and item repository since those are not tested by this test.
+   */
   let mockDatabaseService: SubstituteOf<DatabaseService>;
   let itemRepository: SubstituteOf<DatabaseService['item']>;
+
   let itemService: ItemService;
 
   beforeEach(() => {

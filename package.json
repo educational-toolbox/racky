@@ -8,7 +8,7 @@
     "clean:workspaces": "pnpm -rc exec rimraf dist .next node_modules",
     "clean:root": "rimraf node_modules",
     "dev": "pnpm run --parallel dev",
-    "test": "pnpm with-env pnpm run --parallel test",
+    "test": "pnpm run --parallel test",
     "build:server": "pnpm -F \"@educational-toolbox/racky-api\" build",
     "build:web": "pnpm -F \"@educational-toolbox/racky-web-client\" build",
     "start:server": "pnpm -F \"@educational-toolbox/racky-api\" start:prod",
