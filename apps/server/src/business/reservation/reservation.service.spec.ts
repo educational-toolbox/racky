@@ -4,8 +4,13 @@ import type { DatabaseService } from '../../database/database.service';
 import { ReservationService } from './reservation.service';
 
 describe('reservation service tests', () => {
+  /**
+   * Mocks the database service and reservation repository. This way we control the
+   * behavior of the database service and reservation repository since those are not tested by this test.
+   */
   let mockDatabaseService: SubstituteOf<DatabaseService>;
   let reservationRepository: SubstituteOf<DatabaseService['reservation']>;
+
   let reservationService: ReservationService;
 
   beforeEach(() => {

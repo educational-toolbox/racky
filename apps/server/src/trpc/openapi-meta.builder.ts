@@ -24,17 +24,17 @@ export class OpenapiMetaBuilder {
     return new OpenapiMetaBuilder(this.root, this.meta);
   }
 
-  method(method: OpenApiMethod): OpenapiMetaBuilder {
+  method(method: OpenApiMethod): Omit<this, 'method'> {
     this.meta.method = method;
     return this;
   }
 
-  summary(summary: string): OpenapiMetaBuilder {
+  summary(summary: string): Omit<this, 'summary'> {
     this.meta.summary = summary;
     return this;
   }
 
-  description(description: string): OpenapiMetaBuilder {
+  description(description: string): Omit<this, 'description'> {
     this.meta.description = description;
     return this;
   }
@@ -44,32 +44,32 @@ export class OpenapiMetaBuilder {
     return this;
   }
 
-  segments(...segments: [string, ...string[]]): OpenapiMetaBuilder {
+  segments(...segments: [string, ...string[]]): Omit<this, 'segments'> {
     this.meta.path = `/${this.root}/${segments.join('/')}`;
     return this;
   }
 
-  deprecated(): OpenapiMetaBuilder {
+  deprecated(): Omit<this, 'deprecated'> {
     this.meta.deprecated = true;
     return this;
   }
 
-  disable(): OpenapiMetaBuilder {
+  disable(): Omit<this, 'disable'> {
     this.meta.enabled = false;
     return this;
   }
 
-  protected(): OpenapiMetaBuilder {
+  protected(): Omit<this, 'protected'> {
     this.meta.protect = true;
     return this;
   }
 
-  withCache(): OpenapiMetaBuilder {
+  withCache(): Omit<this, 'withCache'> {
     this.meta.tags?.push('Cached');
     return this;
   }
 
-  adminOnly(): OpenapiMetaBuilder {
+  adminOnly(): Omit<this, 'adminOnly'> {
     this.meta.tags?.push('Admin');
     return this;
   }
