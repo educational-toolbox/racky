@@ -1,28 +1,13 @@
 {
-  "extends": "../../tsconfig.json", // Extend the config options from the root,
+  "files": [],
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "baseUrl": ".",
     "paths": {
       "@educational-toolbox/racky-api/*": ["../../apps/server/src/*"],
-      "~/*": ["./app/*"]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+      "~/*": ["./src/*"]
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

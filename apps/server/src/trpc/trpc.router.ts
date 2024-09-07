@@ -79,7 +79,7 @@ export class TrpcRouter {
     return generateOpenApiDocument(this.appRouter, {
       title: 'tRPC OpenAPI',
       version: '1.0.0',
-      baseUrl: env.NEXT_PUBLIC_NESTJS_SERVER,
+      baseUrl: env.NESTJS_SERVER_URL,
     });
   }
 

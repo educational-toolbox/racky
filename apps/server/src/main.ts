@@ -8,7 +8,7 @@ import { join } from 'path';
 import { AppService } from './app.service';
 
 export const getPort = () => {
-  const url = env.NEXT_PUBLIC_NESTJS_SERVER;
+  const url = env.NESTJS_SERVER_URL;
   if (!url) {
     return 4000;
   }
