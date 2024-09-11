@@ -24,12 +24,7 @@ export class OrganizationRouter {
   organizationRouter = this.trpc.router({
     list: this.trpc.adminProcedure
       .meta({
-        openapi: openapi()
-          .summary('List organizations')
-          .protected()
-          .withCache()
-          .build(),
-        caching: true,
+        openapi: openapi().summary('List organizations').protected().build(),
       })
       .input(z.void())
       .output(organizationSchema.array())

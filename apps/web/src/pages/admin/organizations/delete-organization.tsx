@@ -1,5 +1,3 @@
-
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,14 +35,13 @@ export const DeleteOrganization = ({
       toast({
         title: "Organization deleted",
         description: "Organization has been successfully deleted",
-        icon: "success",
       });
     } catch (error) {
+      console.error(error);
       toast({
         title: "Error",
         description: "Failed to delete organization",
         variant: "destructive",
-        icon: "error",
         action: (
           <ToastAction altText="Retry organization deletion" onClick={onDelete}>
             Retry

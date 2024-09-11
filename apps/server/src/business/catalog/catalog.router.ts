@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { TrpcService } from '../../trpc/trpc.service';
 import { openapi } from './catalog.openapi';
-import { CatalogItemSchemaRead } from './catalog.schema';
+import {
+  CatalogItemSchemaRead,
+  CatalogItemSchemaWrite,
+} from './catalog.schema';
 import { CatalogService } from './catalog.service';
 
 @Injectable()
@@ -27,6 +30,26 @@ export class CatalogRouter {
           ctx.user.orgId,
           input.categoryId,
         ),
+      ),
+    createCatalogueItem: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .method('POST')
+          .segments('{categoryId}')
+          .summary('Create a catalogue item')
+          .build(),
+      })
+      .input(
+        CatalogItemSchemaWrite.omit({ organizationId: true }).extend({
+          categoryId: z.string(),
+        }),
+      )
+      .output(CatalogItemSchemaRead)
+      .mutation(({ ctx, input }) =>
+        this.catalogService.createCatalogue({
+          ...input,
+          organizationId: ctx.user.orgId,
+        }),
       ),
   });
 }

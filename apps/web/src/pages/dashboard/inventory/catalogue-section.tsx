@@ -19,7 +19,7 @@ import { columns } from "./columns";
 import { CreateCatalogueButton } from "./create-catalogue";
 import { useInventoryFilters } from "./use-inventory-filters";
 
-export const SubcategorySection = () => {
+export const CatalogueSection = () => {
   const [params, update] = useInventoryFilters();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
