@@ -20,33 +20,43 @@ describe('item service tests', () => {
     itemService = new ItemService(mockDatabaseService);
   });
 
+  const defaultInclude = {
+    catalogueItem: { select: { name: true, id: true } },
+  };
   describe('getItemById resolves', () => {
     beforeEach(() => {
-      itemRepository.findUnique({ where: { id: '1' } }).resolves(
-        {
-          id: '1',
-          name: 'Test Item',
-          available: true,
-          itemCatalogId: '1',
-          picture: 'test.jpg',
-          status: 'new',
-        },
-        {
-          id: '2',
-          name: 'Item2',
-          available: false,
-          itemCatalogId: '1',
-          picture: 'test.jpg',
-          status: 'new',
-        },
-      );
+      itemRepository
+        .findUnique({
+          where: { id: '1' },
+          include: { catalogueItem: { select: { name: true, id: true } } },
+        })
+        .resolves(
+          {
+            id: '1',
+            name: 'Test Item',
+            available: true,
+            catalogueItemId: '1',
+            picture: 'test.jpg',
+            status: 'new',
+          },
+          {
+            id: '2',
+            name: 'Item2',
+            available: false,
+            catalogueItemId: '1',
+            picture: 'test.jpg',
+            status: 'new',
+          },
+        );
     });
 
     // handles cases where the item exists in the database
     it('should handle existing item in the database', async () => {
       const result = await itemService.getItemById('1');
       expect(result).toBeDefined();
-      itemRepository.received(1).findUnique({ where: { id: '1' } });
+      itemRepository
+        .received(1)
+        .findUnique({ where: { id: '1' }, include: defaultInclude });
     });
 
     // successfully retrieves an item by a valid ID
@@ -61,7 +71,7 @@ describe('item service tests', () => {
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
       expect(result).toHaveProperty('available');
-      expect(result).toHaveProperty('itemCatalogId');
+      expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');
     });
@@ -97,34 +107,60 @@ describe('item service tests', () => {
 
   describe('getItemsByCategory', () => {
     beforeEach(() => {
-      itemRepository.findMany({ where: { itemCatalogId: 'cat1' } }).resolves([
-        {
-          id: '1',
-          name: 'Item 1',
-          available: true,
-          picture: 'test.png',
-          status: 'new',
-          itemCatalogId: '1',
-        },
-        {
-          id: '2',
-          name: 'Item 2',
-          available: true,
-          picture: 'test2.png',
-          status: 'new',
-          itemCatalogId: '1',
-        },
-      ]);
+      itemRepository
+        .findMany({
+          where: { catalogueItemId: 'cat1' },
+          include: { catalogueItem: { select: { name: true, id: true } } },
+        })
+        .resolves([
+          {
+            id: '1',
+            name: 'Item 1',
+            available: true,
+            picture: 'test.png',
+            status: 'new',
+            catalogueItemId: '1',
+          },
+          {
+            id: '2',
+            name: 'Item 2',
+            available: true,
+            picture: 'test2.png',
+            status: 'new',
+            catalogueItemId: '1',
+          },
+        ]);
     });
     it('returns items for a valid category ID', async () => {
-      const result = await itemService.getItems('1');
-      itemRepository.received(1).findMany({ where: { itemCatalogId: '1' } });
+      const result = await itemService.getItems(
+        'org1',
+        'categ1',
+        'catal1',
+        'search',
+      );
+      itemRepository.received(1).findMany({
+        where: {
+          name: { contains: 'search', mode: 'insensitive' },
+          catalogueItem: {
+            organizationId: 'org1',
+            categories: { some: { id: 'categ1' } },
+          },
+          catalogueItemId: 'catal1',
+        },
+        include: defaultInclude,
+      });
       expect(result).toBeDefined();
     });
 
     it('returns an empty array for an invalid category ID', async () => {
       const result = await itemService.getItems('2');
-      itemRepository.received(1).findMany({ where: { itemCatalogId: '2' } });
+      itemRepository.received(1).findMany({
+        where: {
+          name: { contains: undefined, mode: 'insensitive' },
+          catalogueItem: { organizationId: '2' },
+        },
+        include: defaultInclude,
+      });
       expect(result).toBeDefined();
     });
 
@@ -133,7 +169,7 @@ describe('item service tests', () => {
       expect(result[0]).toHaveProperty('id');
       expect(result[0]).toHaveProperty('name');
       expect(result[0]).toHaveProperty('available');
-      expect(result[0]).toHaveProperty('itemCatalogId');
+      expect(result[0]).toHaveProperty('catalogueItemId');
       expect(result[0]).toHaveProperty('picture');
       expect(result[0]).toHaveProperty('status');
     });
@@ -147,7 +183,7 @@ describe('item service tests', () => {
         available: true,
         picture: 'test.png',
         status: 'new',
-        itemCatalogId: '1',
+        catalogueItemId: '1',
       });
     });
 
@@ -172,7 +208,7 @@ describe('item service tests', () => {
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
       expect(result).toHaveProperty('available');
-      expect(result).toHaveProperty('itemCatalogId');
+      expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');
     });
@@ -186,7 +222,7 @@ describe('item service tests', () => {
         available: true,
         picture: 'test.png',
         status: 'new',
-        itemCatalogId: '1',
+        catalogueItemId: '1',
       });
     });
 
@@ -213,7 +249,7 @@ describe('item service tests', () => {
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
       expect(result).toHaveProperty('available');
-      expect(result).toHaveProperty('itemCatalogId');
+      expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');
     });
@@ -221,19 +257,26 @@ describe('item service tests', () => {
 
   describe('deleteItem', () => {
     beforeEach(() => {
-      itemRepository.delete({ where: { id: '1' } }).resolves({
-        id: '1',
-        name: 'Item 1',
-        available: true,
-        picture: 'test.png',
-        status: 'new',
-        itemCatalogId: '1',
-      });
+      itemRepository
+        .delete({
+          where: { id: '1' },
+          include: { catalogueItem: { select: { name: true, id: true } } },
+        })
+        .resolves({
+          id: '1',
+          name: 'Item 1',
+          available: true,
+          picture: 'test.png',
+          status: 'new',
+          catalogueItemId: '1',
+        });
     });
 
     it('should delete an existing item', async () => {
       const result = await itemService.deleteItem('1');
-      itemRepository.received(1).delete({ where: { id: '1' } });
+      itemRepository
+        .received(1)
+        .delete({ where: { id: '1' }, include: defaultInclude });
       expect(result).toBeDefined();
     });
 
@@ -242,7 +285,7 @@ describe('item service tests', () => {
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
       expect(result).toHaveProperty('available');
-      expect(result).toHaveProperty('itemCatalogId');
+      expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');
     });
