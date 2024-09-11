@@ -31,7 +31,7 @@ const CategorySelector = () => {
             >
               {categ.name}
             </Button>
-            <RequireAccessLevel level="ADMIN">
+            <RequireAccessLevel level="ADMIN" allowOverride>
               {isSelected && (
                 <UpdateCategory id={categ.id} name={categ.name} selected />
               )}
@@ -46,7 +46,7 @@ const CategorySelector = () => {
 export const CategorySection = () => {
   return (
     <div className="flex flex-col gap-2">
-      <RequireAccessLevel level="ADMIN">
+      <RequireAccessLevel level="ADMIN" allowOverride>
         <CreateCategory />
       </RequireAccessLevel>
       <CategorySelector />

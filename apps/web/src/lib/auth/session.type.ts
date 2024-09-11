@@ -21,3 +21,5 @@ export type Session =
   | LoadingSession
   | UnauthenticatedSession
   | AuthenticatedSession;
+
+export type UserRole = AuthUser["role"];

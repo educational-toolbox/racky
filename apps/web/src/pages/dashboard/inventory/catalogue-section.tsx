@@ -47,7 +47,7 @@ export const CatalogueSection = () => {
           extra={
             <>
               <div className="flex items-center gap-2">
-                <RequireAccessLevel level="ADMIN">
+                <RequireAccessLevel level="ADMIN" allowOverride>
                   <CreateCatalogueButton disabled={categoryId === undefined} />
                 </RequireAccessLevel>
                 <SubcategorySelector />
@@ -66,9 +66,11 @@ export const CatalogueSection = () => {
           overrideNoResults={<CreateItemButton />}
         />
         {!isLoading && validItems.length !== 0 && catalogueId !== undefined && (
-          <div className="grid place-items-center p-2">
-            <CreateItemButton />
-          </div>
+          <RequireAccessLevel level="ADMIN" allowOverride>
+            <div className="grid place-items-center p-2">
+              <CreateItemButton />
+            </div>
+          </RequireAccessLevel>
         )}
       </CardHeader>
     </Card>

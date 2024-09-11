@@ -85,13 +85,13 @@ export const columns: ColumnDef<Item>[] = [
       const _item = row.original;
       return (
         <div className="space-x-1 flex items-center justify-end">
-          <RequireAccessLevel level="USER">
+          <RequireAccessLevel level="USER" allowOverride>
             <Button variant="outline" disabled>
               <Icon name="CalendarPlus" />
               Reserve
             </Button>
           </RequireAccessLevel>
-          <RequireAccessLevel level="ADMIN">
+          <RequireAccessLevel level="ADMIN" allowOverride>
             <Button variant="outline" size="icon" disabled>
               <Icon name="Pencil" />
             </Button>

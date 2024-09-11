@@ -1,4 +1,5 @@
-import { ComponentRef, forwardRef } from "react";
+import type { ComponentRef} from "react";
+import { forwardRef } from "react";
 import { Link, useRoute } from "wouter";
 import { normalizeUrl, normalizeUrlPath } from "~/lib/utils";
 
@@ -25,7 +26,7 @@ export const AppLink = forwardRef<ComponentRef<"a">, AppLinkProps>(function (
 
   const [isActive] = useRoute(finalHref);
 
-  if (typeof finalHref === undefined) {
+  if (typeof finalHref === "undefined") {
     throw new Error("href or to prop is required");
   }
 

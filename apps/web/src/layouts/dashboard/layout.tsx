@@ -1,5 +1,3 @@
-
-
 import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 
@@ -28,12 +26,14 @@ import { RequireAccessLevel, SignOutButton } from "~/lib/auth";
 import { cn, normalizeUrlPath, slugToTitle } from "~/lib/utils";
 import type { ItemTypeMenuItem, MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
+import { useRoleOverride } from "~/hooks/admin/use-role-override";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const [path] = useLocation();
   const crumbs = path.split("/").filter(Boolean);
   const { items } = useMenuItems();
   const cleanPathname = normalizeUrlPath(path);
+  const override = useRoleOverride();
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -62,6 +62,21 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
                 </AppLink>
               </Button>
             </RequireAccessLevel>
+            {override.allowed && (
+              <Button
+                size="icon"
+                variant="outline"
+                tooltip={{
+                  content: `View as ${override.enabled ? "admin" : "user"}`,
+                  delay: 100,
+                }}
+                onClick={() =>
+                  override.setViewAs(override.enabled ? "ADMIN" : "USER")
+                }
+              >
+                <Icon name={override.enabled ? "EyeOff" : "Eye"} />
+              </Button>
+            )}
           </div>
         </header>
 

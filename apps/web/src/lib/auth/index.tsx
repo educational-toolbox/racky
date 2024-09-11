@@ -1,5 +1,3 @@
-
-
 import { useAuth } from "@clerk/clerk-react";
 import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useContext } from "react";
@@ -11,6 +9,7 @@ import type {
   LoadingSession,
   Session,
 } from "./session.type";
+import { useRoleOverride } from "~/hooks/admin/use-role-override";
 
 const sessionContext = createContext<Session>({
   state: "loading",
@@ -109,15 +108,20 @@ export const SignOutButton = () => {
 
 export const RequireAccessLevel = ({
   level: role,
+  allowOverride = false,
   children,
 }: PropsWithChildren<{
   level: NonNullable<Session["user"]>["role"];
+  allowOverride?: boolean;
 }>) => {
   const session = useSession();
+  const override = useRoleOverride();
   const allowed =
     session.state === "authenticated" && session.user.role === role;
-
-  if (allowed) {
+  if (
+    (!allowOverride && allowed) ||
+    (allowOverride && override.allowed && override.viewAs === role)
+  ) {
     return <>{children}</>;
   }
   return null;
