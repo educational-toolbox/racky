@@ -5,15 +5,15 @@ export const ItemSchemaRead = z.object({
   name: z.string(),
   picture: z.string().nullable(),
   status: z.string(),
-  itemCatalogId: z.string(),
-  itemCatalog: z.object({ id: z.string(), name: z.string() }),
+  catalogueItemId: z.string(),
+  catalogueItem: z.object({ id: z.string(), name: z.string() }),
 });
 
 export type ItemRead = z.infer<typeof ItemSchemaRead>;
 
 export const ItemSchemaWrite = ItemSchemaRead.omit({
   id: true,
-  itemCatalog: true,
+  catalogueItem: true,
 }).extend({ id: z.string().optional() });
 
 export type ItemWrite = z.infer<typeof ItemSchemaWrite>;

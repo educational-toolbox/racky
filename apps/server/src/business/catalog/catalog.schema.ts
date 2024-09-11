@@ -11,6 +11,6 @@ export type CatalogItemRead = z.infer<typeof CatalogItemSchemaRead>;
 
 export const CatalogItemSchemaWrite = CatalogItemSchemaRead.omit({
   id: true,
-}).extend({ organizationId: z.string() });
+}).extend({ categoryId: z.string(), organizationId: z.string() });
 
 export type CatalogItemWrite = z.infer<typeof CatalogItemSchemaWrite>;

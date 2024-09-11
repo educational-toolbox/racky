@@ -7,7 +7,7 @@ export class CatalogService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   findCatalogueItems(organizationId: string, categoryId: string) {
-    return this.databaseService.catalogItem.findMany({
+    return this.databaseService.catalogueItem.findMany({
       where: {
         organizationId,
         categories: {
@@ -20,8 +20,18 @@ export class CatalogService {
   }
 
   createCatalogue(catalog: CatalogItemWrite) {
-    return this.databaseService.catalogItem.create({
-      data: catalog,
+    return this.databaseService.catalogueItem.create({
+      data: {
+        description: catalog.description,
+        name: catalog.name,
+        quantity: catalog.quantity,
+        organizationId: catalog.organizationId,
+        categories: {
+          connect: {
+            id: catalog.categoryId,
+          },
+        },
+      },
     });
   }
 }

@@ -20,6 +20,7 @@ export type SheetButtonProps = {
     className?: string;
     tooltip?: ComponentProps<typeof Button>["tooltip"];
     variant?: ComponentProps<typeof Button>["variant"];
+    disabled?: boolean;
   };
   sheet: {
     title: string;
@@ -51,6 +52,7 @@ export const SheetButton = forwardRef<SheetButtonRef, SheetButtonProps>(
           className={cn("gap-2", button.className)}
           onClick={() => setOpen(true)}
           tooltip={button.tooltip}
+          disabled={button.disabled}
         >
           {buttonPosition === "start" && <Icon name={button.icon} />}
           {button.text}

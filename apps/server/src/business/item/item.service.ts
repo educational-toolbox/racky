@@ -9,7 +9,7 @@ export class ItemService {
   async getItemById(itemId: string): Promise<ItemRead | null> {
     return await this.databaseService.item.findUnique({
       where: { id: itemId },
-      include: { itemCatalog: { select: { name: true, id: true } } },
+      include: { catalogueItem: { select: { name: true, id: true } } },
     });
   }
 
@@ -22,13 +22,13 @@ export class ItemService {
     return await this.databaseService.item.findMany({
       where: {
         name: { contains: name },
-        itemCatalog: { organizationId: orgId },
+        catalogueItem: { organizationId: orgId },
         OR: [
-          { itemCatalogId: catalogId },
-          { itemCatalog: { categories: { some: { id: categoryId } } } },
+          { catalogueItemId: catalogId },
+          { catalogueItem: { categories: { some: { id: categoryId } } } },
         ],
       },
-      include: { itemCatalog: { select: { name: true, id: true } } },
+      include: { catalogueItem: { select: { name: true, id: true } } },
     });
   }
 
@@ -39,9 +39,9 @@ export class ItemService {
         available: true,
         name: item.name,
         picture: item.picture,
-        itemCatalogId: item.itemCatalogId,
+        catalogueItemId: item.catalogueItemId,
       },
-      include: { itemCatalog: { select: { name: true, id: true } } },
+      include: { catalogueItem: { select: { name: true, id: true } } },
     });
   }
 
@@ -49,14 +49,14 @@ export class ItemService {
     return await this.databaseService.item.update({
       where: { id: item.id },
       data: item,
-      include: { itemCatalog: { select: { name: true, id: true } } },
+      include: { catalogueItem: { select: { name: true, id: true } } },
     });
   }
 
   async deleteItem(itemId: string): Promise<ItemRead> {
     return await this.databaseService.item.delete({
       where: { id: itemId },
-      include: { itemCatalog: { select: { name: true, id: true } } },
+      include: { catalogueItem: { select: { name: true, id: true } } },
     });
   }
 }

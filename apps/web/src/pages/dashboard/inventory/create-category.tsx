@@ -19,10 +19,10 @@ import {
 import { Input } from "~/components/ui/input";
 import { SheetFooter } from "~/components/ui/sheet";
 import { ToastAction } from "~/components/ui/toast";
-import { useExtractedSearchParams } from "~/hooks/use-extracted-searchparams";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/api/client";
 import { useOrganizationId } from "../organization-context";
+import { useInventoryFilters } from "./use-inventory-filters";
 
 const schema = z.object({
   name: z
@@ -49,7 +49,7 @@ const sheetConfig: SheetButtonProps["sheet"] = {
 
 export const CreateCategory = () => {
   const orgId = useOrganizationId({ strict: true });
-  const [, update] = useExtractedSearchParams();
+  const [, update] = useInventoryFilters();
   const buttonRef = useRef<SheetButtonRef>(null);
 
   const { toast } = useToast();

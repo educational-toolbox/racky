@@ -156,7 +156,7 @@ describe('item service tests', () => {
         name: 'Item 1',
         picture: 'test.png',
         status: 'new',
-        itemCatalogId: '1',
+        catalogueItemId: '1',
       });
       itemRepository.received(1).create(Arg.any());
       expect(result).toBeDefined();
@@ -167,7 +167,7 @@ describe('item service tests', () => {
         name: 'Item 1',
         picture: 'test.png',
         status: 'new',
-        itemCatalogId: '1',
+        catalogueItemId: '1',
       });
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
@@ -196,7 +196,7 @@ describe('item service tests', () => {
         name: 'Item 1',
         picture: 'test.png',
         status: 'new',
-        itemCatalogId: '1',
+        catalogueItemId: '1',
       });
       itemRepository.received(1).update(Arg.any());
       expect(result).toBeDefined();
@@ -208,7 +208,7 @@ describe('item service tests', () => {
         name: 'Item 1',
         picture: 'test.png',
         status: 'new',
-        itemCatalogId: '1',
+        catalogueItemId: '1',
       });
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');

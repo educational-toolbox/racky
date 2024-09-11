@@ -3,7 +3,7 @@ import { AbilityBuilder } from '@casl/ability';
 import type { PrismaQuery, Subjects } from '@casl/prisma';
 import { createPrismaAbility } from '@casl/prisma';
 import type {
-  CatalogItem,
+  CatalogueItem,
   Category,
   Item,
   Organization,
@@ -20,7 +20,7 @@ export type AppAbility = PureAbility<
     AbilityActions,
     Subjects<{
       User: User;
-      CatalogItem: CatalogItem;
+      CatalogueItem: CatalogueItem;
       Category: Category;
       Item: Item;
       Organization: Organization;

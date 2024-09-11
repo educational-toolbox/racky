@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { Loader } from "~/components/shared/loader";
 import { Card, CardHeader } from "~/components/ui/card";
@@ -12,7 +11,6 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { useDebounce } from "~/hooks/use-debounce";
-import { useExtractedSearchParams } from "~/hooks/use-extracted-searchparams";
 import { api } from "~/lib/api/client";
 import { RequireAccessLevel } from "~/lib/auth";
 import { columns } from "./columns";
@@ -47,7 +45,7 @@ export const CatalogueSection = () => {
             <>
               <div className="flex items-center gap-2">
                 <RequireAccessLevel level="ADMIN">
-                  <CreateCatalogueButton />
+                  <CreateCatalogueButton disabled={categoryId === undefined} />
                 </RequireAccessLevel>
                 <SubcategorySelector />
               </div>
@@ -68,47 +66,36 @@ export const CatalogueSection = () => {
 };
 
 const SubcategorySelector = () => {
-  const [params, update] = useExtractedSearchParams();
+  const [params, update] = useInventoryFilters();
   const selectedCategory = params["categoryId"];
   const { data: catalogItems, isLoading } = api.catalog.catalogueItems.useQuery(
     { categoryId: selectedCategory! },
     { enabled: selectedCategory !== undefined }
   );
   const validCatalogItems = catalogItems ?? [];
-  const selectedCatalogItem = params["catalogItemId"];
-
-  let placeholder: ReactNode = "Select a subcategory";
-  if (selectedCategory === undefined) {
-    placeholder = "Select a category";
-  }
-  if (isLoading) {
-    placeholder = <Loader />;
-  }
-  if (selectedCatalogItem === undefined || validCatalogItems.length === 0) {
-    placeholder = "All subcategories";
-  }
+  const selectedCatalogueId = params["catalogId"];
   return (
-    <Select>
-      <SelectTrigger
-        className="min-w-[180px] max-w-min"
-        disabled={placeholder !== "Select a subcategory"}
-      >
-        <SelectValue placeholder={placeholder} />
+    <Select
+      defaultValue="default"
+      value={
+        selectedCatalogueId === undefined ? "default" : selectedCatalogueId
+      }
+      onValueChange={(selectedCatalogueId) =>
+        update({
+          catalogId:
+            selectedCatalogueId === "default" ? undefined : selectedCatalogueId,
+        })
+      }
+    >
+      <SelectTrigger className="min-w-[180px] max-w-min">
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
+        <SelectItem value="default">
+          {isLoading ? <Loader /> : "All catalogues"}
+        </SelectItem>
         {validCatalogItems.map((catalogItem) => (
-          <SelectItem
-            value={catalogItem.id}
-            key={catalogItem.id}
-            onClick={() =>
-              update({
-                catalogItemId:
-                  selectedCatalogItem === catalogItem.id
-                    ? undefined
-                    : catalogItem.id,
-              })
-            }
-          >
+          <SelectItem value={catalogItem.id} key={catalogItem.id}>
             {catalogItem.name}
           </SelectItem>
         ))}

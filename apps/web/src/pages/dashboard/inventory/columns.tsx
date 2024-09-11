@@ -30,7 +30,7 @@ export const columns: ColumnDef<Item>[] = [
     ),
     cell: ({ row }) => {
       const item = row.original;
-      return <Badge>{item.itemCatalog.name}</Badge>;
+      return <Badge>{item.catalogueItem.name}</Badge>;
     },
   },
   {

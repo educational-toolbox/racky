@@ -47,10 +47,12 @@ export function Toaster() {
   );
 }
 
+export type ToastIconType = "info" | "success" | "error" | "warning" | undefined;
+
 function ToastIcon({
   icon,
 }: {
-  icon: "info" | "success" | "error" | "warning" | undefined;
+  icon: ToastIconType;
 }) {
   switch (icon) {
     case "info":

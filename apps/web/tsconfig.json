@@ -4,7 +4,7 @@
     "paths": {
       "@educational-toolbox/racky-api/*": ["../../apps/server/src/*"],
       "~/*": ["./src/*"]
-    }
+    },
   },
   "references": [
     { "path": "./tsconfig.app.json" },

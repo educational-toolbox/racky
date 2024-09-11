@@ -69,7 +69,7 @@ export class TrpcRouter {
     app.use(`/trpc`, (req: Request, res: Response, next: NextFunction) => {
       const middleware = trpcExpress.createExpressMiddleware({
         router: this.appRouter,
-        createContext: (info) => this.createContext(info.req),
+        createContext: (info: { req: Request }) => this.createContext(info.req),
       });
       return middleware(req, res, next);
     });
@@ -105,7 +105,10 @@ export class TrpcRouter {
       }
       const middleware = createOpenApiExpressMiddleware({
         router: this.appRouter,
-        createContext: (info) => this.createContext(info.req),
+        createContext: (info: { req: Request }) => this.createContext(info.req),
+        maxBodySize: undefined,
+        onError: undefined,
+        responseMeta: undefined,
       });
       return middleware(req, res);
     });

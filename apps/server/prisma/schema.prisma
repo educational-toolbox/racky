@@ -40,15 +40,15 @@ model User {
 }
 
 model Organization {
-  id           String               @id @default(uuid())
-  name         String               @unique
-  zone         String
-  users        User[]               @relation(name: "organization_users")
-  categories   Category[]
-  catalogItems CatalogItem[]
-  owner        User?                @relation(name: "organization_owner", fields: [ownerId], references: [id])
-  ownerId      String?              @unique
-  invites      OrganizationInvite[]
+  id             String               @id @default(uuid())
+  name           String               @unique
+  zone           String
+  users          User[]               @relation(name: "organization_users")
+  categories     Category[]
+  catalogueItems CatalogueItem[]
+  owner          User?                @relation(name: "organization_owner", fields: [ownerId], references: [id])
+  ownerId        String?              @unique
+  invites        OrganizationInvite[]
 }
 
 model OrganizationInvite {
@@ -60,15 +60,14 @@ model OrganizationInvite {
 }
 
 model Category {
-  id             String       @id @default(uuid())
+  id             String          @id @default(uuid())
   name           String
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization    @relation(fields: [organizationId], references: [id])
   organizationId String
-  itemCatalog    CatalogItem? @relation(fields: [itemCatalogId], references: [id])
-  itemCatalogId  String?
+  catalogueItems CatalogueItem[]
 }
 
-model CatalogItem {
+model CatalogueItem {
   id             String       @id @default(uuid())
   name           String
   description    String
@@ -80,14 +79,14 @@ model CatalogItem {
 }
 
 model Item {
-  id            String            @id @default(uuid())
-  available     Boolean
-  name          String
-  picture       String?
-  status        String
-  itemCatalog   CatalogItem       @relation(fields: [itemCatalogId], references: [id])
-  itemCatalogId String
-  reservations  ReservationItem[]
+  id              String            @id @default(uuid())
+  available       Boolean
+  name            String
+  picture         String?
+  status          String
+  catalogueItem   CatalogueItem     @relation(fields: [catalogueItemId], references: [id])
+  catalogueItemId String
+  reservations    ReservationItem[]
 }
 
 model ReservationItem {
