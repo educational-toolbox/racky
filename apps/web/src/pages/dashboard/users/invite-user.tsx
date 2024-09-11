@@ -120,11 +120,7 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
             )}
           />
           <SheetFooter>
-            <Button
-              type="submit"
-              className="gap-1"
-              disabled={sendInviteMutation.isPending}
-            >
+            <Button type="submit" disabled={sendInviteMutation.isPending}>
               <Icon name="Send" size={16} />
               Send
             </Button>

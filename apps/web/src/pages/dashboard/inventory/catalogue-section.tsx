@@ -15,6 +15,7 @@ import { api } from "~/lib/api/client";
 import { RequireAccessLevel } from "~/lib/auth";
 import { columns } from "./columns";
 import { CreateCatalogueButton } from "./create-catalogue";
+import { CreateItemButton } from "./create-item";
 import { useInventoryFilters } from "./use-inventory-filters";
 
 export const CatalogueSection = () => {
@@ -35,6 +36,8 @@ export const CatalogueSection = () => {
     },
     { enabled: categoryId !== undefined }
   );
+
+  const validItems = items ?? [];
 
   return (
     <Card>
@@ -58,9 +61,15 @@ export const CatalogueSection = () => {
             </>
           }
           columns={columns}
-          data={items ?? []}
+          data={validItems}
           withPagination={{ pageSizes: [10], selectableRows: true }}
+          overrideNoResults={<CreateItemButton />}
         />
+        {!isLoading && validItems.length !== 0 && catalogueId !== undefined && (
+          <div className="grid place-items-center p-2">
+            <CreateItemButton />
+          </div>
+        )}
       </CardHeader>
     </Card>
   );

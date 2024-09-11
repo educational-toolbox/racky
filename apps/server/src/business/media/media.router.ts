@@ -34,8 +34,9 @@ export class MediaRouter {
         openapi: openapi()
           .segments('{fileKey}')
           .summary('Get an image')
+          .withCache()
           .build(),
-        caching: { ttl: TIME.ONE_HOUR },
+        caching: { ttl: TIME.FIVE_MINUTES },
       })
       .input(z.object({ fileKey: z.string() }))
       .output(z.string())

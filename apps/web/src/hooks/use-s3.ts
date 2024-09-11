@@ -1,10 +1,15 @@
+import { useState } from "react";
 import { api } from "~/lib/api/client";
 
 export const s3 = {
   useUploadImage: () => {
+    const [key, setKey] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
     const apiUtils = api.useUtils();
     const uploadMutation = api.media.uploadImage.useMutation();
     return {
+      uploadedImageKey: key,
+      isImageUploading: isUploading,
       /**
        * Uploads an image to S3.
        * @param file The file to upload. If not provided, a file picker will be shown.
@@ -12,6 +17,8 @@ export const s3 = {
        */
       async upload(file?: File): Promise<string | null> {
         const uploadFile = async (fileToUpload: File) => {
+          setKey(null);
+          setIsUploading(true);
           const uploadMeta = await uploadMutation.mutateAsync({
             fileId: fileToUpload.name,
           });
@@ -24,11 +31,14 @@ export const s3 = {
           });
           if (uploadRes.status !== 200) {
             console.error("Failed to upload image");
+            setIsUploading(false);
             return null;
           }
           await apiUtils.media.getImage.invalidate({
             fileKey: uploadMeta.key,
           });
+          setKey(uploadMeta.key);
+          setIsUploading(false);
           return uploadMeta.key;
         };
         if (file != null) {

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { ItemRead, ItemWrite } from './item.schema';
+import type { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ItemService {
@@ -19,15 +20,18 @@ export class ItemService {
     catalogId?: string,
     name?: string,
   ): Promise<ItemRead[]> {
+    const query: Prisma.ItemWhereInput = {
+      name: { contains: name, mode: 'insensitive' },
+      catalogueItem: { organizationId: orgId },
+    };
+    if (categoryId) {
+      query.catalogueItem!.categories = { some: { id: categoryId } };
+    }
+    if (catalogId) {
+      query.catalogueItemId = catalogId;
+    }
     return await this.databaseService.item.findMany({
-      where: {
-        name: { contains: name },
-        catalogueItem: { organizationId: orgId },
-        OR: [
-          { catalogueItemId: catalogId },
-          { catalogueItem: { categories: { some: { id: categoryId } } } },
-        ],
-      },
+      where: query,
       include: { catalogueItem: { select: { name: true, id: true } } },
     });
   }

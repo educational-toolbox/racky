@@ -32,6 +32,7 @@ export function DataTable<TData, TValue>({
   withPagination,
   withSearch,
   loading,
+  overrideNoResults,
   extra,
 }: DataTableProps<TData, TValue> & {
   withPagination?:
@@ -43,6 +44,7 @@ export function DataTable<TData, TValue>({
   withSearch?: boolean;
   extra?: ReactNode;
   loading?: boolean;
+  overrideNoResults?: ReactNode;
 }) {
   const showPagination = withPagination !== false;
   const paginationOptions = {
@@ -105,38 +107,38 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        {!loading && (
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
+
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24">
+                <Loader centered size="lg" />
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
-          </TableBody>
-        )}
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                {overrideNoResults != null
+                  ? overrideNoResults
+                  : "No results found"}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
       </Table>
-      {loading && <Loader centered size="lg" className="w-full my-8" />}
       {showPagination && !lessRowsThanSmallestPageSize && (
         <DataTablePagination
           table={table}
