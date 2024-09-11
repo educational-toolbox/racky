@@ -50,6 +50,7 @@ export const SheetButton = forwardRef<SheetButtonRef, SheetButtonProps>(
         <Button
           size={button.text ? "default" : "icon"}
           className={cn("gap-2", button.className)}
+          variant={button.variant}
           onClick={() => setOpen(true)}
           tooltip={button.tooltip}
           disabled={button.disabled}
