@@ -50,6 +50,7 @@ export const CatalogueSection = () => {
                 <SubcategorySelector />
               </div>
               <Input
+                icon="Search"
                 placeholder="Search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -92,7 +93,11 @@ const SubcategorySelector = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="default">
-          {isLoading ? <Loader /> : "All catalogues"}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            `All catalogues - ${validCatalogItems.length}`
+          )}
         </SelectItem>
         {validCatalogItems.map((catalogItem) => (
           <SelectItem value={catalogItem.id} key={catalogItem.id}>
