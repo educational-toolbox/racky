@@ -1,22 +1,13 @@
 import { Icon } from "~/components/shared/app-icon";
 import { Button } from "~/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/components/ui/sheet";
+import { SheetFooter } from "~/components/ui/sheet";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useState } from "react";
+import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useToast } from "~/hooks/use-toast";
-import { api } from "~/lib/api/client";
-import { ToastAction } from "~/components/ui/toast";
+import type { SheetButtonRef } from "~/components/shared/sheet-button";
+import { SheetButton } from "~/components/shared/sheet-button";
 import {
   Form,
   FormControl,
@@ -27,6 +18,9 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { ToastAction } from "~/components/ui/toast";
+import { useToast } from "~/hooks/use-toast";
+import { api } from "~/lib/api/client";
 
 const schema = z.object({
   email: z.string().email(),
@@ -36,8 +30,8 @@ type InviteUserForm = z.infer<typeof schema>;
 
 export const InviteUser = ({ orgId }: { orgId: string }) => {
   const sendInviteMutation = api.org.createInvite.useMutation();
+  const buttonRef = useRef<SheetButtonRef>(null);
 
-  const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<InviteUserForm>({
@@ -61,16 +55,14 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
           toast({
             title: "User already invited",
             description: `The user has already been invited to the organization (${inviteLink})`,
-            icon: "info",
           });
         } else {
           toast({
             title: `Inivtation sent (${inviteLink})`,
-            icon: "success",
           });
         }
         form.reset();
-        setOpen(false);
+        buttonRef.current?.close();
       } catch (error) {
         const message =
           error instanceof Error && "message" in error
@@ -79,7 +71,6 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
         toast({
           title: "Failed to send an invitation",
           description: message,
-          icon: "error",
           action: (
             <ToastAction
               onClick={() => onSubmit(data)}
@@ -95,54 +86,51 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
   );
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button size="icon">
-          <Icon name="UserPlus" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 mt-6 mb-4"
-          >
-            <SheetHeader>
-              <SheetTitle>Invite a user to your organization</SheetTitle>
-              <SheetDescription>
-                Enter the email address of the user you would like to invite.
-              </SheetDescription>
-            </SheetHeader>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: user@example.com" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    The user will receive an email with an invitation to join
-                    the organization.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <SheetFooter>
-              <Button
-                type="submit"
-                className="gap-1"
-                disabled={sendInviteMutation.isPending}
-              >
-                <Icon name="Send" size={16} />
-                Send
-              </Button>
-            </SheetFooter>
-          </form>
-        </Form>
-      </SheetContent>
-    </Sheet>
+    <SheetButton
+      ref={buttonRef}
+      button={{
+        icon: "UserPlus",
+      }}
+      sheet={{
+        title: "Invite a user to your organization",
+        description:
+          "Enter the email address of the user you would like to invite.",
+      }}
+    >
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 mt-6 mb-4"
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ex: user@example.com" {...field} />
+                </FormControl>
+                <FormDescription>
+                  The user will receive an email with an invitation to join the
+                  organization.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SheetFooter>
+            <Button
+              type="submit"
+              className="gap-1"
+              disabled={sendInviteMutation.isPending}
+            >
+              <Icon name="Send" size={16} />
+              Send
+            </Button>
+          </SheetFooter>
+        </form>
+      </Form>
+    </SheetButton>
   );
 };
