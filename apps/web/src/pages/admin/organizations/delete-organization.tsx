@@ -1,4 +1,4 @@
-"use client";
+
 
 import {
   AlertDialog,
@@ -11,10 +11,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
-import { Icon } from "~/components/ui/app-icon";
+import { Icon } from "~/components/shared/app-icon";
 import { Button } from "~/components/ui/button";
 import { ToastAction } from "~/components/ui/toast";
-import { useToast } from "~/components/ui/use-toast";
+import { useToast } from "~/hooks/use-toast";
 import { useSession } from "~/lib/auth";
 import { api } from "~/lib/api/client";
 import type { RouterOutputs } from "~/lib/api/server-types";

@@ -20,10 +20,15 @@ export class CatalogService {
     });
   }
 
-  findCatalogueItems(organizationId: string) {
+  findCatalogueItems(organizationId: string, categoryId: string) {
     return this.databaseService.catalogItem.findMany({
       where: {
         organizationId,
+        categories: {
+          some: {
+            id: categoryId,
+          },
+        },
       },
     });
   }

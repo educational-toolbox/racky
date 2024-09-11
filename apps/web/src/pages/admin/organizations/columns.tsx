@@ -1,13 +1,13 @@
-"use client";
+
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { UserCard } from "~/components/shared/user/user-card";
-import { Icon } from "~/components/ui/app-icon";
+import { Icon } from "~/components/shared/app-icon";
 import { Button } from "~/components/ui/button";
 import { DataTableColumnHeader } from "~/components/ui/data-table/column-header";
 import type { RouterOutputs } from "~/lib/api/server-types";
-import { DeleteOrganization } from "./delete-organisation";
-import { EditOrganization } from "./edit-organisation";
+import { DeleteOrganization } from "./delete-organization";
+import { EditOrganization } from "./edit-organization";
 import { api } from "~/lib/api/client";
 
 export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [

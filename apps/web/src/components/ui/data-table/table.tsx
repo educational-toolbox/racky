@@ -1,5 +1,3 @@
-
-
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   flexRender,
@@ -21,6 +19,7 @@ import { DataTablePagination } from "./pagination";
 import { DataTableViewOptions } from "./view-options";
 import { DataTableSearch } from "./table-search";
 import type { ReactNode } from "react";
+import { Loader } from "~/components/shared/loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,6 +31,7 @@ export function DataTable<TData, TValue>({
   data,
   withPagination,
   withSearch,
+  loading,
   extra,
 }: DataTableProps<TData, TValue> & {
   withPagination?:
@@ -42,6 +42,7 @@ export function DataTable<TData, TValue>({
       };
   withSearch?: boolean;
   extra?: ReactNode;
+  loading?: boolean;
 }) {
   const showPagination = withPagination !== false;
   const paginationOptions = {
@@ -74,7 +75,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-1">
-      {(withSearch ?? someColumnsHideable ?? extra) && (
+      {(withSearch || someColumnsHideable || extra != null) && (
         <div className="flex items-center justify-between gap-1">
           {extra}
           {withSearch && <DataTableSearch table={table} />}
@@ -96,7 +97,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 );
@@ -104,29 +105,38 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+        {!loading && (
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            )}
+          </TableBody>
+        )}
       </Table>
+      {loading && <Loader centered size="lg" className="w-full my-8" />}
       {showPagination && !lessRowsThanSmallestPageSize && (
         <DataTablePagination
           table={table}

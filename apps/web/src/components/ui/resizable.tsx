@@ -3,7 +3,7 @@
 import * as ResizablePrimitive from "react-resizable-panels";
 
 import { cn } from "~/lib/utils";
-import { Icon } from "./app-icon";
+import { Icon } from "~/components/shared/app-icon";
 
 const ResizablePanelGroup = ({
   className,

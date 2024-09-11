@@ -33,22 +33,28 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  },
+  }
 );
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  tooltip?: string;
+  tooltip?: string | { content: string; delay: number };
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, tooltip, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    if (tooltip) {
+    const tooltipContent =
+      tooltip && typeof tooltip === "object" ? tooltip.content : tooltip;
+    if (tooltipContent) {
       return (
-        <Tooltip>
+        <Tooltip
+          delayDuration={
+            typeof tooltip === "object" ? tooltip.delay : undefined
+          }
+        >
           <TooltipTrigger asChild>
             <Comp
               className={cn(buttonVariants({ variant, size, className }))}
@@ -56,7 +62,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               {...props}
             />
           </TooltipTrigger>
-          <TooltipContent>{tooltip}</TooltipContent>
+          <TooltipContent>{tooltipContent}</TooltipContent>
         </Tooltip>
       );
     }
@@ -68,7 +74,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  },
+  }
 );
 Button.displayName = "Button";
 

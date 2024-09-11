@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Icon } from "~/components/ui/app-icon";
-import type { IconName } from "~/components/ui/app-icon";
+import { Icon } from "~/components/shared/app-icon";
+import type { IconName } from "~/components/shared/app-icon";
 
 export function AdminDashboard() {
   return (

@@ -1,5 +1,5 @@
 import { Route } from "wouter";
-import { AdminOrganizationsPage } from "./organisations/organisation.page";
+import { AdminOrganizationsPage } from "./organizations/organization.page";
 import { AdminDashboard } from "./admin-root.page";
 
 export const AdminRouter = () => {

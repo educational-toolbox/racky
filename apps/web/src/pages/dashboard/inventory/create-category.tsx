@@ -1,9 +1,8 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Icon } from "~/components/shared/app-icon";
 import { Button } from "~/components/ui/button";
 import {
   Form,
@@ -13,79 +12,70 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Icon } from "~/components/ui/app-icon";
 import { Input } from "~/components/ui/input";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "~/components/ui/sheet";
 import { ToastAction } from "~/components/ui/toast";
-import { useToast } from "~/components/ui/use-toast";
+import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/api/client";
-import type { RouterOutputs } from "~/lib/api/server-types";
+import { useOrganizationId } from "../organization-context";
+import { useExtractedSearchParams } from "~/hooks/use-extracted-searchparams";
 
 const schema = z.object({
   name: z
     .string()
-    .min(3, {
-      message: "Name must be at least 3 characters.",
+    .min(2, {
+      message: "Name must be at least 2 characters.",
     })
     .max(50, {
       message: "Name must be at most 50 characters.",
     }),
-  zone: z.string().max(50, {
-    message: "Zone must be at most 50 characters.",
-  }),
 });
 
-type OrganizationEdit = z.infer<typeof schema>;
+type CreateCategoryForm = z.infer<typeof schema>;
 
-export const EditOrganization = ({
-  org,
-}: {
-  org: RouterOutputs["org"]["list"][0];
-}) => {
+export const CreateCategory = () => {
+  const orgId = useOrganizationId({ strict: true });
+  const [, update] = useExtractedSearchParams();
+
   const [open, setOpen] = useState(false);
 
   const { toast } = useToast();
-  const ctx = api.useUtils();
-  const editMutation = api.org.edit.useMutation();
-  const form = useForm<OrganizationEdit>({
-    defaultValues: {
-      name: org.name,
-      zone: org.zone,
-    },
+
+  const form = useForm<CreateCategoryForm>({
+    defaultValues: { name: "" },
     resolver: zodResolver(schema),
   });
 
+  const createMutation = api.category.addCategory.useMutation();
+  const ctx = api.useUtils();
+
   const onSubmit = useCallback(
-    async (data: OrganizationEdit) => {
+    async (data: CreateCategoryForm) => {
       try {
-        await editMutation.mutateAsync({
-          id: org.id,
+        const created = await createMutation.mutateAsync({
+          organizationId: orgId,
           name: data.name,
-          zone: data.zone,
         });
-        await ctx.org.list.refetch();
+        await ctx.category.getCategories.invalidate();
         toast({
-          title: "Organization updated",
-          description: "The organization was successfully updated.",
-          icon: "success",
+          title: "Category created",
         });
         setOpen(false);
+        update({ categoryId: created.id });
       } catch (error) {
         const message =
           error instanceof Error && "message" in error
             ? error.message
             : undefined;
         toast({
-          title: "Failed to update organization",
+          title: "Failed to create category",
           description: message,
-          icon: "error",
           action: (
             <ToastAction
               onClick={() => onSubmit(data)}
@@ -97,18 +87,14 @@ export const EditOrganization = ({
         });
       }
     },
-    [ctx.org.list, editMutation, org.id, toast]
+    [ctx.org.list, createMutation, orgId, toast]
   );
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <Button
-        variant="outline"
-        tooltip="Edit organization"
-        size="icon"
-        onClick={() => setOpen(true)}
-      >
-        <Icon name="Pencil" />
+      <Button onClick={() => setOpen(true)} className='gap-2'>
+        Create category
+        <Icon name="Plus" />
       </Button>
       <SheetContent>
         <Form {...form}>
@@ -117,19 +103,14 @@ export const EditOrganization = ({
             className="flex flex-col gap-4 mt-6 mb-4"
           >
             <SheetHeader>
-              <SheetTitle>
-                Edit organization &quot;{org.name || "-"}&quot;
-              </SheetTitle>
-              <SheetDescription>
-                Edit the name and zone of the organization here.
-              </SheetDescription>
+              <SheetTitle>Create a new category</SheetTitle>
             </SheetHeader>
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Organization name</FormLabel>
+                  <FormLabel>Category name</FormLabel>
                   <FormControl>
                     <Input placeholder="Ex: Acme. Inc" {...field} />
                   </FormControl>
@@ -137,22 +118,9 @@ export const EditOrganization = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="zone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Zone</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: Paris" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <SheetFooter>
-              <Button type="submit" disabled={editMutation.isPending}>
-                Save changes
+              <Button type="submit" disabled={createMutation.isPending}>
+                Create
               </Button>
             </SheetFooter>
           </form>

@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Icon } from "../app-icon";
+import { Icon } from "~/components/shared/app-icon";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;

@@ -30,20 +30,32 @@ export class ItemRouter {
         return item;
       }),
 
-    getItemByCategory: this.trpc.protectedProcedure
+    getItems: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/item/category',
-          tags: ['Item'],
-          summary: 'Get items by category',
-          description: 'Get items from the database by category',
-        },
+        openapi: openapi()
+          .segments('catalogue')
+          .summary('Get items by catalogue')
+          .description('Get items from the database by category')
+          .protected()
+          .withCache()
+          .build(),
+        caching: { common: true, ttl: 60 },
       })
-      .input(z.object({ category: z.string() }))
+      .input(
+        z.object({
+          categoryId: z.string().optional(),
+          catalogItemId: z.string().optional(),
+          search: z.string().optional(),
+        }),
+      )
       .output(z.array(ItemSchemaRead))
-      .query(({ input }) =>
-        this.itemService.getItemsByCategory(input.category),
+      .query(({ input, ctx }) =>
+        this.itemService.getItems(
+          ctx.user.orgId,
+          input.categoryId,
+          input.catalogItemId,
+          input.search,
+        ),
       ),
 
     addItem: this.trpc.protectedProcedure

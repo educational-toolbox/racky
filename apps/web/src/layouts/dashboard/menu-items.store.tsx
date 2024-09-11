@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { IconName } from "~/components/ui/app-icon";
+import type { IconName } from "~/components/shared/app-icon";
 
 type SeparatorId = `$separator-${string}`;
 type ItemId = `$item-${string}`;

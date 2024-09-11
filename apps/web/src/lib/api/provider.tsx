@@ -1,4 +1,4 @@
-"use client";
+
 
 import { useAuth } from "@clerk/clerk-react";
 import { QueryClientProvider } from "@tanstack/react-query";

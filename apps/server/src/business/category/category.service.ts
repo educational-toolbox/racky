@@ -15,6 +15,9 @@ export class CategoryService {
       where: {
         organizationId,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 

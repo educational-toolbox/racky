@@ -8,8 +8,8 @@ import {
   ToastTitle,
   ToastViewport,
 } from "~/components/ui/toast";
-import { useToast } from "~/components/ui/use-toast";
-import { Icon } from "./app-icon";
+import { useToast } from "~/hooks/use-toast";
+import { Icon } from "~/components/shared/app-icon";
 
 export function Toaster() {
   const { toasts } = useToast();

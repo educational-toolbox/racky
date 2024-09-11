@@ -117,19 +117,19 @@ describe('item service tests', () => {
       ]);
     });
     it('returns items for a valid category ID', async () => {
-      const result = await itemService.getItemsByCategory('1');
+      const result = await itemService.getItems('1');
       itemRepository.received(1).findMany({ where: { itemCatalogId: '1' } });
       expect(result).toBeDefined();
     });
 
     it('returns an empty array for an invalid category ID', async () => {
-      const result = await itemService.getItemsByCategory('2');
+      const result = await itemService.getItems('2');
       itemRepository.received(1).findMany({ where: { itemCatalogId: '2' } });
       expect(result).toBeDefined();
     });
 
     it('should return the correct reservation data structure', async () => {
-      const result = await itemService.getItemsByCategory('1');
+      const result = await itemService.getItems('1');
       expect(result[0]).toHaveProperty('id');
       expect(result[0]).toHaveProperty('name');
       expect(result[0]).toHaveProperty('available');

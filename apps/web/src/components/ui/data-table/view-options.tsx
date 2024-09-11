@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
-import { Icon } from "../app-icon";
+import { Icon } from "~/components/shared/app-icon";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;

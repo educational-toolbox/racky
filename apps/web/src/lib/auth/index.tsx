@@ -1,9 +1,9 @@
-"use client";
+
 
 import { useAuth } from "@clerk/clerk-react";
 import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useContext } from "react";
-import { Icon } from "~/components/ui/app-icon";
+import { Icon } from "~/components/shared/app-icon";
 import { Button } from "~/components/ui/button";
 import { api } from "~/lib/api/client";
 import type {

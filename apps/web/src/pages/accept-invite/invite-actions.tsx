@@ -1,4 +1,4 @@
-"use client";
+
 
 import { navigate } from "wouter/use-browser-location";
 import { Button, buttonVariants } from "~/components/ui/button";

@@ -1,4 +1,4 @@
-"use client";
+
 
 import { Card, CardHeader } from "~/components/ui/card";
 import { DataTable } from "~/components/ui/data-table/table";

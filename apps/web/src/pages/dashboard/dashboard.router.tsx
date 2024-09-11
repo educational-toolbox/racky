@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import type { PropsWithChildren } from "react";
 import { useMenuItems } from "~/layouts/dashboard/menu-items.store";
 import { useOrganizationId } from "./organization-context";
+import { InventoryPage } from "./inventory/inventory.page";
 
 const AssingedToDashboard = function ({ children }: PropsWithChildren) {
   const { add, remove } = useMenuItems();
@@ -16,6 +17,13 @@ const AssingedToDashboard = function ({ children }: PropsWithChildren) {
         icon: "UserSearch",
         id: "$item-users-management",
         label: "Manage users",
+        type: "item",
+      }),
+      add({
+        href: "/inventory",
+        icon: "Package",
+        id: "$item-inventory",
+        label: "Inventory",
         type: "item",
       }),
     ];
@@ -38,6 +46,9 @@ export const DashboardRouter = () => {
     <AssingedToDashboard>
       <Route path="/users">
         <OrganizationUsersPage />
+      </Route>
+      <Route path="/inventory">
+        <InventoryPage />
       </Route>
     </AssingedToDashboard>
   );

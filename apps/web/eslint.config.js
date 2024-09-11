@@ -3,6 +3,8 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
+import importPlugin from "eslint-plugin-import";
+import tsParser from "@typescript-eslint/parser";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -12,10 +14,16 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      parser: tsParser, // should be already existing
+      parserOptions: {
+        // add this object
+        project: ["./tsconfig.app.json"],
+      },
     },
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
+      import: importPlugin,
     },
     rules: {
       "react/prop-types": "off",
@@ -38,9 +46,6 @@ export default tseslint.config(
       ],
       "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
     },
-    globals: {
-      React: "writable",
-    },
     settings: {
       "import/parsers": {
         "@typescript-eslint/parser": [".ts", ".tsx"],
@@ -54,9 +59,5 @@ export default tseslint.config(
         version: "detect",
       },
     },
-    env: {
-      browser: true,
-    },
-    reportUnusedDisableDirectives: true,
   }
 );
