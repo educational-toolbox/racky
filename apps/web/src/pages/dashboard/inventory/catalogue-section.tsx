@@ -63,9 +63,8 @@ export const CatalogueSection = () => {
           columns={columns}
           data={validItems}
           withPagination={{ pageSizes: [10], selectableRows: true }}
-          overrideNoResults={<CreateItemButton />}
         />
-        {!isLoading && validItems.length !== 0 && catalogueId !== undefined && (
+        {!isLoading && catalogueId !== undefined && (
           <RequireAccessLevel level="ADMIN" allowOverride>
             <div className="grid place-items-center p-2">
               <CreateItemButton />

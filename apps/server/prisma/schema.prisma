@@ -80,13 +80,18 @@ model CatalogueItem {
 
 model Item {
   id              String            @id @default(uuid())
-  available       Boolean
   name            String
   picture         String?
-  status          String
+  status          ItemStatus        @default(DRAFT)
   catalogueItem   CatalogueItem     @relation(fields: [catalogueItemId], references: [id])
   catalogueItemId String
   reservations    ReservationItem[]
+}
+
+enum ItemStatus {
+  DRAFT
+  AVAILABLE
+  UNAVAILABLE
 }
 
 model ReservationItem {

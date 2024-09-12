@@ -2,6 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Icon } from "~/components/shared/app-icon";
+import { AppImage } from "~/components/shared/app-image";
+import { ItemStatusSelector } from "~/components/shared/item-status-selector";
+import { Loader } from "~/components/shared/loader";
 import type { SheetButtonRef } from "~/components/shared/sheet-button";
 import { SheetButton } from "~/components/shared/sheet-button";
 import { Button } from "~/components/ui/button";
@@ -16,81 +20,78 @@ import {
 import { Input } from "~/components/ui/input";
 import { SheetFooter } from "~/components/ui/sheet";
 import { s3 } from "~/hooks/use-s3";
-import { api } from "~/lib/api/client";
-import { useInventoryFilters } from "./use-inventory-filters";
-import { Icon } from "~/components/shared/app-icon";
-import { Loader } from "~/components/shared/loader";
-import { AppImage } from "~/components/shared/app-image";
 import { useToast } from "~/hooks/use-toast";
+import { api } from "~/lib/api/client";
+import type { Item } from "~/lib/api/server-types";
+import { createItemSchema } from "./create-item";
+import { useInventoryFilters } from "./use-inventory-filters";
 
-export const createItemSchema = z.object({
-  name: z.string().min(3, "Name is too short").max(30, "Name is too long"),
+const editItemSchema = createItemSchema.extend({
+  status: z.enum(["AVAILABLE", "UNAVAILABLE", "DRAFT"]),
 });
 
-type CreateItemForm = z.infer<typeof createItemSchema>;
+type EditItemForm = z.infer<typeof editItemSchema>;
 
-export const CreateItemButton = () => {
+export const EditItemButton = ({ item }: { item: Item }) => {
   const [params] = useInventoryFilters();
   const buttonRef = useRef<SheetButtonRef>(null);
   const { uploadedImageKey, isImageUploading, upload } = s3.useUploadImage();
   const [isImagePreviewLoading, setIsImagePreviewLoading] = useState(false);
-  const { catalogId, categoryId, search } = params;
   const { toast } = useToast();
-  const createItemMutation = api.items.addItem.useMutation();
+  const createItemMutation = api.items.editItem.useMutation();
   const ctx = api.useUtils();
-  const form = useForm<CreateItemForm>({
+  const form = useForm<EditItemForm>({
     defaultValues: {
-      name: search ?? "",
+      name: item.name,
+      status: item.status,
     },
-    resolver: zodResolver(createItemSchema),
+    resolver: zodResolver(editItemSchema),
   });
 
+  const categoryId = params["categoryId"];
+
   const onSubmit = useCallback(
-    async (data: CreateItemForm) => {
-      if (uploadedImageKey == null) {
+    async (data: EditItemForm) => {
+      if (categoryId === undefined) {
         return;
       }
       try {
         const result = await createItemMutation.mutateAsync({
-          catalogueItemId: catalogId!,
-          picture: uploadedImageKey,
-          status: "DRAFT",
-          id: categoryId,
+          catalogueItemId: item.catalogueItemId,
           name: data.name,
+          picture: uploadedImageKey || item.picture,
+          id: item.id,
+          status: data.status || item.status,
         });
-        await ctx.items.getItems.invalidate({
-          catalogItemId: catalogId!,
-          categoryId: categoryId,
-        });
+        await ctx.items.getItems.invalidate();
         toast({
-          title: `Item "${result.name}" created`,
+          title: `Item "${result.name}" modified`,
           icon: "success",
         });
         buttonRef.current?.close();
       } catch (error) {
         toast({
-          title: "Failed to create item",
+          title: "Failed to modify item",
           description: error instanceof Error ? error.message : undefined,
           icon: "error",
         });
       }
     },
-    [uploadedImageKey, createItemMutation, catalogId, categoryId, toast]
+    [uploadedImageKey, createItemMutation, categoryId, toast, item]
   );
 
-  if (catalogId === undefined || categoryId === undefined) {
+  if (categoryId === undefined) {
     return null;
   }
 
   return (
     <SheetButton
       button={{
-        icon: "Plus",
-        text: "Create Item",
-        variant: "secondary",
+        icon: "Pencil",
+        variant: "outline",
       }}
       sheet={{
-        title: "Create Item",
+        title: "Modify Item",
       }}
       ref={buttonRef}
     >
@@ -112,6 +113,25 @@ export const CreateItemButton = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <ItemStatusSelector<"item">
+                    set="item"
+                    selectedItem={field.value}
+                    onSelect={(newV) =>
+                      field.onChange({ target: { value: newV } })
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormItem>
             <FormLabel>Image</FormLabel>
             {uploadedImageKey != null ? (
@@ -121,7 +141,11 @@ export const CreateItemButton = () => {
                 onLoadingStateChange={setIsImagePreviewLoading}
               />
             ) : (
-              <br />
+              <AppImage
+                useS3
+                fileKey={item.picture!}
+                onLoadingStateChange={setIsImagePreviewLoading}
+              />
             )}
             <FormControl>
               <Button
@@ -144,13 +168,9 @@ export const CreateItemButton = () => {
           <SheetFooter>
             <Button
               type="submit"
-              disabled={
-                createItemMutation.isPending ||
-                isImagePreviewLoading ||
-                uploadedImageKey == null
-              }
+              disabled={createItemMutation.isPending || isImagePreviewLoading}
             >
-              Create
+              Edit
             </Button>
           </SheetFooter>
         </form>

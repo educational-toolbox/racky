@@ -7,6 +7,8 @@ import { DataTableColumnHeader } from "~/components/ui/data-table/column-header"
 import type { Item } from "~/lib/api/server-types";
 import { useInventoryFilters } from "./use-inventory-filters";
 import { RequireAccessLevel } from "~/lib/auth";
+import { EditItemButton } from "./edit-item";
+import { ItemStatusBadge } from "~/components/shared/item-status-badge";
 
 export const columns: ColumnDef<Item>[] = [
   {
@@ -66,9 +68,14 @@ export const columns: ColumnDef<Item>[] = [
   {
     accessorKey: "status",
     enableHiding: false,
+    enableSorting: false,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
+    cell: ({ row }) => {
+      const item = row.original;
+      return <ItemStatusBadge status={item.status} />;
+    },
   },
   {
     id: "actions",
@@ -78,11 +85,11 @@ export const columns: ColumnDef<Item>[] = [
       <DataTableColumnHeader
         column={column}
         title="Actions"
-        className="text-right"
+        className="justify-end pr-0"
       />
     ),
     cell: ({ row }) => {
-      const _item = row.original;
+      const item = row.original;
       return (
         <div className="space-x-1 flex items-center justify-end">
           <RequireAccessLevel level="USER" allowOverride>
@@ -92,9 +99,7 @@ export const columns: ColumnDef<Item>[] = [
             </Button>
           </RequireAccessLevel>
           <RequireAccessLevel level="ADMIN" allowOverride>
-            <Button variant="outline" size="icon" disabled>
-              <Icon name="Pencil" />
-            </Button>
+            <EditItemButton item={item} />
             <Button variant="destructive" size="icon" disabled>
               <Icon name="Trash" />
             </Button>

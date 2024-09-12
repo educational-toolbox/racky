@@ -50,7 +50,7 @@ export const columns: ColumnDef<RouterOutputs["org"]["getUsers"][0]>[] = [
       <DataTableColumnHeader
         column={column}
         title="Actions"
-        className="text-right"
+        className="justify-end pr-0"
       />
     ),
     cell: ({ row }) => {

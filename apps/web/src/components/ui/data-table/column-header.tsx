@@ -1,7 +1,7 @@
 import type { Column } from "@tanstack/react-table";
 
 import { cn } from "~/lib/utils";
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +23,21 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort() && !column.getCanHide()) {
-    return <div className={cn(className)}>{title}</div>;
+    return (
+      <div
+        className={cn(
+          buttonVariants({
+            size: "sm",
+            variant: "ghost",
+            className: "-ml-3 h-8 w-full",
+          }),
+          className
+        )}
+      >
+        {title}
+      </div>
+    );
   }
-
   return (
     <div className={cn("flex items-center space-x-2", className)}>
       <DropdownMenu>

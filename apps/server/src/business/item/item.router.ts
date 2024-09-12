@@ -74,7 +74,7 @@ export class ItemRouter {
           .summary('Update an item')
           .build(),
       })
-      .input(ItemSchemaRead)
+      .input(ItemSchemaRead.omit({ catalogueItem: true }))
       .output(ItemSchemaRead)
       .mutation(({ input }) => this.itemService.editItem(input)),
 

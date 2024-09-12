@@ -34,18 +34,16 @@ describe('item service tests', () => {
           {
             id: '1',
             name: 'Test Item',
-            available: true,
             catalogueItemId: '1',
             picture: 'test.jpg',
-            status: 'new',
+            status: 'DRAFT',
           },
           {
             id: '2',
             name: 'Item2',
-            available: false,
             catalogueItemId: '1',
             picture: 'test.jpg',
-            status: 'new',
+            status: 'AVAILABLE',
           },
         );
     });
@@ -70,7 +68,6 @@ describe('item service tests', () => {
       const result = await itemService.getItemById('1');
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
-      expect(result).toHaveProperty('available');
       expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');
@@ -116,17 +113,15 @@ describe('item service tests', () => {
           {
             id: '1',
             name: 'Item 1',
-            available: true,
             picture: 'test.png',
-            status: 'new',
+            status: 'AVAILABLE',
             catalogueItemId: '1',
           },
           {
             id: '2',
             name: 'Item 2',
-            available: true,
             picture: 'test2.png',
-            status: 'new',
+            status: 'UNAVAILABLE',
             catalogueItemId: '1',
           },
         ]);
@@ -168,7 +163,6 @@ describe('item service tests', () => {
       const result = await itemService.getItems('1');
       expect(result[0]).toHaveProperty('id');
       expect(result[0]).toHaveProperty('name');
-      expect(result[0]).toHaveProperty('available');
       expect(result[0]).toHaveProperty('catalogueItemId');
       expect(result[0]).toHaveProperty('picture');
       expect(result[0]).toHaveProperty('status');
@@ -180,9 +174,8 @@ describe('item service tests', () => {
       itemRepository.create(Arg.any()).resolves({
         id: '1',
         name: 'Item 1',
-        available: true,
         picture: 'test.png',
-        status: 'new',
+        status: 'DRAFT',
         catalogueItemId: '1',
       });
     });
@@ -191,7 +184,7 @@ describe('item service tests', () => {
       const result = await itemService.createItem({
         name: 'Item 1',
         picture: 'test.png',
-        status: 'new',
+        status: 'AVAILABLE',
         catalogueItemId: '1',
       });
       itemRepository.received(1).create(Arg.any());
@@ -202,12 +195,11 @@ describe('item service tests', () => {
       const result = await itemService.createItem({
         name: 'Item 1',
         picture: 'test.png',
-        status: 'new',
+        status: 'DRAFT',
         catalogueItemId: '1',
       });
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
-      expect(result).toHaveProperty('available');
       expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');
@@ -219,9 +211,8 @@ describe('item service tests', () => {
       itemRepository.create(Arg.any()).resolves({
         id: '1',
         name: 'Item 1',
-        available: true,
         picture: 'test.png',
-        status: 'new',
+        status: 'DRAFT',
         catalogueItemId: '1',
       });
     });
@@ -231,7 +222,7 @@ describe('item service tests', () => {
         id: '1',
         name: 'Item 1',
         picture: 'test.png',
-        status: 'new',
+        status: 'DRAFT',
         catalogueItemId: '1',
       });
       itemRepository.received(1).update(Arg.any());
@@ -243,12 +234,11 @@ describe('item service tests', () => {
         id: '1',
         name: 'Item 1',
         picture: 'test.png',
-        status: 'new',
+        status: 'DRAFT',
         catalogueItemId: '1',
       });
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
-      expect(result).toHaveProperty('available');
       expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');
@@ -265,9 +255,8 @@ describe('item service tests', () => {
         .resolves({
           id: '1',
           name: 'Item 1',
-          available: true,
           picture: 'test.png',
-          status: 'new',
+          status: 'DRAFT',
           catalogueItemId: '1',
         });
     });
@@ -284,7 +273,6 @@ describe('item service tests', () => {
       const result = await itemService.deleteItem('1');
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
-      expect(result).toHaveProperty('available');
       expect(result).toHaveProperty('catalogueItemId');
       expect(result).toHaveProperty('picture');
       expect(result).toHaveProperty('status');

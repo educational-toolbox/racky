@@ -40,7 +40,6 @@ export class ItemService {
     return await this.databaseService.item.create({
       data: {
         status: item.status,
-        available: true,
         name: item.name,
         picture: item.picture,
         catalogueItemId: item.catalogueItemId,
@@ -52,7 +51,12 @@ export class ItemService {
   async editItem(item: ItemWrite): Promise<ItemRead> {
     return await this.databaseService.item.update({
       where: { id: item.id },
-      data: item,
+      data: {
+        status: item.status,
+        name: item.name,
+        picture: item.picture,
+        catalogueItemId: item.catalogueItemId,
+      },
       include: { catalogueItem: { select: { name: true, id: true } } },
     });
   }
