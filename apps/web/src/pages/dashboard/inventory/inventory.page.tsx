@@ -19,7 +19,12 @@ export const InventoryPage = () => {
     <>
       <Title>Inventory management</Title>
       <ResizablePanelGroup direction="horizontal" className="min-h-full">
-        <ResizablePanel defaultSize={25} className="pr-2 pb-2 -mt-2 pt-2">
+        <ResizablePanel
+          defaultSize={25}
+          minSize={15}
+          maxSize={40}
+          className="pr-2 pb-2 -mt-2 pt-2"
+        >
           <CategorySection />
         </ResizablePanel>
         <ResizableHandle withHandle />
