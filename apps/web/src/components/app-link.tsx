@@ -1,13 +1,14 @@
-import type { ComponentRef} from "react";
+import type { ComponentRef } from "react";
 import { forwardRef } from "react";
 import { Link, useRoute } from "wouter";
+import { useExtractedSearchParams } from "~/hooks/use-extracted-searchparams";
 import { normalizeUrl, normalizeUrlPath } from "~/lib/utils";
 
 type AppLinkProps = Omit<
   React.ComponentPropsWithoutRef<"a">,
   "href" | "children" | "onClick" | "className"
 > & {
-  href: string;
+  href: `/${string}`;
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   absolute?: boolean;
@@ -22,6 +23,7 @@ export const AppLink = forwardRef<ComponentRef<"a">, AppLinkProps>(function (
   { href, children, onClick, absolute, ...props },
   ref
 ) {
+  const [params] = useExtractedSearchParams<"viewAs">();
   let finalHref = href;
 
   const [isActive] = useRoute(finalHref);
@@ -31,13 +33,22 @@ export const AppLink = forwardRef<ComponentRef<"a">, AppLinkProps>(function (
   }
 
   if (!finalHref.startsWith("http")) {
-    finalHref = normalizeUrlPath(finalHref);
+    finalHref = normalizeUrlPath(finalHref) as `/${string}`;
   } else {
-    finalHref = normalizeUrl(finalHref);
+    finalHref = normalizeUrl(finalHref) as `/${string}`;
   }
 
   if (absolute) {
     finalHref = "~" + finalHref;
+  }
+
+  if (params["viewAs"] !== undefined) {
+    if (finalHref.includes("?")) {
+      finalHref = finalHref + "&";
+    } else {
+      finalHref = finalHref + "?";
+    }
+    finalHref = finalHref + `viewAs=${params["viewAs"]}`;
   }
 
   let computedClassName: string | undefined = undefined;
