@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noop() {}
 
 export function toUpperCase(str: string) {
@@ -45,4 +44,22 @@ export function normalizeUrlPath(url: string) {
 
 export function normalizeUrl(url: URL | string) {
   return new URL(url.toString()).toString();
+}
+
+export function hideEmail(email: string) {
+  const [user, domain] = email.split("@");
+  const hiddenUser =
+    user.length > 5
+      ? `${user.slice(0, 2)}...${user.slice(-2)}`
+      : user.slice(0, 1) + "...";
+  const hiddenDomain = domain
+    .split(".")
+    .map((part) => {
+      if (part.length > 3) {
+        return `${part.slice(0, 1)}...${part.slice(-1)}`;
+      }
+      return part;
+    })
+    .join(".");
+  return `${hiddenUser}@${hiddenDomain}`;
 }

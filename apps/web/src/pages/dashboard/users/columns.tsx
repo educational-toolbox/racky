@@ -1,6 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "~/components/ui/data-table/column-header";
+import { useRoleOverride } from "~/hooks/admin/use-role-override";
 import type { RouterOutputs } from "~/lib/api/server-types";
+import { hideEmail } from "~/lib/utils";
 
 export const columns: ColumnDef<RouterOutputs["org"]["getUsers"][0]>[] = [
   {
@@ -33,6 +35,20 @@ export const columns: ColumnDef<RouterOutputs["org"]["getUsers"][0]>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Email" />
     ),
+    cell: ({ row }) => {
+      const user = row.original;
+      const override = useRoleOverride();
+      let emailView;
+      if (
+        (override.allowed && override.enabled) ||
+        override.originalRole !== "ADMIN"
+      ) {
+        emailView = hideEmail(user.email);
+      } else {
+        emailView = user.email;
+      }
+      return <span>{emailView}</span>;
+    },
   },
   {
     accessorKey: "role",

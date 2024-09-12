@@ -8,12 +8,13 @@ import { useCallback, useEffect } from "react";
 type UseRoleOverrideReturn =
   | {
       allowed: false;
+      originalRole?: UserRole;
     }
   | {
       allowed: true;
       enabled: boolean;
-      originalRole: UserRole;
       viewAs: UserRole;
+      originalRole: UserRole;
       setViewAs: (role: UserRole) => void;
     };
 
@@ -54,6 +55,7 @@ export const useRoleOverride = (): UseRoleOverrideReturn => {
   if (session.user?.role !== "ADMIN") {
     return {
       allowed: false,
+      originalRole: session.user?.role,
     };
   }
   return {
