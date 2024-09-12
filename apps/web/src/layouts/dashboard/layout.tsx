@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
 import { AppLink } from "~/components/app-link";
 
@@ -16,7 +16,13 @@ import {
 } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -27,6 +33,8 @@ import { cn, normalizeUrlPath, slugToTitle } from "~/lib/utils";
 import type { ItemTypeMenuItem, MenuItem } from "./menu-items.store";
 import { useMenuItems } from "./menu-items.store";
 import { useRoleOverride } from "~/hooks/admin/use-role-override";
+import { useIsMobile } from "~/hooks/use-is-mobile";
+import { VisuallyHidden } from "~/components/ui/visually-hidden";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const [path] = useLocation();
@@ -34,6 +42,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
   const { items } = useMenuItems();
   const cleanPathname = normalizeUrlPath(path);
   const override = useRoleOverride();
+  const isMobile = useIsMobile();
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -89,7 +98,16 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
 
         {/* MAIN SECTION */}
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          {children}
+          {isMobile ? (
+            <>
+              <span className="text-center">
+                Mobile view not supported yet. Sorry
+              </span>
+              <VisuallyHidden>{children}</VisuallyHidden>
+            </>
+          ) : (
+            children
+          )}
         </main>
       </div>
     </div>
@@ -100,8 +118,9 @@ function MobileMenuWrapper(props: {
   items: readonly MenuItem[];
   pathname: string;
 }) {
+  const [open, setOpen] = useState(false);
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button size="icon" variant="outline" className="sm:hidden">
           <Icon name="PanelLeft" className="h-5 w-5" />
@@ -110,7 +129,7 @@ function MobileMenuWrapper(props: {
       </SheetTrigger>
       <SheetContent side="left" className="sm:max-w-xs">
         <nav className="flex flex-col h-full gap-6 text-lg font-medium">
-          <MobileMenu items={props.items} />
+          <MobileMenu items={props.items} hide={() => setOpen(false)} />
         </nav>
       </SheetContent>
     </Sheet>
@@ -194,24 +213,39 @@ function DashboardBreadcrumbs({ crumbs }: { crumbs: string[] }) {
   );
 }
 
-function MobileMenu({ items }: { items: readonly MenuItem[] }) {
+function MobileMenu({
+  items,
+  hide,
+}: {
+  items: readonly MenuItem[];
+  hide: () => void;
+}) {
   return (
     <>
-      <AppLink
-        href="/"
-        className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-      >
-        <Icon
-          name="Package2"
-          className="h-5 w-5 transition-all group-hover:scale-110"
-        />
-        <span className="sr-only">Acme Inc</span>
-      </AppLink>
+      <SheetHeader>
+        <SheetTitle>
+          <AppLink
+            href="/"
+            onClick={hide}
+            className="flex flex-row items-center gap-2"
+          >
+            <div className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base">
+              <Icon
+                name="Package2"
+                className="h-5 w-5 transition-all group-hover:scale-110"
+              />
+            </div>
+            <span className="sr-only">Acme Inc</span>
+            Racky
+          </AppLink>
+        </SheetTitle>
+      </SheetHeader>
       {items.map((item) =>
         item.type === "item" ? (
           <AppLink
             key={item.href}
             href={item.href}
+            onClick={hide}
             activeClassName={(active) => {
               return cn("flex items-center gap-4 px-2.5", {
                 "text-muted-foreground hover:text-foreground": !active,

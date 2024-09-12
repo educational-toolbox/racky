@@ -4,17 +4,10 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "~/components/ui/resizable";
-import { useIsMobile } from "~/hooks/use-is-mobile";
 import { CatalogueSection } from "./catalogue-section";
 import { CategorySection } from "./category-section";
 
 export const InventoryPage = () => {
-  const isMobile = useIsMobile();
-  if (isMobile) {
-    return (
-      <span className="text-center">Mobile view not supported yet. Sorry</span>
-    );
-  }
   return (
     <>
       <Title>Inventory management</Title>
