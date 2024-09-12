@@ -30,7 +30,7 @@ export function slugToTitle(slug: string) {
   return [capitalize(parts[0]), ...parts.slice(1).map(toLowerCase)].join(" ");
 }
 
-export function normalizeUrlPath(url: string) {
+export function normalizeUrlPath(url: string): `/${string}` {
   if (url === "/") return "/";
   let final = url;
   if (final.endsWith("/")) {
@@ -39,7 +39,7 @@ export function normalizeUrlPath(url: string) {
   if (!final.startsWith("/")) {
     final = `/${final}`;
   }
-  return final;
+  return final as `/${string}`;
 }
 
 export function normalizeUrl(url: URL | string) {

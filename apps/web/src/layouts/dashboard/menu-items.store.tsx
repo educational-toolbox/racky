@@ -9,7 +9,7 @@ export type ItemTypeMenuItem = {
   id: ItemId;
   icon: IconName;
   label: string;
-  href: string;
+  href: `/${string}`;
   exact?: boolean;
   hidden?: boolean;
   className?: string;

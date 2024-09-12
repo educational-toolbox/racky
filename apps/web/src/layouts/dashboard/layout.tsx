@@ -47,9 +47,23 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <MobileMenuWrapper items={items} pathname={cleanPathname} />
           <DashboardBreadcrumbs crumbs={crumbs} />
-          <div className="ml-auto space-x-1">
-            <SignOutButton />
+          <div className="ml-auto flex gap-1 items-center">
             <RequireAccessLevel level="ADMIN">
+              {override.allowed && (
+                <Button
+                  size="icon"
+                  variant="outline"
+                  tooltip={{
+                    content: `View as ${override.enabled ? "admin" : "user"}`,
+                    delay: 100,
+                  }}
+                  onClick={() =>
+                    override.setViewAs(override.enabled ? "ADMIN" : "USER")
+                  }
+                >
+                  <Icon name={override.enabled ? "EyeOff" : "Eye"} />
+                </Button>
+              )}
               <Button
                 size="icon"
                 variant="destructive"
@@ -61,22 +75,15 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
                   <span className="sr-only">Admin panel</span>
                 </AppLink>
               </Button>
-            </RequireAccessLevel>
-            {override.allowed && (
-              <Button
-                size="icon"
-                variant="outline"
-                tooltip={{
-                  content: `View as ${override.enabled ? "admin" : "user"}`,
-                  delay: 100,
-                }}
-                onClick={() =>
-                  override.setViewAs(override.enabled ? "ADMIN" : "USER")
-                }
+              <Separator
+                orientation="vertical"
+                className="inline-block w-[1px] h-6 mx-2"
+                asChild
               >
-                <Icon name={override.enabled ? "EyeOff" : "Eye"} />
-              </Button>
-            )}
+                <div />
+              </Separator>
+            </RequireAccessLevel>
+            <SignOutButton />
           </div>
         </header>
 

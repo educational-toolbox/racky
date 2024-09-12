@@ -27,7 +27,7 @@ const AdminLink = ({
   title,
   icon,
 }: {
-  href: string;
+  href: `/${string}`;
   icon: IconName;
   title: string;
   description: string;
