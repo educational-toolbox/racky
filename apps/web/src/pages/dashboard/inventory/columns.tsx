@@ -9,6 +9,7 @@ import { useInventoryFilters } from "./use-inventory-filters";
 import { RequireAccessLevel } from "~/lib/auth";
 import { EditItemButton } from "./edit-item";
 import { ItemStatusBadge } from "~/components/shared/item-status-badge";
+import { ItemReservationButton } from "./reserve-item";
 
 export const columns: ColumnDef<Item>[] = [
   {
@@ -93,10 +94,7 @@ export const columns: ColumnDef<Item>[] = [
       return (
         <div className="space-x-1 flex items-center justify-end">
           <RequireAccessLevel level="USER" allowOverride>
-            <Button variant="outline" disabled>
-              <Icon name="CalendarPlus" />
-              Reserve
-            </Button>
+            <ItemReservationButton item={item} />
           </RequireAccessLevel>
           <RequireAccessLevel level="ADMIN" allowOverride>
             <EditItemButton item={item} />

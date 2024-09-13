@@ -5,6 +5,7 @@ import { useOrganizationId } from "../organization-context";
 import { columns } from "./columns";
 import { InviteUser } from "./invite-user";
 import { RequireAccessLevel } from "~/lib/auth";
+import { Title } from "~/components/title";
 
 const OrganizationUsersPage = () => {
   const orgId = useOrganizationId({ strict: true });
@@ -12,23 +13,26 @@ const OrganizationUsersPage = () => {
 
   if (isLoading) return <div className="w-full text-center">Loading...</div>;
   return (
-    <Card>
-      <CardHeader>
-        <DataTable
-          columns={columns}
-          data={users ?? []}
-          withPagination={{
-            pageSizes: [10, 50, 100],
-          }}
-          withSearch
-          extra={
-            <RequireAccessLevel level="ADMIN" allowOverride>
-              <InviteUser orgId={orgId} />
-            </RequireAccessLevel>
-          }
-        />
-      </CardHeader>
-    </Card>
+    <>
+      <Title>Users management</Title>
+      <Card>
+        <CardHeader>
+          <DataTable
+            columns={columns}
+            data={users ?? []}
+            withPagination={{
+              pageSizes: [10, 50, 100],
+            }}
+            withSearch
+            extra={
+              <RequireAccessLevel level="ADMIN" allowOverride>
+                <InviteUser orgId={orgId} />
+              </RequireAccessLevel>
+            }
+          />
+        </CardHeader>
+      </Card>
+    </>
   );
 };
 

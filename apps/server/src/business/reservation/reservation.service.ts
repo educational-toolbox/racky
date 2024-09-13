@@ -10,35 +10,59 @@ export class ReservationService {
     return this.databaseService.reservation.findMany();
   }
 
-  findOne(reservationId: string) {
+  findOne(reservationId: string): Promise<ReservationRead | null> {
     return this.databaseService.reservation.findUnique({
       where: { id: reservationId },
     });
   }
 
-  findByUserId(userId: string) {
+  findByUserId(userId: string): Promise<ReservationRead[]> {
     return this.databaseService.reservation.findMany({
       where: { userId },
     });
   }
 
-  create(reservation: ReservationWrite, userId: string) {
+  findActiveForItem(itemId: string, orgId: string): Promise<ReservationRead[]> {
+    return this.databaseService.reservation.findMany({
+      where: {
+        status: { not: 'CANCELLED' },
+        item: { id: itemId, catalogueItem: { organizationId: orgId } },
+      },
+    });
+  }
+
+  create(
+    reservation: ReservationWrite,
+    userId: string,
+    orgId: string,
+  ): Promise<ReservationRead> {
     return this.databaseService.reservation.create({
       data: {
-        ...reservation,
+        endDate: reservation.endDate,
+        startDate: reservation.startDate,
+        status: 'PENDING',
+        item: {
+          connect: {
+            id: reservation.itemId,
+            catalogueItem: { organizationId: orgId },
+          },
+        },
         user: { connect: { id: userId } },
       },
     });
   }
 
-  update(reservation: ReservationRead, userId: string) {
+  update(
+    reservation: ReservationRead,
+    userId: string,
+  ): Promise<ReservationRead> {
     return this.databaseService.reservation.update({
       where: { id: reservation.id, userId },
       data: reservation,
     });
   }
 
-  delete(reservationId: string) {
+  delete(reservationId: string): Promise<ReservationRead> {
     return this.databaseService.reservation.delete({
       where: { id: reservationId },
     });

@@ -28,6 +28,7 @@ export type SheetButtonProps = {
     hidden?: boolean;
   };
   children: React.ReactNode;
+  onClose?: () => void;
 };
 
 export type SheetButtonRef = {
@@ -35,7 +36,7 @@ export type SheetButtonRef = {
 };
 
 export const SheetButton = forwardRef<SheetButtonRef, SheetButtonProps>(
-  ({ button, sheet, children }, ref) => {
+  ({ button, sheet, children, onClose }, ref) => {
     const [open, setOpen] = useState(false);
     const buttonPosition = button.position || "start";
     useImperativeHandle(ref, () => {
@@ -46,7 +47,15 @@ export const SheetButton = forwardRef<SheetButtonRef, SheetButtonProps>(
       };
     }, []);
     return (
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open);
+          if (!open && onClose) {
+            onClose();
+          }
+        }}
+      >
         <Button
           size={button.text ? "default" : "icon"}
           className={cn("gap-2", button.className)}

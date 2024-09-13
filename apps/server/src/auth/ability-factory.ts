@@ -9,7 +9,6 @@ import type {
   Organization,
   OrganizationInvite,
   Reservation,
-  ReservationItem,
   User,
 } from '@prisma/client';
 
@@ -26,7 +25,6 @@ export type AppAbility = PureAbility<
       Organization: Organization;
       OrganizationInvite: OrganizationInvite;
       Reservation: Reservation;
-      ReservationItem: ReservationItem;
     }>,
   ],
   PrismaQuery

@@ -35,6 +35,21 @@ export class ReservationRouter {
       .output(reservationSchemaRead.nullable())
       .query(({ input }) => this.reservationService.findOne(input.id)),
 
+    findActiveForItem: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .segments('active/{itemId}')
+          .summary('Get all active reservations for an item')
+          .build(),
+      })
+      .input(z.object({ itemId: z.string() }))
+      .output(
+        z.array(reservationSchemaRead.omit({ itemId: true, status: true })),
+      )
+      .query(({ input, ctx }) =>
+        this.reservationService.findActiveForItem(input.itemId, ctx.user.orgId),
+      ),
+
     create: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: openapi()
@@ -45,7 +60,7 @@ export class ReservationRouter {
       .input(reservationSchemaWrite)
       .output(reservationSchemaRead)
       .mutation(({ input, ctx }) =>
-        this.reservationService.create(input, ctx.user.orgId),
+        this.reservationService.create(input, ctx.user.id, ctx.user.orgId),
       ),
 
     update: this.trpc.assignedToOrgProcedure

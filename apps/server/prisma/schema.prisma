@@ -79,27 +79,19 @@ model CatalogueItem {
 }
 
 model Item {
-  id              String            @id @default(uuid())
+  id              String        @id @default(uuid())
   name            String
   picture         String?
-  status          ItemStatus        @default(DRAFT)
-  catalogueItem   CatalogueItem     @relation(fields: [catalogueItemId], references: [id])
+  status          ItemStatus    @default(DRAFT)
+  catalogueItem   CatalogueItem @relation(fields: [catalogueItemId], references: [id])
   catalogueItemId String
-  reservations    ReservationItem[]
+  reservations    Reservation[]
 }
 
 enum ItemStatus {
   DRAFT
   AVAILABLE
   UNAVAILABLE
-}
-
-model ReservationItem {
-  id            String      @id @default(uuid())
-  itemId        String
-  reservationId String
-  Item          Item        @relation(fields: [itemId], references: [id])
-  Reservation   Reservation @relation(fields: [reservationId], references: [id])
 }
 
 model Reservation {
@@ -109,5 +101,6 @@ model Reservation {
   status    ReservationStatus @default(PENDING)
   user      User              @relation(fields: [userId], references: [id])
   userId    String
-  items     ReservationItem[]
+  item      Item              @relation(fields: [itemId], references: [id])
+  itemId    String
 }
