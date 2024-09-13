@@ -50,6 +50,17 @@ export class ReservationRouter {
         this.reservationService.findActiveForItem(input.itemId, ctx.user.orgId),
       ),
 
+    getMy: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .segments('my')
+          .summary('Get all reservations for the current user')
+          .build(),
+      })
+      .input(z.void())
+      .output(z.array(reservationSchemaRead))
+      .query(({ ctx }) => this.reservationService.findByUserId(ctx.user.id)),
+
     create: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: openapi()

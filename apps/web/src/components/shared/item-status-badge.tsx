@@ -8,9 +8,11 @@ export const ItemStatusBadge = function <
   TSelectedSet = "item" | "reservation",
 >({
   set = "item" as TSelectedSet,
+  className,
   status,
 }: {
   set?: TSelectedSet;
+  className?: string;
   status: TSelectedSet extends "item" ? ItemStatus : ItemReservationStatus;
 }) {
   const statuses = useMemo(() => {
@@ -21,7 +23,7 @@ export const ItemStatusBadge = function <
   }, [set]);
   const selectedStatus = statuses.find((s) => s.name === status);
   return (
-    <Badge variant={selectedStatus?.color ?? "default"}>
+    <Badge variant={selectedStatus?.color ?? "default"} className={className}>
       {capitalize(status)}
     </Badge>
   );

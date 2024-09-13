@@ -108,19 +108,19 @@ export const SignOutButton = () => {
 
 export const RequireAccessLevel = ({
   level: role,
-  allowOverride = false,
+  exclusive: exclusive = false,
   children,
 }: PropsWithChildren<{
   level: NonNullable<Session["user"]>["role"];
-  allowOverride?: boolean;
+  exclusive?: boolean;
 }>) => {
   const session = useSession();
   const override = useRoleOverride();
   const allowed =
     session.state === "authenticated" && session.user.role === role;
   if (
-    (!allowOverride && allowed) ||
-    (allowOverride && override.allowed && override.viewAs === role)
+    (!exclusive && allowed) ||
+    (exclusive && override.allowed && override.viewAs === role)
   ) {
     return <>{children}</>;
   }

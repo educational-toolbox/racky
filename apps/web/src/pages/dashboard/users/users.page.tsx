@@ -25,7 +25,7 @@ const OrganizationUsersPage = () => {
             }}
             withSearch
             extra={
-              <RequireAccessLevel level="ADMIN" allowOverride>
+              <RequireAccessLevel level="ADMIN" exclusive>
                 <InviteUser orgId={orgId} />
               </RequireAccessLevel>
             }

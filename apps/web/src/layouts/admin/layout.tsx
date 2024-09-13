@@ -5,7 +5,7 @@ import { useMenuItems } from "../dashboard/menu-items.store";
 
 export default function AdminLayout({ children }: PropsWithChildren) {
   return (
-    <RequireAccessLevel level="ADMIN" allowOverride>
+    <RequireAccessLevel level="ADMIN" exclusive>
       <AdminInner>{children}</AdminInner>
     </RequireAccessLevel>
   );

@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { openapi } from './item.openapi';
+import { TIME } from 'src/CONSTANTS';
 
 @Injectable()
 export class ItemRouter {
@@ -20,11 +21,11 @@ export class ItemRouter {
     getOne: this.trpc.publicProcedure
       .meta({
         openapi: openapi().segments('{id}').summary('Get an item').build(),
-        caching: true,
+        caching: { common: true, ttl: TIME.FIVE_MINUTES },
       })
       .input(z.object({ id: z.string() }))
       .output(ItemSchemaRead.or(z.null()))
-      .mutation(async ({ input }) => {
+      .query(async ({ input }) => {
         const item = await this.itemService.getItemById(input.id);
         if (item == null) throw new TRPCError({ code: 'NOT_FOUND' });
         return item;

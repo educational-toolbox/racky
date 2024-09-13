@@ -47,7 +47,7 @@ export const CatalogueSection = () => {
           extra={
             <>
               <div className="flex items-center gap-2">
-                <RequireAccessLevel level="ADMIN" allowOverride>
+                <RequireAccessLevel level="ADMIN" exclusive>
                   <CreateCatalogueButton disabled={categoryId === undefined} />
                 </RequireAccessLevel>
                 <SubcategorySelector />
@@ -65,7 +65,7 @@ export const CatalogueSection = () => {
           withPagination={{ pageSizes: [10], selectableRows: true }}
         />
         {!isLoading && catalogueId !== undefined && (
-          <RequireAccessLevel level="ADMIN" allowOverride>
+          <RequireAccessLevel level="ADMIN" exclusive>
             <div className="grid place-items-center p-2">
               <CreateItemButton />
             </div>

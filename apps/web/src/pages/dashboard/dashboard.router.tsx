@@ -6,6 +6,7 @@ import type { PropsWithChildren } from "react";
 import { useMenuItems } from "~/layouts/dashboard/menu-items.store";
 import { useOrganizationId } from "./organization-context";
 import { InventoryPage } from "./inventory/inventory.page";
+import { ReservationsPage } from "./reservations/reservations.page";
 
 const AssingedToDashboard = function ({ children }: PropsWithChildren) {
   const { add, remove } = useMenuItems();
@@ -24,6 +25,13 @@ const AssingedToDashboard = function ({ children }: PropsWithChildren) {
         icon: "Package",
         id: "$item-inventory",
         label: "Inventory",
+        type: "item",
+      }),
+      add({
+        href: "/reservations",
+        icon: "Calendar",
+        id: "$item-reservations",
+        label: "Reservations",
         type: "item",
       }),
     ];
@@ -49,6 +57,9 @@ export const DashboardRouter = () => {
       </Route>
       <Route path="/inventory">
         <InventoryPage />
+      </Route>
+      <Route path="/reservations">
+        <ReservationsPage />
       </Route>
     </AssingedToDashboard>
   );

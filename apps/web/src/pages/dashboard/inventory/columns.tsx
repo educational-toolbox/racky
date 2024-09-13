@@ -93,10 +93,10 @@ export const columns: ColumnDef<Item>[] = [
       const item = row.original;
       return (
         <div className="space-x-1 flex items-center justify-end">
-          <RequireAccessLevel level="USER" allowOverride>
+          <RequireAccessLevel level="USER" exclusive>
             <ItemReservationButton item={item} />
           </RequireAccessLevel>
-          <RequireAccessLevel level="ADMIN" allowOverride>
+          <RequireAccessLevel level="ADMIN" exclusive>
             <EditItemButton item={item} />
             <Button variant="destructive" size="icon" disabled>
               <Icon name="Trash" />
