@@ -46,6 +46,13 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
+      {override.allowed && override.enabled && (
+        <div className="fixed w-screen h-screen z-50 border-4 border-blue-700 dark:border-yellow-400 pointer-events-none">
+          <div className="fixed left-1/2 -translate-x-1/2 bg-blue-700 dark:bg-yellow-400 pointer-events-none rounded-md px-2 pb-0.5 pt-2 -translate-y-2 text-background">
+            Viewing as {override.viewAs}
+          </div>
+        </div>
+      )}
       {/* DESKTOP MENU */}
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <DesktopMenuWrapper items={items} pathname={cleanPathname} />
