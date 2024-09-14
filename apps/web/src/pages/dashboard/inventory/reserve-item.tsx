@@ -99,8 +99,6 @@ export const ItemReservationButton = ({ item }: { item: Item }) => {
     };
   }) satisfies Matcher[];
 
-  console.log(disabledDates);
-
   const onSelectDates = (range: DateRange | undefined) => {
     if (!range) {
       setStartDate(undefined);

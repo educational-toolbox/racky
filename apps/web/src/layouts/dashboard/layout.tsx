@@ -297,10 +297,18 @@ function DesktopMenuItem({ item }: { item: ItemTypeMenuItem }) {
   return (
     <Tooltip key={item.href}>
       <TooltipTrigger asChild>
-        <AppLink href={item.href} activeClassName={getClassName}>
-          <Icon name={item.icon} className="h-5 w-5" />
-          <span className="sr-only">{item.label}</span>
-        </AppLink>
+        <div className="relative">
+          <AppLink href={item.href} activeClassName={getClassName}>
+            <Icon name={item.icon} className="h-5 w-5" />
+            <span className="sr-only">{item.label}</span>
+            {item.starred && (
+              <Icon
+                name="Shield"
+                className="absolute -top-1 -right-1 h-3 w-3 dark:text-yellow-400 text-blue-700 dark:fill-yellow-400 fill-blue-700"
+              />
+            )}
+          </AppLink>
+        </div>
       </TooltipTrigger>
       <TooltipContent side="right">{item.label}</TooltipContent>
     </Tooltip>

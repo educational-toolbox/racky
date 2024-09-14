@@ -16,11 +16,8 @@ const AdminInner = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const ids = [
       add({
-        type: "separator",
-        id: "$separator-admin",
-      }),
-      add({
         type: "item",
+        starred: true,
         id: "$item-admin-organizations",
         href: "/admin/organizations",
         label: "Organizations",

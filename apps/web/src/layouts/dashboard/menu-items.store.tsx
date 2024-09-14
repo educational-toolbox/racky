@@ -9,6 +9,7 @@ export type ItemTypeMenuItem = {
   id: ItemId;
   icon: IconName;
   label: string;
+  starred?: boolean;
   href: `/${string}`;
   exact?: boolean;
   hidden?: boolean;

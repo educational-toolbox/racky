@@ -3,13 +3,14 @@ import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useContext } from "react";
 import { Icon } from "~/components/shared/app-icon";
 import { Button } from "~/components/ui/button";
+import { useRoleOverride } from "~/hooks/admin/use-role-override";
 import { api } from "~/lib/api/client";
 import type {
   AuthenticatedSession,
   LoadingSession,
   Session,
+  UserRole,
 } from "./session.type";
-import { useRoleOverride } from "~/hooks/admin/use-role-override";
 
 const sessionContext = createContext<Session>({
   state: "loading",
@@ -115,22 +116,25 @@ export const SignOutButton = () => {
 };
 
 export const RequireAccessLevel = ({
-  level: role,
-  exclusive: exclusive = false,
+  level: requiredRole,
+  exclusive = false,
   children,
 }: PropsWithChildren<{
-  level: NonNullable<Session["user"]>["role"];
+  level: UserRole;
   exclusive?: boolean;
 }>) => {
-  const session = useSession();
   const override = useRoleOverride();
-  const allowed =
-    session.state === "authenticated" && session.user.role === role;
-  if (
-    (!exclusive && allowed) ||
-    (exclusive && override.allowed && override.viewAs === role)
-  ) {
-    return <>{children}</>;
+  const currentRole = override.allowed
+    ? override.viewAs
+    : override.originalRole;
+  if (!currentRole) {
+    return null;
   }
-  return null;
+  if (exclusive && currentRole !== requiredRole) {
+    return null;
+  }
+  if (!exclusive && override.originalRole !== requiredRole) {
+    return null;
+  }
+  return <>{children}</>;
 };
