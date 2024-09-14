@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { openapi } from './item.openapi';
-import { TIME } from 'src/CONSTANTS';
+import { TIME } from '../../CONSTANTS';
 
 @Injectable()
 export class ItemRouter {

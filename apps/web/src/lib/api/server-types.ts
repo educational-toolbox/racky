@@ -11,4 +11,4 @@ export type ItemStatus = Item["status"];
 export type ItemReservationStatus =
   RouterOutputs["reservation"]["create"]["status"];
 
-export type Reservation = RouterOutputs["reservation"]["create"];
+export type Reservation = RouterOutputs["reservation"]["getMy"][number];

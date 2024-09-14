@@ -6,7 +6,7 @@ import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
 } from 'trpc-openapi';
-import { AuthUserWithPermissions } from '../auth/auth-user.type';
+import { AuthUser, AuthUserWithPermissions } from '../auth/auth-user.type';
 import { getPermissions } from '../auth/permissions';
 import { CatalogRouter } from '../business/catalog/catalog.router';
 import { CategoryRouter } from '../business/category/category.router';
@@ -153,12 +153,18 @@ export class TrpcRouter {
     const user = await this.databaseService.user.findUnique({
       where: { id: userId },
     });
-    if (!user) return undefined;
-    const authUser = {
-      id: user.id,
-      orgId: user.organizationId,
-      role: user.role,
+    const authUser: AuthUser = {
+      id: userId,
+      orgId: null,
+      role: 'USER',
+      anonymous: true,
     };
+    if (user) {
+      authUser.id = user.id;
+      authUser.orgId = user.organizationId;
+      authUser.role = user.role;
+      authUser.anonymous = false;
+    }
     return { ...authUser, permissions: getPermissions(authUser) };
   }
 

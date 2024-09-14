@@ -65,9 +65,17 @@ export function useSession({ enforce = false } = {}) {
   return session;
 }
 
+export const SignedInAsAnonymous = ({ children }: PropsWithChildren) => {
+  const session = useSession({ enforce: true });
+  if (session.state === "authenticated" && session.user.anonymous) {
+    return <>{children}</>;
+  }
+  return null;
+};
+
 export const SignedIn = ({ children }: PropsWithChildren) => {
   const session = useSession();
-  if (session.state === "authenticated") {
+  if (session.state === "authenticated" && !session.user.anonymous) {
     return <>{children}</>;
   }
   if (session.state === "loading") {

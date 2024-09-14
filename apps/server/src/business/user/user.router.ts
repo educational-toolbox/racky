@@ -27,6 +27,7 @@ export class UserRouter {
           .object({
             id: z.string(),
             orgId: z.string().nullable(),
+            anonymous: z.boolean(),
             role: z.nativeEnum(Role),
           })
           .nullable(),

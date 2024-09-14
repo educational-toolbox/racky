@@ -10,11 +10,7 @@ export class CatalogService {
     return this.databaseService.catalogueItem.findMany({
       where: {
         organizationId,
-        categories: {
-          some: {
-            id: categoryId,
-          },
-        },
+        categoryId: categoryId,
       },
     });
   }
@@ -26,11 +22,7 @@ export class CatalogService {
         name: catalog.name,
         quantity: catalog.quantity,
         organizationId: catalog.organizationId,
-        categories: {
-          connect: {
-            id: catalog.categoryId,
-          },
-        },
+        categoryId: catalog.categoryId,
       },
     });
   }

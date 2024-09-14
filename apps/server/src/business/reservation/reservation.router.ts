@@ -58,8 +58,37 @@ export class ReservationRouter {
           .build(),
       })
       .input(z.void())
-      .output(z.array(reservationSchemaRead))
+      .output(
+        z.array(
+          reservationSchemaRead.extend({
+            item: z.object({
+              id: z.string(),
+              name: z.string(),
+              picture: z.string().nullable(),
+              catalogueItem: z.object({
+                id: z.string(),
+                name: z.string(),
+                category: z.object({ id: z.string(), name: z.string() }),
+              }),
+            }),
+          }),
+        ),
+      )
       .query(({ ctx }) => this.reservationService.findByUserId(ctx.user.id)),
+
+    cancel: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .method('POST')
+          .segments('cancel/{id}')
+          .summary('Cancel a reservation')
+          .build(),
+      })
+      .input(z.object({ id: z.string() }))
+      .output(reservationSchemaRead)
+      .mutation(({ input, ctx }) => {
+        return this.reservationService.cancel(input.id, ctx.user.id);
+      }),
 
     create: this.trpc.assignedToOrgProcedure
       .meta({

@@ -16,9 +16,38 @@ export class ReservationService {
     });
   }
 
-  findByUserId(userId: string): Promise<ReservationRead[]> {
+  findByUserId(userId: string): Promise<
+    (ReservationRead & {
+      item: {
+        id: string;
+        name: string;
+        picture: string | null;
+        catalogueItem: {
+          id: string;
+          name: string;
+          category: { id: string; name: string };
+        };
+      };
+    })[]
+  > {
     return this.databaseService.reservation.findMany({
       where: { userId },
+      include: {
+        item: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+            catalogueItem: {
+              select: {
+                id: true,
+                name: true,
+                category: { select: { id: true, name: true } },
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -49,6 +78,13 @@ export class ReservationService {
         },
         user: { connect: { id: userId } },
       },
+    });
+  }
+
+  cancel(reservationId: string, userId: string): Promise<ReservationRead> {
+    return this.databaseService.reservation.update({
+      where: { id: reservationId, userId: userId },
+      data: { status: 'CANCELLED' },
     });
   }
 

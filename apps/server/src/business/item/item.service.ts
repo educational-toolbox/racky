@@ -25,7 +25,7 @@ export class ItemService {
       catalogueItem: { organizationId: orgId },
     };
     if (categoryId) {
-      query.catalogueItem!.categories = { some: { id: categoryId } };
+      query.catalogueItem!.categoryId = categoryId;
     }
     if (catalogId) {
       query.catalogueItemId = catalogId;

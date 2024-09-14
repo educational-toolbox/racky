@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from "wouter";
 import { AcceptInviteLayout } from "./layouts/accept-invite/accept-invite.layout";
 import AdminLayout from "./layouts/admin/layout";
 import DashboardLayout from "./layouts/dashboard/layout";
-import { SignedIn, SignedOut } from "./lib/auth";
+import { SignedIn, SignedInAsAnonymous, SignedOut } from "./lib/auth";
 import AcceptInvitePage from "./pages/accept-invite/accept-invite.page";
 import { AdminRouter } from "./pages/admin/router";
 import { DashboardRouter } from "./pages/dashboard/dashboard.router";
@@ -13,6 +13,11 @@ export const AppRouter = () => {
   return (
     <Switch>
       <Route path="/app" nest>
+        <SignedInAsAnonymous>
+          <span className="text-center w-full block py-12">
+            Acount is not verified. Please wait while we verify your account.
+          </span>
+        </SignedInAsAnonymous>
         <SignedIn>
           <DashboardLayout>
             <DashboardRouter />
