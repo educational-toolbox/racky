@@ -3,7 +3,12 @@ import { Redirect, Route, Switch } from "wouter";
 import { AcceptInviteLayout } from "./layouts/accept-invite/accept-invite.layout";
 import AdminLayout from "./layouts/admin/layout";
 import DashboardLayout from "./layouts/dashboard/layout";
-import { SignedIn, SignedInAsAnonymous, SignedOut } from "./lib/auth";
+import {
+  SignedIn,
+  SignedInAsAnonymous,
+  SignedOut,
+  useSession,
+} from "./lib/auth";
 import { lazy, Suspense } from "react";
 import { Loader } from "./components/shared/loader";
 const UserPage = lazy(() =>
@@ -26,6 +31,7 @@ const AdminRouter = lazy(() =>
 );
 
 export const AppRouter = () => {
+  const session = useSession();
   return (
     <Switch>
       <Route path="/app" nest>
@@ -33,6 +39,11 @@ export const AppRouter = () => {
           <span className="text-center w-full block py-12">
             Acount is not verified. Please wait while we verify your account.
           </span>
+          <div className="flex items-center justify-center w-full">
+            <pre className="rounded-md p-2 border">
+              {JSON.stringify(session.user, null, 2)}
+            </pre>
+          </div>
         </SignedInAsAnonymous>
         <SignedIn>
           <DashboardLayout>
