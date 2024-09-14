@@ -58,20 +58,4 @@ export const columns: ColumnDef<RouterOutputs["org"]["getUsers"][0]>[] = [
       <DataTableColumnHeader column={column} title="Role" />
     ),
   },
-  {
-    id: "actions",
-    enableHiding: false,
-    enableSorting: false,
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Actions"
-        className="justify-end pr-0"
-      />
-    ),
-    cell: ({ row }) => {
-      const _user = row.original;
-      return <div className="space-x-1 flex items-center justify-end">NYI</div>;
-    },
-  },
 ];

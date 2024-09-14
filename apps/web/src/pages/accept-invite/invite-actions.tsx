@@ -1,20 +1,19 @@
-
-
-import { navigate } from "wouter/use-browser-location";
+import { Redirect } from "wouter";
+import { Loader } from "~/components/shared/loader";
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { useSession } from "~/lib/auth";
 import { api } from "~/lib/api/client";
+import { useSession } from "~/lib/auth";
 
 export const AcceptInvite = ({ id }: { id: string }) => {
   const session = useSession({ enforce: true });
   const acceptInviteMutation = api.org.acceptInvite.useMutation();
   if (session.state === "loading") {
-    return "Loading...";
+    return <Loader centered />;
   }
   if (session.user.orgId != null) {
     return (
@@ -36,6 +35,9 @@ export const AcceptInvite = ({ id }: { id: string }) => {
       </Tooltip>
     );
   }
+  if (acceptInviteMutation.isSuccess) {
+    return <Redirect to="/" />;
+  }
   return (
     <Button
       className="w-full"
@@ -43,18 +45,9 @@ export const AcceptInvite = ({ id }: { id: string }) => {
       onClick={async () => {
         await acceptInviteMutation.mutateAsync({ id });
         await session.invalidate();
-        navigate("/", { replace: true });
       }}
     >
       Accept
-    </Button>
-  );
-};
-
-export const DeclineInvite = ({ id }: { id: string }) => {
-  return (
-    <Button className="w-full" variant="secondary" disabled>
-      Decline
     </Button>
   );
 };

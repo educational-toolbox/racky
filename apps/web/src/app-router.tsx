@@ -4,10 +4,26 @@ import { AcceptInviteLayout } from "./layouts/accept-invite/accept-invite.layout
 import AdminLayout from "./layouts/admin/layout";
 import DashboardLayout from "./layouts/dashboard/layout";
 import { SignedIn, SignedInAsAnonymous, SignedOut } from "./lib/auth";
-import AcceptInvitePage from "./pages/accept-invite/accept-invite.page";
-import { AdminRouter } from "./pages/admin/router";
-import { DashboardRouter } from "./pages/dashboard/dashboard.router";
-import { UserPage } from "./pages/social/user.page";
+import { lazy, Suspense } from "react";
+import { Loader } from "./components/shared/loader";
+const UserPage = lazy(() =>
+  import("./pages/social/user.page").then((module) => ({
+    default: module.UserPage,
+  }))
+);
+const AcceptInvitePage = lazy(
+  () => import("./pages/accept-invite/accept-invite.page")
+);
+const DashboardRouter = lazy(() =>
+  import("./pages/dashboard/dashboard.router").then((module) => ({
+    default: module.DashboardRouter,
+  }))
+);
+const AdminRouter = lazy(() =>
+  import("./pages/admin/router").then((module) => ({
+    default: module.AdminRouter,
+  }))
+);
 
 export const AppRouter = () => {
   return (
@@ -20,9 +36,13 @@ export const AppRouter = () => {
         </SignedInAsAnonymous>
         <SignedIn>
           <DashboardLayout>
-            <DashboardRouter />
+            <Suspense fallback={<Loader centered />}>
+              <DashboardRouter />
+            </Suspense>
             <AdminLayout>
-              <AdminRouter />
+              <Suspense fallback={<Loader centered />}>
+                <AdminRouter />
+              </Suspense>
             </AdminLayout>
           </DashboardLayout>
         </SignedIn>
@@ -34,14 +54,20 @@ export const AppRouter = () => {
 
       <Route path="/social" nest>
         <Route path="/user/:id">
-          {(params) => <UserPage id={params.id} />}
+          {(params) => (
+            <Suspense fallback={<Loader centered />}>
+              <UserPage id={params.id} />
+            </Suspense>
+          )}
         </Route>
       </Route>
 
       <Route path="/accept-invite/:id" nest>
         {(params) => (
           <AcceptInviteLayout>
-            <AcceptInvitePage id={params.id} />
+            <Suspense fallback={<Loader centered />}>
+              <AcceptInvitePage id={params.id} />
+            </Suspense>
           </AcceptInviteLayout>
         )}
       </Route>

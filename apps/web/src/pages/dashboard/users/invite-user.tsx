@@ -3,7 +3,7 @@ import { Button } from "~/components/ui/button";
 import { SheetFooter } from "~/components/ui/sheet";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import type { SheetButtonRef } from "~/components/shared/sheet-button";
@@ -21,6 +21,7 @@ import { Input } from "~/components/ui/input";
 import { ToastAction } from "~/components/ui/toast";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/api/client";
+import { useCopyToClipboard } from "~/hooks/use-copy-to-clipboard";
 
 const schema = z.object({
   email: z.string().email(),
@@ -51,14 +52,17 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
         const inviteUrl = new URL(window.location as unknown as string);
         inviteUrl.pathname = `/accept-invite/${result.id}`;
         const inviteLink = inviteUrl.toString();
+
         if (result.result === "already_invited") {
           toast({
             title: "User already invited",
-            description: `The user has already been invited to the organization (${inviteLink})`,
+            description: `The user has already been invited to the organization`,
+            action: <CopyInviteLinkButton inviteLink={inviteLink} />,
           });
         } else {
           toast({
-            title: `Inivtation sent (${inviteLink})`,
+            title: `Inivtation sent`,
+            action: <CopyInviteLinkButton inviteLink={inviteLink} />,
           });
         }
         form.reset();
@@ -128,5 +132,22 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
         </form>
       </Form>
     </SheetButton>
+  );
+};
+
+const CopyInviteLinkButton = ({ inviteLink }: { inviteLink: string }) => {
+  const [copiedValue, copy, reset] = useCopyToClipboard();
+  const isLinkCopied = inviteLink === copiedValue;
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      reset();
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, []);
+  return (
+    <Button onClick={() => copy(inviteLink)} disabled={isLinkCopied}>
+      <Icon name={isLinkCopied ? "Check" : "Clipboard"} size={16} />
+      {isLinkCopied ? "Copied" : "Copy invite link"}
+    </Button>
   );
 };

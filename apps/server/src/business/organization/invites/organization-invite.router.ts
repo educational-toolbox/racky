@@ -98,6 +98,7 @@ export class OrganizationInviteRouter {
         await this.organizationService.addUser(
           invite.organization.id,
           ctx.user.id,
+          invite.email,
         );
         await this.organizationService.validateInvite(input.id);
       }),
