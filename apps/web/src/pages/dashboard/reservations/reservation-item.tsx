@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Reservation } from "~/lib/api/server-types";
 import { CancelReservationButton } from "./cancel-reservation-button";
 import { AppLink } from "~/components/app-link";
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
 
 export const ReservationItem = ({
   reservation,
@@ -17,11 +19,18 @@ export const ReservationItem = ({
   cancellable?: boolean;
   printable?: boolean;
 }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    content: () => ref.current,
+  });
   return (
-    <Card>
-      <CardHeader>
+    <Card
+      ref={ref}
+      className="print:mt-12 print:mx-40 print:flex print:flex-col-reverse"
+    >
+      <CardHeader className="print:p-4">
         <CardTitle>
-          {formatDate(reservation.endDate, "dd/MM/yyyy")} -{" "}
+          {formatDate(reservation.startDate, "dd/MM/yyyy")} -{" "}
           {formatDate(reservation.endDate, "dd/MM/yyyy")}
         </CardTitle>
         <ItemStatusBadge<"reservation">
@@ -30,7 +39,7 @@ export const ReservationItem = ({
           className="max-w-min"
         />
       </CardHeader>
-      <CardContent>
+      <CardContent className="print:p-4">
         <div className="flex gap-1">
           <AppImage
             useS3
@@ -43,14 +52,14 @@ export const ReservationItem = ({
             <br />
             <span className="inline-flex gap-1 items-center">
               <AppLink
-                className="underline"
+                className="underline print:no-underline"
                 href={`/inventory?categoryId=${reservation.item.catalogueItem.category.id}&catalogId=${reservation.item.catalogueItem.id}`}
               >
                 {reservation.item.catalogueItem.name}
               </AppLink>
               <Icon name="Dot" size="12" />
               <AppLink
-                className="underline"
+                className="underline print:no-underline"
                 href={`/inventory?categoryId=${reservation.item.catalogueItem.category.id}`}
               >
                 {reservation.item.catalogueItem.category.name}
@@ -58,10 +67,13 @@ export const ReservationItem = ({
             </span>
           </div>
         </div>
-
         {cancellable && <CancelReservationButton reservation={reservation} />}
         {printable && (
-          <Button variant="secondary" className="w-full mt-2">
+          <Button
+            variant="secondary"
+            className="w-full mt-2 print:hidden"
+            onClick={handlePrint}
+          >
             <Icon name="Printer" />
             Print Invoice
           </Button>
