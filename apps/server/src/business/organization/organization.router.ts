@@ -1,6 +1,6 @@
 import { subject } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { Organization, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { TrpcService } from '../../trpc/trpc.service';
@@ -105,17 +105,7 @@ export class OrganizationRouter {
           }),
         ),
       )
-      .query(async ({ input, ctx }) => {
-        if (
-          ctx.user.permissions.organization.cannot(
-            'read',
-            subject('Organization', {
-              id: input.id,
-            } as Organization),
-          )
-        ) {
-          throw new TRPCError({ code: 'FORBIDDEN' });
-        }
+      .query(async ({ input }) => {
         return this.organizationService.getUsers(input.id);
       }),
   });
