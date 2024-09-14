@@ -138,7 +138,7 @@ describe('item service tests', () => {
           name: { contains: 'search', mode: 'insensitive' },
           catalogueItem: {
             organizationId: 'org1',
-            categories: { some: { id: 'categ1' } },
+            categoryId: 'categ1',
           },
           catalogueItemId: 'catal1',
         },

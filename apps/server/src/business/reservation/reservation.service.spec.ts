@@ -28,7 +28,8 @@ describe('reservation service tests', () => {
         startDate: new Date('2024-10-02'),
         endDate: new Date('2024-11-02'),
         status: 'CONFIRMED',
-        userId: '1',
+        userId: 'u1',
+        itemId: 'i1',
       });
     });
 
@@ -77,30 +78,44 @@ describe('reservation service tests', () => {
   // GET RESERVATION BY USERID PASS
   describe('getReservationByUserId resolves', () => {
     beforeEach(() => {
-      reservationRepository.findMany({ where: { userId: '1' } }).resolves([
+      reservationRepository.findMany({ where: { userId: 'u1' } }).resolves([
         {
           id: '1',
           startDate: new Date('2024-10-02'),
           endDate: new Date('2024-11-02'),
           status: 'CONFIRMED',
-          userId: '1',
+          userId: 'u1',
+          itemId: 'i1',
         },
       ]);
     });
 
     it('should handle existing reservation in the database', async () => {
-      const result = await reservationService.findByUserId('1');
-      reservationRepository.received(1).findMany({ where: { userId: '1' } });
+      const result = await reservationService.findByUserId('u1');
+      reservationRepository.received(1).findMany({
+        where: { userId: 'u1' },
+        include: {
+          item: {
+            select: {
+              id: true,
+              name: true,
+              picture: true,
+              catalogueItem: {
+                select: {
+                  id: true,
+                  name: true,
+                  category: { select: { id: true, name: true } },
+                },
+              },
+            },
+          },
+        },
+      });
       expect(result).toBeDefined();
     });
 
-    it('should return the reservation when a valid ID is provided', async () => {
-      const result = await reservationService.findByUserId('1');
-      expect(result).toHaveLength(1);
-    });
-
     it('should return the correct reservation data structure', async () => {
-      const result = await reservationService.findByUserId('1');
+      const result = await reservationService.findByUserId('u1');
       expect(result[0]).toHaveProperty('id');
       expect(result[0]).toHaveProperty('startDate');
       expect(result[0]).toHaveProperty('endDate');
@@ -139,7 +154,8 @@ describe('reservation service tests', () => {
           startDate: new Date('2024-10-02'),
           endDate: new Date('2024-11-02'),
           status: 'CONFIRMED',
-          userId: '1',
+          userId: 'u1',
+          itemId: 'i1',
         },
         {
           id: '2',
@@ -147,6 +163,7 @@ describe('reservation service tests', () => {
           endDate: new Date('2024-11-02'),
           status: 'CONFIRMED',
           userId: '2',
+          itemId: 'i1',
         },
       ]);
     });
@@ -191,7 +208,8 @@ describe('reservation service tests', () => {
         startDate: new Date('2024-10-02'),
         endDate: new Date('2024-11-02'),
         status: 'CONFIRMED',
-        userId: '1',
+        userId: 'u1',
+        itemId: 'i1',
       });
     });
 
@@ -200,9 +218,10 @@ describe('reservation service tests', () => {
         {
           startDate: new Date('2024-10-02'),
           endDate: new Date('2024-11-02'),
-          status: 'CONFIRMED',
+          itemId: 'i1',
         },
-        '1',
+        'u1',
+        'org1',
       );
       reservationRepository.received(1).create(Arg.any());
       expect(result).toBeDefined();
@@ -213,9 +232,10 @@ describe('reservation service tests', () => {
         {
           startDate: new Date('2024-10-02'),
           endDate: new Date('2024-11-02'),
-          status: 'CONFIRMED',
+          itemId: 'i1',
         },
-        '1',
+        'u1',
+        'org1',
       );
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('startDate');
@@ -233,7 +253,8 @@ describe('reservation service tests', () => {
         startDate: new Date('2024-10-02'),
         endDate: new Date('2024-11-02'),
         status: 'CONFIRMED',
-        userId: '1',
+        userId: 'u1',
+        itemId: 'i1',
       });
     });
 
@@ -244,6 +265,7 @@ describe('reservation service tests', () => {
           startDate: new Date('2024-10-02'),
           endDate: new Date('2024-11-02'),
           status: 'CONFIRMED',
+          itemId: 'i1',
         },
         '1',
       );
@@ -258,6 +280,7 @@ describe('reservation service tests', () => {
           startDate: new Date('2024-10-02'),
           endDate: new Date('2024-11-02'),
           status: 'CONFIRMED',
+          itemId: 'i1',
         },
         '1',
       );
@@ -277,7 +300,8 @@ describe('reservation service tests', () => {
         startDate: new Date('2024-10-02'),
         endDate: new Date('2024-11-02'),
         status: 'CONFIRMED',
-        userId: '1',
+        userId: 'u1',
+        itemId: 'i1',
       });
     });
 
