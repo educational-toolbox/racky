@@ -247,25 +247,3 @@ jobs:
         run: echo "${{ secrets.GH_REGISTRY_ACCESS_TOKEN }}" | docker login ghcr.io -u kopenkinda --password-stdin
       - name: Push Docker Image to GitHub Container Registry
         run: docker push ghcr.io/kopenkinda/racky-api:${{ github.sha }}
-  create-docker-image-front:
-    if: github.event.pull_request.draft == false
-    needs: ["setup-project", "build-front"]
-    name: Create Docker Image for Frontend
-    runs-on: ubuntu-latest
-    steps:
-      - name: Declare some variables
-        shell: bash
-        run: |
-          echo "IMG_NAME_FRONT=ghcr.io/kopenkinda/racky-frontend:$GITHUB_SHA" >> "$GITHUB_ENV"
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: add fake .env
-        run: touch .env
-      - name: Build Docker Image
-        run: docker compose build front
-      - name: Set up Docker Buildx (multi-platform builds)
-        uses: docker/setup-buildx-action@v1
-      - name: Authenticate to GitHub Container Registry
-        run: echo "${{ secrets.GH_REGISTRY_ACCESS_TOKEN }}" | docker login ghcr.io -u kopenkinda --password-stdin
-      - name: Push Docker Image to GitHub Container Registry
-        run: docker push ghcr.io/kopenkinda/racky-frontend:${{ github.sha }}
