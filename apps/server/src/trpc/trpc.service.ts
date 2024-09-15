@@ -5,7 +5,7 @@ import { OpenApiMeta } from 'trpc-openapi';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { CachingService } from '../caching/caching.service';
 import { TrpcContext } from './trpc.router';
-import { env } from 'src/server-env';
+import { env } from '../server-env';
 
 export type TrpcMeta = OpenApiMeta & {
   caching?: true | { ttl?: number; common?: true };
