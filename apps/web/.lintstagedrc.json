@@ -1,0 +1,4 @@
+{
+  "*.tsx": ["pnpm format:write:staged", "pnpm lint:write:staged"],
+  "*.ts": ["pnpm format:write:staged", "pnpm lint:write:staged"]
+}
