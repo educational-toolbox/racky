@@ -2,6 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { ReservationRead, ReservationWrite } from './reservation.schema';
 
+type ExtendedReservationRead = ReservationRead & {
+  item: {
+    id: string;
+    name: string;
+    picture: string | null;
+    catalogueItem: {
+      id: string;
+      name: string;
+      category: {
+        id: string;
+        name: string;
+      };
+    };
+  };
+};
+
 @Injectable()
 export class ReservationService {
   constructor(private readonly databaseService: DatabaseService) {}
@@ -16,20 +32,7 @@ export class ReservationService {
     });
   }
 
-  findByUserId(userId: string): Promise<
-    (ReservationRead & {
-      item: {
-        id: string;
-        name: string;
-        picture: string | null;
-        catalogueItem: {
-          id: string;
-          name: string;
-          category: { id: string; name: string };
-        };
-      };
-    })[]
-  > {
+  findByUserId(userId: string): Promise<ExtendedReservationRead[]> {
     return this.databaseService.reservation.findMany({
       where: { userId },
       include: {
@@ -56,6 +59,30 @@ export class ReservationService {
       where: {
         status: { not: 'CANCELLED' },
         item: { id: itemId, catalogueItem: { organizationId: orgId } },
+      },
+    });
+  }
+
+  findByOrgId(orgId: string): Promise<ExtendedReservationRead[]> {
+    return this.databaseService.reservation.findMany({
+      where: {
+        item: { catalogueItem: { organizationId: orgId } },
+      },
+      include: {
+        item: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+            catalogueItem: {
+              select: {
+                id: true,
+                name: true,
+                category: { select: { id: true, name: true } },
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -89,11 +116,10 @@ export class ReservationService {
   }
 
   update(
-    reservation: ReservationRead,
-    userId: string,
+    reservation: Partial<ReservationRead> & { id: string },
   ): Promise<ReservationRead> {
     return this.databaseService.reservation.update({
-      where: { id: reservation.id, userId },
+      where: { id: reservation.id },
       data: reservation,
     });
   }

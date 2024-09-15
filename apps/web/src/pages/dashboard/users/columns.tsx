@@ -1,4 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
+import { UserCard } from "~/components/shared/user/user-card";
 import { DataTableColumnHeader } from "~/components/ui/data-table/column-header";
 import { useRoleOverride } from "~/hooks/admin/use-role-override";
 import type { RouterOutputs } from "~/lib/api/server-types";
@@ -12,6 +13,10 @@ export const columns: ColumnDef<RouterOutputs["org"]["getUsers"][0]>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
+    cell: ({ row }) => {
+      const user = row.original;
+      return <UserCard user={user} link />;
+    },
   },
   {
     accessorKey: "firstName",

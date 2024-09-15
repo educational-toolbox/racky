@@ -14,36 +14,28 @@ import { Loader } from "./components/shared/loader";
 const UserPage = lazy(() =>
   import("./pages/social/user.page").then((module) => ({
     default: module.UserPage,
-  })),
+  }))
 );
 const AcceptInvitePage = lazy(
-  () => import("./pages/accept-invite/accept-invite.page"),
+  () => import("./pages/accept-invite/accept-invite.page")
 );
 const DashboardRouter = lazy(() =>
   import("./pages/dashboard/dashboard.router").then((module) => ({
     default: module.DashboardRouter,
-  })),
+  }))
 );
 const AdminRouter = lazy(() =>
   import("./pages/admin/router").then((module) => ({
     default: module.AdminRouter,
-  })),
+  }))
 );
 
 export const AppRouter = () => {
-  const session = useSession();
   return (
     <Switch>
       <Route path="/app" nest>
         <SignedInAsAnonymous>
-          <span className="text-center w-full block py-12">
-            Acount is not verified. Please wait while we verify your account.
-          </span>
-          <div className="flex items-center justify-center w-full">
-            <pre className="rounded-md p-2 border">
-              {JSON.stringify(session.user, null, 2)}
-            </pre>
-          </div>
+          <AnonymousPage />
         </SignedInAsAnonymous>
         <SignedIn>
           <DashboardLayout>
@@ -92,5 +84,21 @@ export const AppRouter = () => {
         </SignedOut>
       </Route>
     </Switch>
+  );
+};
+
+const AnonymousPage = () => {
+  const session = useSession();
+  return (
+    <div>
+      <span className="text-center w-full block py-12">
+        Acount is not verified. Please wait while we verify your account.
+      </span>
+      <div className="flex items-center justify-center w-full">
+        <pre className="rounded-md p-2 border">
+          {JSON.stringify(session.user, null, 2)}
+        </pre>
+      </div>
+    </div>
   );
 };

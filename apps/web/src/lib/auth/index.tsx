@@ -118,12 +118,24 @@ export const SignOutButton = () => {
 export const RequireAccessLevel = ({
   level: requiredRole,
   exclusive = false,
+  superadmin = false,
   children,
 }: PropsWithChildren<{
   level: UserRole;
   exclusive?: boolean;
+  superadmin?: boolean;
 }>) => {
   const override = useRoleOverride();
+  const session = useSession();
+
+  if (
+    superadmin &&
+    session.user?.role === "ADMIN" &&
+    session.user.orgId === import.meta.env.VITE_DEFAULT_ORGANIZATION_ID
+  ) {
+    return <>{children}</>;
+  }
+
   const currentRole = override.allowed
     ? override.viewAs
     : override.originalRole;

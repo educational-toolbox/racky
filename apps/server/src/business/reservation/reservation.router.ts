@@ -8,6 +8,18 @@ import {
 } from './reservation.schema';
 import { ReservationService } from './reservation.service';
 
+const extendedReservationSchemaRead = reservationSchemaRead.extend({
+  item: z.object({
+    id: z.string(),
+    name: z.string(),
+    picture: z.string().nullable(),
+    catalogueItem: z.object({
+      id: z.string(),
+      name: z.string(),
+      category: z.object({ id: z.string(), name: z.string() }),
+    }),
+  }),
+});
 @Injectable()
 export class ReservationRouter {
   constructor(
@@ -58,22 +70,7 @@ export class ReservationRouter {
           .build(),
       })
       .input(z.void())
-      .output(
-        z.array(
-          reservationSchemaRead.extend({
-            item: z.object({
-              id: z.string(),
-              name: z.string(),
-              picture: z.string().nullable(),
-              catalogueItem: z.object({
-                id: z.string(),
-                name: z.string(),
-                category: z.object({ id: z.string(), name: z.string() }),
-              }),
-            }),
-          }),
-        ),
-      )
+      .output(z.array(extendedReservationSchemaRead))
       .query(({ ctx }) => this.reservationService.findByUserId(ctx.user.id)),
 
     cancel: this.trpc.assignedToOrgProcedure
@@ -103,7 +100,7 @@ export class ReservationRouter {
         this.reservationService.create(input, ctx.user.id, ctx.user.orgId),
       ),
 
-    update: this.trpc.assignedToOrgProcedure
+    update: this.trpc.adminProcedure
       .meta({
         openapi: openapi()
           .method('PUT')
@@ -111,11 +108,23 @@ export class ReservationRouter {
           .summary('Update a reservation')
           .build(),
       })
-      .input(reservationSchemaRead)
+      .input(reservationSchemaRead.partial().extend({ id: z.string() }))
       .output(reservationSchemaRead)
-      .mutation(({ input, ctx }) =>
-        this.reservationService.update(input, ctx.user.orgId),
-      ),
+      .mutation(({ input }) => this.reservationService.update(input)),
+
+    getAllForMyOrg: this.trpc.adminProcedure
+      .meta({
+        openapi: openapi()
+          .segments('org', 'my')
+          .method('GET')
+          .summary('Get all reservations for my organization')
+          .build(),
+      })
+      .input(z.void())
+      .output(z.array(extendedReservationSchemaRead))
+      .query(({ ctx }) => {
+        return this.reservationService.findByOrgId(ctx.user.orgId);
+      }),
 
     delete: this.trpc.protectedProcedure
       .meta({

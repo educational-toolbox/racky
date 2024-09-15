@@ -22,14 +22,14 @@ export class OrganizationRouter {
   ) {}
 
   organizationRouter = this.trpc.router({
-    list: this.trpc.adminProcedure
+    list: this.trpc.superAdminProcedure
       .meta({
         openapi: openapi().summary('List organizations').protected().build(),
       })
       .input(z.void())
       .output(organizationSchema.array())
       .query(() => this.organizationService.getAll()),
-    create: this.trpc.adminProcedure
+    create: this.trpc.superAdminProcedure
       .meta({
         openapi: openapi()
           .method('POST')
@@ -42,7 +42,7 @@ export class OrganizationRouter {
       .mutation(({ input }) => {
         return this.organizationService.create(input.name, input.zone);
       }),
-    edit: this.trpc.assignedToOrgProcedure
+    edit: this.trpc.adminProcedure
       .meta({
         openapi: openapi()
           .method('PUT')
@@ -67,7 +67,7 @@ export class OrganizationRouter {
         }
         return this.organizationService.edit(input.id, input.name, input.zone);
       }),
-    delete: this.trpc.adminProcedure
+    delete: this.trpc.superAdminProcedure
       .meta({
         openapi: openapi()
           .method('DELETE')

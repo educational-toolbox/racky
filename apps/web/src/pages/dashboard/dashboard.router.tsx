@@ -7,6 +7,7 @@ import { useMenuItems } from "~/layouts/dashboard/menu-items.store";
 import { useOrganizationId } from "./organization-context";
 import { InventoryPage } from "./inventory/inventory.page";
 import { ReservationsPage } from "./reservations/reservations.page";
+import { DashboardRootPage } from "./dashboard-root.page";
 
 const AssingedToDashboard = function ({ children }: PropsWithChildren) {
   const { add, remove } = useMenuItems();
@@ -52,6 +53,9 @@ const AssingedToDashboard = function ({ children }: PropsWithChildren) {
 export const DashboardRouter = () => {
   return (
     <AssingedToDashboard>
+      <Route path="/">
+        <DashboardRootPage />
+      </Route>
       <Route path="/users">
         <OrganizationUsersPage />
       </Route>

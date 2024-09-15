@@ -26,18 +26,20 @@ export const ReservationsColumn = ({
   loading,
   reservations,
   title,
+  approvable,
   cancellable,
   printable,
   collapsible,
   className,
   /**
-   * If provided, the reservations will be displayed in a table format
+   * If provided, the reservations will be displayed in a table format, ignoring the `printable`, `cancellable` and `approvable` props.
    */
   caption,
 }: {
   title: string;
   loading: boolean;
   reservations: Reservation[];
+  approvable?: boolean;
   cancellable?: boolean;
   printable?: boolean;
   className?: string;
@@ -63,6 +65,7 @@ export const ReservationsColumn = ({
               {!loading && !caption && (
                 <ReservationsList
                   reservations={reservations}
+                  approvable={approvable}
                   cancellable={cancellable}
                   printable={printable}
                 />
@@ -93,6 +96,7 @@ export const ReservationsColumn = ({
         {!loading && (
           <ReservationsList
             reservations={reservations}
+            approvable={approvable}
             cancellable={cancellable}
             printable={printable}
           />
@@ -106,16 +110,19 @@ const ReservationsList = ({
   reservations,
   cancellable = false,
   printable = false,
+  approvable = false,
 }: {
   reservations: Reservation[];
   cancellable?: boolean;
   printable?: boolean;
+  approvable?: boolean;
 }) => {
   return (
     <div className="space-y-2">
       {reservations.map((reservation) => (
         <ReservationItem
           key={reservation.id}
+          approvable={approvable}
           reservation={reservation}
           cancellable={cancellable}
           printable={printable}

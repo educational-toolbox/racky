@@ -16,30 +16,30 @@ import { useState } from "react";
 import { api } from "~/lib/api/client";
 import { useToast } from "~/hooks/use-toast";
 
-export const CancelReservationButton = ({
+export const ApproveReservationButton = ({
   reservation,
 }: {
   reservation: Reservation;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
-  const cancelReservationMutation = api.reservation.cancel.useMutation();
+  const approveReservationMutation = api.reservation.update.useMutation();
   const ctx = api.useUtils();
 
-  const handleCancel = async () => {
+  const handleApprove = async () => {
     try {
-      await cancelReservationMutation.mutateAsync({ id: reservation.id });
-      await Promise.allSettled([
-        ctx.reservation.getMy.invalidate(),
-        ctx.reservation.getAllForMyOrg.invalidate(),
-      ]);
+      await approveReservationMutation.mutateAsync({
+        id: reservation.id,
+        status: "CONFIRMED",
+      });
+      await ctx.reservation.getAllForMyOrg.invalidate();
       toast({
-        title: "Reservation cancelled",
+        title: "Reservation approved",
         icon: "success",
       });
     } catch (error) {
       toast({
-        title: "Failed to cancel reservation",
+        title: "Failed to approve reservation",
         description: error instanceof Error ? error.message : undefined,
         icon: "error",
       });
@@ -50,18 +50,17 @@ export const CancelReservationButton = ({
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" className="w-full mt-2">
-          <Icon name="CalendarX" />
-          Cancel
+        <Button className="w-full mt-2">
+          <Icon name="Check" />
+          Approve
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently cancel your
-            reservation. You'll have to make a new reservation if you want to
-            use the item.
+            This action cannot be undone. This will approve the reservation
+            request.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -72,12 +71,11 @@ export const CancelReservationButton = ({
           </AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button
-              variant="destructive"
               onClick={() => {
-                handleCancel().catch(console.error);
+                handleApprove().catch(console.error);
               }}
             >
-              Yes, cancel
+              Yes, approve
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

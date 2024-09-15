@@ -1,23 +1,26 @@
 import { formatDate } from "date-fns/format";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { AppLink } from "~/components/app-link";
 import { Icon } from "~/components/shared/app-icon";
 import { AppImage } from "~/components/shared/app-image";
 import { ItemStatusBadge } from "~/components/shared/item-status-badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Reservation } from "~/lib/api/server-types";
+import { ApproveReservationButton } from "./approve-reservation-button";
 import { CancelReservationButton } from "./cancel-reservation-button";
-import { AppLink } from "~/components/app-link";
-import { useReactToPrint } from "react-to-print";
-import { useRef } from "react";
 
 export const ReservationItem = ({
   reservation,
   cancellable,
+  approvable,
   printable,
 }: {
   reservation: Reservation;
   cancellable?: boolean;
   printable?: boolean;
+  approvable?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
@@ -67,17 +70,20 @@ export const ReservationItem = ({
             </span>
           </div>
         </div>
-        {cancellable && <CancelReservationButton reservation={reservation} />}
-        {printable && (
-          <Button
-            variant="secondary"
-            className="w-full mt-2 print:hidden"
-            onClick={handlePrint}
-          >
-            <Icon name="Printer" />
-            Print Invoice
-          </Button>
-        )}
+        <div className="flex gap-1 items-center">
+          {approvable && <ApproveReservationButton reservation={reservation} />}
+          {cancellable && <CancelReservationButton reservation={reservation} />}
+          {printable && (
+            <Button
+              variant="secondary"
+              className="w-full mt-2 print:hidden"
+              onClick={handlePrint}
+            >
+              <Icon name="Printer" />
+              Print Invoice
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
