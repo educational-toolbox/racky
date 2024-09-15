@@ -77,7 +77,7 @@ export const EditItemButton = ({ item }: { item: Item }) => {
         });
       }
     },
-    [uploadedImageKey, createItemMutation, categoryId, toast, item]
+    [uploadedImageKey, createItemMutation, categoryId, toast, item],
   );
 
   if (categoryId === undefined) {

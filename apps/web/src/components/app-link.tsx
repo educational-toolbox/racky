@@ -21,7 +21,7 @@ type AppLinkProps = Omit<
 
 export const AppLink = forwardRef<ComponentRef<"a">, AppLinkProps>(function (
   { href, children, onClick, absolute, ...props },
-  ref
+  ref,
 ) {
   const [params] = useExtractedSearchParams<"viewAs">();
   let finalHref = href;

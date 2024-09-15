@@ -66,14 +66,14 @@ export const useMenuItems = create<MenuItemsStore>((set) => ({
   hide(id) {
     set((state) => ({
       items: state.items.map((item) =>
-        item.id === id ? { ...item, hidden: true } : item
+        item.id === id ? { ...item, hidden: true } : item,
       ),
     }));
     return id;
   },
   getLabel(href) {
     const item = this.items.find(
-      (item) => "href" in item && item.href === href
+      (item) => "href" in item && item.href === href,
     );
     if (!item || item.type === "separator") {
       return "";

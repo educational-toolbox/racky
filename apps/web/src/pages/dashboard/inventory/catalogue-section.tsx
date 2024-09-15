@@ -34,7 +34,7 @@ export const CatalogueSection = () => {
       catalogItemId: catalogueId,
       search: debouncedSearch,
     },
-    { enabled: categoryId !== undefined }
+    { enabled: categoryId !== undefined },
   );
 
   const validItems = items ?? [];
@@ -81,7 +81,7 @@ const SubcategorySelector = () => {
   const selectedCategory = params["categoryId"];
   const { data: catalogItems, isLoading } = api.catalog.catalogueItems.useQuery(
     { categoryId: selectedCategory! },
-    { enabled: selectedCategory !== undefined }
+    { enabled: selectedCategory !== undefined },
   );
   const validCatalogItems = catalogItems ?? [];
   const selectedCatalogueId = params["catalogId"];

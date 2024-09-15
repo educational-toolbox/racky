@@ -1,3 +1,3 @@
-import { VisuallyHidden as RadixVisuallyHidden } from '@radix-ui/react-visually-hidden'
+import { VisuallyHidden as RadixVisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-export const VisuallyHidden = RadixVisuallyHidden
+export const VisuallyHidden = RadixVisuallyHidden;

@@ -35,7 +35,7 @@ const schema = z.object({
 type EditCategoryForm = z.infer<typeof schema>;
 
 export const UpdateCategory = (
-  existing: EditCategoryForm & { selected?: boolean }
+  existing: EditCategoryForm & { selected?: boolean },
 ) => {
   const orgId = useOrganizationId({ strict: true });
 
@@ -83,7 +83,7 @@ export const UpdateCategory = (
         });
       }
     },
-    [ctx.org.list, updateMutation, orgId, toast]
+    [ctx.org.list, updateMutation, orgId, toast],
   );
 
   return (

@@ -80,7 +80,7 @@ export type DateRange = {
 
 export function dateHasOverlaps(
   check: DateRange | Date,
-  against: (DateRange | { before: Date } | Date)[]
+  against: (DateRange | { before: Date } | Date)[],
 ) {
   return against.some((range) => {
     if (range instanceof Date) {
@@ -110,7 +110,7 @@ export function dateHasOverlaps(
     }
     return areIntervalsOverlapping(
       { start: check.from, end: check.to },
-      { start: range.from, end: range.to }
+      { start: range.from, end: range.to },
     );
   });
 }

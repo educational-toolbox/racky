@@ -125,7 +125,7 @@ export const ItemReservationButton = ({ item }: { item: Item }) => {
       variant: "outline",
       disabled: item.status !== "AVAILABLE",
     }),
-    [item.status]
+    [item.status],
   );
 
   return (

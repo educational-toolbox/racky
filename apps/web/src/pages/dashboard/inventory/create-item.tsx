@@ -75,7 +75,7 @@ export const CreateItemButton = () => {
         });
       }
     },
-    [uploadedImageKey, createItemMutation, catalogId, categoryId, toast]
+    [uploadedImageKey, createItemMutation, catalogId, categoryId, toast],
   );
 
   if (catalogId === undefined || categoryId === undefined) {

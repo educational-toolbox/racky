@@ -86,7 +86,7 @@ export const InviteUser = ({ orgId }: { orgId: string }) => {
         });
       }
     },
-    [form, orgId, sendInviteMutation, toast]
+    [form, orgId, sendInviteMutation, toast],
   );
 
   return (

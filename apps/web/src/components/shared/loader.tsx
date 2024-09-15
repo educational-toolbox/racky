@@ -15,7 +15,7 @@ export const Loader = ({ size = "md", ...props }: LoaderProps) => {
     <div
       className={cn(
         { "flex flex-row items-center": props.centered },
-        props.rootClassName
+        props.rootClassName,
       )}
       style={props.rootStyle}
     >
@@ -30,7 +30,7 @@ export const Loader = ({ size = "md", ...props }: LoaderProps) => {
             "w-6 h-6": size === "md",
             "w-8 h-8": size === "lg",
           },
-          props.className
+          props.className,
         )}
       />
     </div>

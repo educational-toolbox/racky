@@ -1,5 +1,3 @@
-
-
 import {
   Toast,
   ToastClose,
@@ -47,13 +45,14 @@ export function Toaster() {
   );
 }
 
-export type ToastIconType = "info" | "success" | "error" | "warning" | undefined;
+export type ToastIconType =
+  | "info"
+  | "success"
+  | "error"
+  | "warning"
+  | undefined;
 
-function ToastIcon({
-  icon,
-}: {
-  icon: ToastIconType;
-}) {
+function ToastIcon({ icon }: { icon: ToastIconType }) {
   switch (icon) {
     case "info":
       return <Icon name="Info" />;

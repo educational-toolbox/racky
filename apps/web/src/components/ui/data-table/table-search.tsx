@@ -1,5 +1,3 @@
-
-
 import type { Table } from "@tanstack/react-table";
 
 import type { ChangeEvent } from "react";

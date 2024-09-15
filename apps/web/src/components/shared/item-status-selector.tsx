@@ -41,15 +41,15 @@ export const ItemStatusSelector = function <
     | (TSelectedSet extends "item" ? ItemStatus : ItemReservationStatus)
     | null;
   onSelect: (
-    selected: TSelectedSet extends "item" ? ItemStatus : ItemReservationStatus
+    selected: TSelectedSet extends "item" ? ItemStatus : ItemReservationStatus,
   ) => void;
 }) {
   const statuses = useMemo(
     () => (set === "item" ? itemStatuses : itemReservationStatuses),
-    [set]
+    [set],
   );
   const selectedStatus = statuses.find(
-    (status) => status.name === selectedItem
+    (status) => status.name === selectedItem,
   );
   return (
     <DropdownMenu>

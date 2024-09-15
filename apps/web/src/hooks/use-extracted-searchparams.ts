@@ -32,7 +32,7 @@ export const useExtractedSearchParams = <
       }
     }
     const updatedParams = new URLSearchParams(
-      newParamsObject as Record<string, string>
+      newParamsObject as Record<string, string>,
     );
     const paramsString = updatedParams.toString();
     window.history.pushState(state, "", `?${paramsString}`);

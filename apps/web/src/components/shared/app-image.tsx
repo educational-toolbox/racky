@@ -36,7 +36,7 @@ export const AppImage = forwardRef<HTMLImageElement, AppImageProps>(
       onLoadingStateChange,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [loadingError, setLoadingError] = useState(false);
     const [isImageLoading, setIsImageLoading] = useState(false);
@@ -47,7 +47,7 @@ export const AppImage = forwardRef<HTMLImageElement, AppImageProps>(
 
     const { data, isLoading, isError } = s3.useDownloadImage(
       { fileKey: useS3 ? fileKey! : "" },
-      { enabled: useS3 }
+      { enabled: useS3 },
     );
 
     const handleImageLoadingError = useCallback(
@@ -55,21 +55,21 @@ export const AppImage = forwardRef<HTMLImageElement, AppImageProps>(
         setLoadingError(true);
         onError?.(e);
       },
-      [onError]
+      [onError],
     );
     const handleImageLoadingStart = useCallback(
       (e: SyntheticEvent<HTMLImageElement, Event>) => {
         setIsImageLoading(true);
         onLoadCapture?.(e);
       },
-      [onLoadCapture]
+      [onLoadCapture],
     );
     const handleImageLoadingEnd = useCallback(
       (e: SyntheticEvent<HTMLImageElement, Event>) => {
         setIsImageLoading(false);
         onLoad?.(e);
       },
-      [onLoad]
+      [onLoad],
     );
 
     const errored = isError || loadingError;
@@ -117,7 +117,7 @@ export const AppImage = forwardRef<HTMLImageElement, AppImageProps>(
         </Wrapper>
       </>
     );
-  }
+  },
 );
 
 AppImage.displayName = "AppImage";

@@ -1,13 +1,15 @@
 import js from "@eslint/js";
 import globals from "globals";
+import reactEslint from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import tseslint from "typescript-eslint";
 import importPlugin from "eslint-plugin-import";
 import tsParser from "@typescript-eslint/parser";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ["dist", "vite.config.ts"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -24,6 +26,8 @@ export default tseslint.config(
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       import: importPlugin,
+      react: reactEslint,
+      "jsx-a11y": jsxA11y,
     },
     rules: {
       "react/prop-types": "off",

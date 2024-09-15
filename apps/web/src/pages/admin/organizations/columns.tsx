@@ -1,5 +1,3 @@
-
-
 import type { ColumnDef } from "@tanstack/react-table";
 import { UserCard } from "~/components/shared/user/user-card";
 import { Icon } from "~/components/shared/app-icon";
@@ -36,7 +34,7 @@ export const columns: ColumnDef<RouterOutputs["org"]["list"][0]>[] = [
       const organization = row.original;
       const { data: owner, isLoading } = api.user.getUser.useQuery(
         { id: organization.ownerId! },
-        { enabled: !!organization.ownerId }
+        { enabled: !!organization.ownerId },
       );
       if (isLoading) return "Loading...";
       if (!owner) return "N/A";

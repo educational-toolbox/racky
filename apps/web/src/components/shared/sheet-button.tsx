@@ -79,5 +79,5 @@ export const SheetButton = forwardRef<SheetButtonRef, SheetButtonProps>(
         </SheetContent>
       </Sheet>
     );
-  }
+  },
 );

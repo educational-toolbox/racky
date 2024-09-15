@@ -31,7 +31,7 @@ export function DataTableColumnHeader<TData, TValue>({
             variant: "ghost",
             className: "-ml-3 h-8 w-full",
           }),
-          className
+          className,
         )}
       >
         {title}

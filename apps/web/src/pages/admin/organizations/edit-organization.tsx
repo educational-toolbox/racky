@@ -86,7 +86,7 @@ export const EditOrganization = ({
         });
       }
     },
-    [ctx.org.list, editMutation, org.id, toast]
+    [ctx.org.list, editMutation, org.id, toast],
   );
 
   return (

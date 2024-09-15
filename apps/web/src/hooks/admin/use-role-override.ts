@@ -23,7 +23,7 @@ export const useRoleOverride = (): UseRoleOverrideReturn => {
   const isFirstRender = useIsFirstRender();
   const [value, setLocalStorage] = useLocalStorage<UserRole | undefined>(
     "viewAs",
-    "USER"
+    "USER",
   );
   const [params, update] = useExtractedSearchParams<"viewAs", UserRole>();
 
@@ -44,7 +44,7 @@ export const useRoleOverride = (): UseRoleOverrideReturn => {
     (role: UserRole) => {
       update({ viewAs: role === "ADMIN" ? undefined : role });
     },
-    [update]
+    [update],
   );
 
   if (!session) {

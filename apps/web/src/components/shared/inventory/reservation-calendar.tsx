@@ -36,7 +36,7 @@ export const ReservationCalendar = ({
             if (d instanceof Date) return d;
             if (d.after === undefined) return { before: d.before };
             return { from: d.before, to: d.after };
-          })
+          }),
         );
 
   useEffect(() => {

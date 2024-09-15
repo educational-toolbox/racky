@@ -94,7 +94,7 @@ export const CreateCategory = () => {
         });
       }
     },
-    [ctx.org.list, createMutation, orgId, toast]
+    [ctx.org.list, createMutation, orgId, toast],
   );
 
   return (
