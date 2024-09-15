@@ -14,20 +14,20 @@ import { Loader } from "./components/shared/loader";
 const UserPage = lazy(() =>
   import("./pages/social/user.page").then((module) => ({
     default: module.UserPage,
-  }))
+  })),
 );
 const AcceptInvitePage = lazy(
-  () => import("./pages/accept-invite/accept-invite.page")
+  () => import("./pages/accept-invite/accept-invite.page"),
 );
 const DashboardRouter = lazy(() =>
   import("./pages/dashboard/dashboard.router").then((module) => ({
     default: module.DashboardRouter,
-  }))
+  })),
 );
 const AdminRouter = lazy(() =>
   import("./pages/admin/router").then((module) => ({
     default: module.AdminRouter,
-  }))
+  })),
 );
 
 export const AppRouter = () => {

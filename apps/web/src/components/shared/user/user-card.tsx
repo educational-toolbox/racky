@@ -29,7 +29,7 @@ export const UserCard = ({
     { id: userId },
     {
       enabled: requiresLoading,
-    }
+    },
   );
 
   if (isLoading || (!data && requiresLoading)) {
