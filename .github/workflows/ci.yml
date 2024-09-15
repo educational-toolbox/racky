@@ -40,6 +40,8 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install deps (with cache)
         run: pnpm install
+      - name: Run tests
+        run: pnpm test
   formatting:
     if: github.event.pull_request.draft == false
     needs: setup-project

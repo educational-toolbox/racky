@@ -259,31 +259,25 @@ describe('reservation service tests', () => {
     });
 
     it('should update an existing reservation in the database', async () => {
-      const result = await reservationService.update(
-        {
-          id: '1',
-          startDate: new Date('2024-10-02'),
-          endDate: new Date('2024-11-02'),
-          status: 'CONFIRMED',
-          itemId: 'i1',
-        },
-        '1',
-      );
+      const result = await reservationService.update({
+        id: '1',
+        startDate: new Date('2024-10-02'),
+        endDate: new Date('2024-11-02'),
+        status: 'CONFIRMED',
+        itemId: 'i1',
+      });
       reservationRepository.received(1).update(Arg.any());
       expect(result).toBeDefined();
     });
 
     it('should return the correct reservation data structure', async () => {
-      const result = await reservationService.update(
-        {
-          id: '1',
-          startDate: new Date('2024-10-02'),
-          endDate: new Date('2024-11-02'),
-          status: 'CONFIRMED',
-          itemId: 'i1',
-        },
-        '1',
-      );
+      const result = await reservationService.update({
+        id: '1',
+        startDate: new Date('2024-10-02'),
+        endDate: new Date('2024-11-02'),
+        status: 'CONFIRMED',
+        itemId: 'i1',
+      });
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('startDate');
       expect(result).toHaveProperty('endDate');
