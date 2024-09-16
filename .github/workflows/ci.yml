@@ -235,7 +235,6 @@ jobs:
       - name: Declare some variables
         shell: bash
         run: |
-
           echo "IMG_NAME_API=ghcr.io/kopenkinda/racky-api:$GITHUB_SHA" >> "$GITHUB_ENV"
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -248,4 +247,4 @@ jobs:
       - name: Authenticate to GitHub Container Registry
         run: echo "${{ secrets.GH_REGISTRY_ACCESS_TOKEN }}" | docker login ghcr.io -u kopenkinda --password-stdin
       - name: Push Docker Image to GitHub Container Registry
-        run: docker push ghcr.io/kopenkinda/racky-api:${{ github.sha }}
+        run: docker push ghcr.io/kopenkinda/racky-api:${{ ((github.head_ref || github.ref_name) == 'main') && 'latest' || github.sha }}
