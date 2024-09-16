@@ -2,6 +2,7 @@ import type { SubstituteOf } from '@fluffy-spoon/substitute';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import type { DatabaseService } from '../../database/database.service';
 import { ReservationService } from './reservation.service';
+import { NotificationService } from '../notification/notification.service';
 
 describe('reservation service tests', () => {
   /**
@@ -10,14 +11,19 @@ describe('reservation service tests', () => {
    */
   let mockDatabaseService: SubstituteOf<DatabaseService>;
   let reservationRepository: SubstituteOf<DatabaseService['reservation']>;
+  let notificationService: SubstituteOf<NotificationService>;
 
   let reservationService: ReservationService;
 
   beforeEach(() => {
     mockDatabaseService = Substitute.for<DatabaseService>();
     reservationRepository = Substitute.for<DatabaseService['reservation']>();
+    notificationService = Substitute.for<NotificationService>();
     mockDatabaseService.reservation.returns!(reservationRepository);
-    reservationService = new ReservationService(mockDatabaseService);
+    reservationService = new ReservationService(
+      mockDatabaseService,
+      notificationService,
+    );
   });
 
   // GET RESERVATION BY ID PASS
