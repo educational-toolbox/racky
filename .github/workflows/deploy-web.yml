@@ -1,7 +1,11 @@
 name: Deploy front end to github pages
 on:
-  push:
-    branches: ["main"]
+  workflow_dispatch: # Manually trigger workflow
+  workflow_run:
+    workflows: [CI + CD]
+    branches: [main]
+    types:
+      - completed
 
 permissions:
   contents: read
