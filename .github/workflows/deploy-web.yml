@@ -17,6 +17,8 @@ env:
   DEFAULT_ORGANIZATION_NAME: "Racky Team"
   DEFAULT_ORGANIZATION_ZONE: "Online"
   AWS_REGION: "eu-west-3"
+  VITE_NESTJS_SERVER: ${{secrets.VITE_NESTJS_SERVER}}
+  VITE_CLERK_PUBLISHABLE_KEY: ${{secrets.VITE_NESTJS_SERVER}}
 
 jobs:
   setup-and-deploy:
