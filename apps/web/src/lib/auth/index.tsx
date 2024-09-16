@@ -11,6 +11,7 @@ import type {
   Session,
   UserRole,
 } from "./session.type";
+import { env } from "../env";
 
 const sessionContext = createContext<Session>({
   state: "loading",
@@ -131,7 +132,7 @@ export const RequireAccessLevel = ({
   if (
     superadmin &&
     session.user?.role === "ADMIN" &&
-    session.user.orgId === import.meta.env.VITE_DEFAULT_ORGANIZATION_ID
+    session.user.orgId === env.DEFAULT_ORGID
   ) {
     return <>{children}</>;
   }
