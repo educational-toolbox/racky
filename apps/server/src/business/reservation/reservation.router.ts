@@ -8,6 +8,18 @@ import {
 } from './reservation.schema';
 import { ReservationService } from './reservation.service';
 
+const extendedReservationSchemaRead = reservationSchemaRead.extend({
+  item: z.object({
+    id: z.string(),
+    name: z.string(),
+    picture: z.string().nullable(),
+    catalogueItem: z.object({
+      id: z.string(),
+      name: z.string(),
+      category: z.object({ id: z.string(), name: z.string() }),
+    }),
+  }),
+});
 @Injectable()
 export class ReservationRouter {
   constructor(
@@ -35,6 +47,46 @@ export class ReservationRouter {
       .output(reservationSchemaRead.nullable())
       .query(({ input }) => this.reservationService.findOne(input.id)),
 
+    findActiveForItem: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .segments('active/{itemId}')
+          .summary('Get all active reservations for an item')
+          .build(),
+      })
+      .input(z.object({ itemId: z.string() }))
+      .output(
+        z.array(reservationSchemaRead.omit({ itemId: true, status: true })),
+      )
+      .query(({ input, ctx }) =>
+        this.reservationService.findActiveForItem(input.itemId, ctx.user.orgId),
+      ),
+
+    getMy: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .segments('my')
+          .summary('Get all reservations for the current user')
+          .build(),
+      })
+      .input(z.void())
+      .output(z.array(extendedReservationSchemaRead))
+      .query(({ ctx }) => this.reservationService.findByUserId(ctx.user.id)),
+
+    cancel: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .method('POST')
+          .segments('cancel/{id}')
+          .summary('Cancel a reservation')
+          .build(),
+      })
+      .input(z.object({ id: z.string() }))
+      .output(reservationSchemaRead)
+      .mutation(({ input, ctx }) => {
+        return this.reservationService.cancel(input.id, ctx.user.id);
+      }),
+
     create: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: openapi()
@@ -45,10 +97,10 @@ export class ReservationRouter {
       .input(reservationSchemaWrite)
       .output(reservationSchemaRead)
       .mutation(({ input, ctx }) =>
-        this.reservationService.create(input, ctx.user.orgId),
+        this.reservationService.create(input, ctx.user.id, ctx.user.orgId),
       ),
 
-    update: this.trpc.assignedToOrgProcedure
+    update: this.trpc.adminProcedure
       .meta({
         openapi: openapi()
           .method('PUT')
@@ -56,11 +108,23 @@ export class ReservationRouter {
           .summary('Update a reservation')
           .build(),
       })
-      .input(reservationSchemaRead)
+      .input(reservationSchemaRead.partial().extend({ id: z.string() }))
       .output(reservationSchemaRead)
-      .mutation(({ input, ctx }) =>
-        this.reservationService.update(input, ctx.user.orgId),
-      ),
+      .mutation(({ input }) => this.reservationService.update(input)),
+
+    getAllForMyOrg: this.trpc.adminProcedure
+      .meta({
+        openapi: openapi()
+          .segments('org', 'my')
+          .method('GET')
+          .summary('Get all reservations for my organization')
+          .build(),
+      })
+      .input(z.void())
+      .output(z.array(extendedReservationSchemaRead))
+      .query(({ ctx }) => {
+        return this.reservationService.findByOrgId(ctx.user.orgId);
+      }),
 
     delete: this.trpc.protectedProcedure
       .meta({

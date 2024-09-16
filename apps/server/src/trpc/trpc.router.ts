@@ -6,7 +6,7 @@ import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
 } from 'trpc-openapi';
-import { AuthUserWithPermissions } from '../auth/auth-user.type';
+import { AuthUser, AuthUserWithPermissions } from '../auth/auth-user.type';
 import { getPermissions } from '../auth/permissions';
 import { CatalogRouter } from '../business/catalog/catalog.router';
 import { CategoryRouter } from '../business/category/category.router';
@@ -19,6 +19,7 @@ import { env } from '../server-env';
 import { TrpcService } from '../trpc/trpc.service';
 import { UserRouter } from '../business/user/user.router';
 import { AuthService } from '../auth/auth.service';
+import { NotificationsRouter } from '../business/notification/notification.router';
 
 export interface TrpcContext {
   db: DatabaseService;
@@ -49,6 +50,7 @@ export class TrpcRouter {
     private readonly mediaRouter: MediaRouter,
     private readonly organizationRouter: OrganizationRouter,
     private readonly userRouter: UserRouter,
+    private readonly notificationRouter: NotificationsRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
     this.defineOpenApiPaths();
@@ -63,13 +65,14 @@ export class TrpcRouter {
     reservation: this.reservationRouter.router,
     media: this.mediaRouter.router,
     org: this.organizationRouter.router,
+    notifications: this.notificationRouter.router,
   });
 
   applyTRPCHandler(app: INestApplication) {
     app.use(`/trpc`, (req: Request, res: Response, next: NextFunction) => {
       const middleware = trpcExpress.createExpressMiddleware({
         router: this.appRouter,
-        createContext: (info) => this.createContext(info.req),
+        createContext: (info: { req: Request }) => this.createContext(info.req),
       });
       return middleware(req, res, next);
     });
@@ -79,7 +82,7 @@ export class TrpcRouter {
     return generateOpenApiDocument(this.appRouter, {
       title: 'tRPC OpenAPI',
       version: '1.0.0',
-      baseUrl: env.NEXT_PUBLIC_NESTJS_SERVER,
+      baseUrl: env.NESTJS_SERVER_URL,
     });
   }
 
@@ -105,7 +108,10 @@ export class TrpcRouter {
       }
       const middleware = createOpenApiExpressMiddleware({
         router: this.appRouter,
-        createContext: (info) => this.createContext(info.req),
+        createContext: (info: { req: Request }) => this.createContext(info.req),
+        maxBodySize: undefined,
+        onError: undefined,
+        responseMeta: undefined,
       });
       return middleware(req, res);
     });
@@ -150,12 +156,18 @@ export class TrpcRouter {
     const user = await this.databaseService.user.findUnique({
       where: { id: userId },
     });
-    if (!user) return undefined;
-    const authUser = {
-      id: user.id,
-      orgId: user.organizationId,
-      role: user.role,
+    const authUser: AuthUser = {
+      id: userId,
+      orgId: null,
+      role: 'USER',
+      anonymous: true,
     };
+    if (user) {
+      authUser.id = user.id;
+      authUser.orgId = user.organizationId;
+      authUser.role = user.role;
+      authUser.anonymous = false;
+    }
     return { ...authUser, permissions: getPermissions(authUser) };
   }
 

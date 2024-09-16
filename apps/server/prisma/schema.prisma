@@ -26,29 +26,30 @@ enum ReservationStatus {
 }
 
 model User {
-  id             String        @id @default(uuid())
-  email          String        @unique
+  id             String         @id @default(uuid())
+  email          String         @unique
   firstName      String?
   lastName       String?
   password       String?
-  role           Role          @default(USER)
-  owns           Organization? @relation(name: "organization_owner")
+  role           Role           @default(USER)
+  owns           Organization?  @relation(name: "organization_owner")
   ownsId         String?
-  organization   Organization? @relation(fields: [organizationId], references: [id], name: "organization_users")
+  organization   Organization?  @relation(fields: [organizationId], references: [id], name: "organization_users")
   organizationId String?
   reservations   Reservation[]
+  notifications  Notification[]
 }
 
 model Organization {
-  id           String               @id @default(uuid())
-  name         String               @unique
-  zone         String
-  users        User[]               @relation(name: "organization_users")
-  categories   Category[]
-  catalogItems CatalogItem[]
-  owner        User?                @relation(name: "organization_owner", fields: [ownerId], references: [id])
-  ownerId      String?              @unique
-  invites      OrganizationInvite[]
+  id             String               @id @default(uuid())
+  name           String               @unique
+  zone           String
+  users          User[]               @relation(name: "organization_users")
+  categories     Category[]
+  catalogueItems CatalogueItem[]
+  owner          User?                @relation(name: "organization_owner", fields: [ownerId], references: [id])
+  ownerId        String?              @unique
+  invites        OrganizationInvite[]
 }
 
 model OrganizationInvite {
@@ -60,42 +61,39 @@ model OrganizationInvite {
 }
 
 model Category {
-  id             String       @id @default(uuid())
+  id             String          @id @default(uuid())
   name           String
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization    @relation(fields: [organizationId], references: [id])
   organizationId String
-  itemCatalog    CatalogItem? @relation(fields: [itemCatalogId], references: [id])
-  itemCatalogId  String?
+  catalogueItems CatalogueItem[]
 }
 
-model CatalogItem {
+model CatalogueItem {
   id             String       @id @default(uuid())
   name           String
   description    String
   quantity       Int
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
-  categories     Category[]
+  category       Category     @relation(fields: [categoryId], references: [id])
+  categoryId     String
   items          Item[]
 }
 
 model Item {
-  id            String            @id @default(uuid())
-  available     Boolean
-  name          String
-  picture       String?
-  status        String
-  itemCatalog   CatalogItem       @relation(fields: [itemCatalogId], references: [id])
-  itemCatalogId String
-  reservations  ReservationItem[]
+  id              String        @id @default(uuid())
+  name            String
+  picture         String?
+  status          ItemStatus    @default(DRAFT)
+  catalogueItem   CatalogueItem @relation(fields: [catalogueItemId], references: [id])
+  catalogueItemId String
+  reservations    Reservation[]
 }
 
-model ReservationItem {
-  id            String      @id @default(uuid())
-  itemId        String
-  reservationId String
-  Item          Item        @relation(fields: [itemId], references: [id])
-  Reservation   Reservation @relation(fields: [reservationId], references: [id])
+enum ItemStatus {
+  DRAFT
+  AVAILABLE
+  UNAVAILABLE
 }
 
 model Reservation {
@@ -105,5 +103,16 @@ model Reservation {
   status    ReservationStatus @default(PENDING)
   user      User              @relation(fields: [userId], references: [id])
   userId    String
-  items     ReservationItem[]
+  item      Item              @relation(fields: [itemId], references: [id])
+  itemId    String
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

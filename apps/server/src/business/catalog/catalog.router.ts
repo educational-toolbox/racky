@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { TrpcService } from '../../trpc/trpc.service';
 import { z } from 'zod';
-import { CatalogService } from './catalog.service';
-import { ItemSchemaRead } from '../../business/item/item.schema';
-import { CatalogItemSchemaRead } from './catalog.schema';
+import { TrpcService } from '../../trpc/trpc.service';
 import { openapi } from './catalog.openapi';
+import {
+  CatalogItemSchemaRead,
+  CatalogItemSchemaWrite,
+} from './catalog.schema';
+import { CatalogService } from './catalog.service';
 
 @Injectable()
 export class CatalogRouter {
@@ -14,34 +16,40 @@ export class CatalogRouter {
   ) {}
 
   router = this.trpc.router({
-    items: this.trpc.assignedToOrgProcedure
-      .meta({
-        openapi: openapi()
-          .segments('{categoryId}')
-          .summary('Get all items')
-          .build(),
-      })
-      .input(z.object({ categoryId: z.string() }))
-      .output(z.array(ItemSchemaRead))
-      .query(async ({ input, ctx }) => {
-        const result = await this.catalogService.findItemByCategory(
-          input.categoryId,
-          ctx.user.orgId,
-        );
-        return result;
-      }),
-
     catalogueItems: this.trpc.assignedToOrgProcedure
       .meta({
         openapi: openapi()
-          .segments('items')
+          .segments('{categoryId}')
           .summary('Get all catalogue items')
           .build(),
       })
-      .input(z.void())
+      .input(z.object({ categoryId: z.string() }))
       .output(z.array(CatalogItemSchemaRead))
-      .query(({ ctx }) =>
-        this.catalogService.findCatalogueItems(ctx.user.orgId),
+      .query(({ ctx, input }) =>
+        this.catalogService.findCatalogueItems(
+          ctx.user.orgId,
+          input.categoryId,
+        ),
+      ),
+    createCatalogueItem: this.trpc.assignedToOrgProcedure
+      .meta({
+        openapi: openapi()
+          .method('POST')
+          .segments('{categoryId}')
+          .summary('Create a catalogue item')
+          .build(),
+      })
+      .input(
+        CatalogItemSchemaWrite.omit({ organizationId: true }).extend({
+          categoryId: z.string(),
+        }),
+      )
+      .output(CatalogItemSchemaRead)
+      .mutation(({ ctx, input }) =>
+        this.catalogService.createCatalogue({
+          ...input,
+          organizationId: ctx.user.orgId,
+        }),
       ),
   });
 }

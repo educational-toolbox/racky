@@ -1,29 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
+import { CatalogItemWrite } from './catalog.schema';
 
 @Injectable()
 export class CatalogService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  findItemByCategory(categoryId: string, organizationId: string) {
-    return this.databaseService.item.findMany({
+  findCatalogueItems(organizationId: string, categoryId: string) {
+    return this.databaseService.catalogueItem.findMany({
       where: {
-        itemCatalog: {
-          categories: {
-            some: {
-              organizationId: organizationId,
-              id: categoryId,
-            },
-          },
-        },
+        organizationId,
+        categoryId: categoryId,
       },
     });
   }
 
-  findCatalogueItems(organizationId: string) {
-    return this.databaseService.catalogItem.findMany({
-      where: {
-        organizationId,
+  createCatalogue(catalog: CatalogItemWrite) {
+    return this.databaseService.catalogueItem.create({
+      data: {
+        description: catalog.description,
+        name: catalog.name,
+        quantity: catalog.quantity,
+        organizationId: catalog.organizationId,
+        categoryId: catalog.categoryId,
       },
     });
   }

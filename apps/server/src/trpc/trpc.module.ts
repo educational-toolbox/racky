@@ -9,6 +9,7 @@ import { ReservationModule } from '../business/reservation/reservation.module';
 import { UsersModule } from '../business/user/user.module';
 import { TrpcService, trpcServiceProvider } from '../trpc/trpc.service';
 import { TrpcRouter } from '../trpc/trpc.router';
+import { NotificationModule } from '../business/notification/notification.module';
 
 @Global()
 @Module({
@@ -21,6 +22,7 @@ import { TrpcRouter } from '../trpc/trpc.router';
     ReservationModule,
     MediaModule,
     OrganizationModule,
+    NotificationModule,
   ],
   providers: [trpcServiceProvider, TrpcRouter],
   exports: [TrpcService, TrpcRouter],

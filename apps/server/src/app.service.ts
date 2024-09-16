@@ -12,7 +12,7 @@ export class AppService {
   async ensureDefaultOrgCreated() {
     const exists = await this.database.organization.findFirst({
       where: {
-        id: env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
+        id: env.DEFAULT_ORGANIZATION_ID,
       },
     });
     if (exists) {
@@ -22,7 +22,7 @@ export class AppService {
     this.logger.log('Creating default organization');
     return this.database.organization.create({
       data: {
-        id: env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
+        id: env.DEFAULT_ORGANIZATION_ID,
         name: env.DEFAULT_ORGANIZATION_NAME,
         zone: env.DEFAULT_ORGANIZATION_ZONE,
       },

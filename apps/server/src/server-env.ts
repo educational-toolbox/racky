@@ -21,18 +21,16 @@ function loadEnv<T extends readonly string[] = readonly string[]>(
   return x;
 }
 
-const NEXT_PUBLIC_NESTJS_SERVER = loadEnv('NEXT_PUBLIC_NESTJS_SERVER');
+const NESTJS_SERVER_URL = loadEnv('VITE_NESTJS_SERVER');
 
-const CLERK_PUBLIC_KEY = loadEnv('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY');
+const CLERK_PUBLIC_KEY = loadEnv('VITE_CLERK_PUBLISHABLE_KEY');
 const CLERK_SECRET_KEY = loadEnv('CLERK_SECRET_KEY');
 const AUTH_PROVIDER = loadEnv('AUTH_PROVIDER', 'unsafe_random', [
   'unsafe_random',
   'clerk',
 ] as const);
 
-const NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID = loadEnv(
-  'NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID',
-);
+const DEFAULT_ORGANIZATION_ID = loadEnv('VITE_DEFAULT_ORGANIZATION_ID');
 const DEFAULT_ORGANIZATION_NAME = loadEnv(
   'DEFAULT_ORGANIZATION_NAME',
   'Racky Team',
@@ -51,11 +49,11 @@ const AWS_S3_BUCKET_KEY = loadEnv('AWS_S3_BUCKET_KEY');
 const REDIS_URL = loadEnv('REDIS_URL', 'undefined') as string | undefined;
 
 export const env = {
-  NEXT_PUBLIC_NESTJS_SERVER,
+  NESTJS_SERVER_URL,
   CLERK_PUBLIC_KEY,
   CLERK_SECRET_KEY,
   AUTH_PROVIDER,
-  NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
+  DEFAULT_ORGANIZATION_ID,
   DEFAULT_ORGANIZATION_NAME,
   DEFAULT_ORGANIZATION_ZONE,
   REDIS_URL,

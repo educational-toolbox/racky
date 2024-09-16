@@ -1,5 +1,4 @@
 {
-  "*.ts": ["pnpm format:write:staged", "pnpm lint:write:staged"],
-  "*.json": ["pnpm format:write:staged"],
-  "*.tsx": ["pnpm format:write:staged", "pnpm lint:write:staged"]
+  "*.tsx": ["pnpm format:write:staged", "pnpm lint:write:staged"],
+  "*.ts": ["pnpm format:write:staged", "pnpm lint:write:staged"]
 }

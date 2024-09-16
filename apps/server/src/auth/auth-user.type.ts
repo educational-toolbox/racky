@@ -5,6 +5,7 @@ export interface AuthUser {
   id: User['id'];
   orgId: User['organizationId'];
   role: User['role'];
+  anonymous: boolean;
 }
 
 export type AuthUserWithPermissions = AuthUser & {

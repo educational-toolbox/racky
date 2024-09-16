@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { openapi } from './item.openapi';
+import { TIME } from '../../CONSTANTS';
 
 @Injectable()
 export class ItemRouter {
@@ -20,30 +21,42 @@ export class ItemRouter {
     getOne: this.trpc.publicProcedure
       .meta({
         openapi: openapi().segments('{id}').summary('Get an item').build(),
-        caching: true,
+        caching: { common: true, ttl: TIME.FIVE_MINUTES },
       })
       .input(z.object({ id: z.string() }))
       .output(ItemSchemaRead.or(z.null()))
-      .mutation(async ({ input }) => {
+      .query(async ({ input }) => {
         const item = await this.itemService.getItemById(input.id);
         if (item == null) throw new TRPCError({ code: 'NOT_FOUND' });
         return item;
       }),
 
-    getItemByCategory: this.trpc.protectedProcedure
+    getItems: this.trpc.assignedToOrgProcedure
       .meta({
-        openapi: {
-          method: 'GET',
-          path: '/item/category',
-          tags: ['Item'],
-          summary: 'Get items by category',
-          description: 'Get items from the database by category',
-        },
+        openapi: openapi()
+          .segments('catalogue')
+          .summary('Get items by catalogue')
+          .description('Get items from the database by category')
+          .protected()
+          .withCache()
+          .build(),
+        caching: { common: true, ttl: 60 },
       })
-      .input(z.object({ category: z.string() }))
+      .input(
+        z.object({
+          categoryId: z.string().optional(),
+          catalogItemId: z.string().optional(),
+          search: z.string().optional(),
+        }),
+      )
       .output(z.array(ItemSchemaRead))
-      .query(({ input }) =>
-        this.itemService.getItemsByCategory(input.category),
+      .query(({ input, ctx }) =>
+        this.itemService.getItems(
+          ctx.user.orgId,
+          input.categoryId,
+          input.catalogItemId,
+          input.search,
+        ),
       ),
 
     addItem: this.trpc.protectedProcedure
@@ -62,7 +75,7 @@ export class ItemRouter {
           .summary('Update an item')
           .build(),
       })
-      .input(ItemSchemaRead)
+      .input(ItemSchemaRead.omit({ catalogueItem: true }))
       .output(ItemSchemaRead)
       .mutation(({ input }) => this.itemService.editItem(input)),
 

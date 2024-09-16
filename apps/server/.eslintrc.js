@@ -16,7 +16,7 @@ const config = {
     'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:prettier/recommended',
   ],
-  ignorePatterns: ['**/.eslintrc.cjs', 'dist'],
+  ignorePatterns: ['**/.eslintrc.cjs', 'dist', '**/*.spec.ts'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

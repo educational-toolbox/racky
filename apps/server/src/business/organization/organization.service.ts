@@ -34,10 +34,23 @@ export class OrganizationService {
     });
   }
 
-  async addUser(organizationId: string, userId: string) {
+  async addUser(organizationId: string, userId: string, userEmail: string) {
+    const user = await this.databaseService.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      return await this.databaseService.user.create({
+        data: {
+          id: userId,
+          organization: { connect: { id: organizationId } },
+          email: userEmail,
+        },
+      });
+    }
     return this.databaseService.user.update({
       where: { id: userId },
       data: {
+        email: userEmail,
         organization: { connect: { id: organizationId } },
       },
     });
@@ -71,7 +84,11 @@ export class OrganizationService {
           { email: inviteIdOrEmail, valid: true },
         ],
       },
-      select: { id: true, organization: { select: { name: true, id: true } } },
+      select: {
+        id: true,
+        email: true,
+        organization: { select: { name: true, id: true } },
+      },
     });
   }
 

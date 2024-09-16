@@ -30,7 +30,7 @@ export class CategoryRouter {
       })
       .input(CategorySchemaWrite)
       .output(CategorySchemaRead)
-      .query(({ input }) => this.categoryService.createCategory(input)),
+      .mutation(({ input }) => this.categoryService.createCategory(input)),
 
     editCategory: this.trpc.assignedToOrgProcedure
       .meta({
@@ -42,7 +42,7 @@ export class CategoryRouter {
       })
       .input(CategorySchemaRead)
       .output(CategorySchemaRead)
-      .query(({ input }) => this.categoryService.editCategory(input)),
+      .mutation(({ input }) => this.categoryService.editCategory(input)),
 
     deleteCategory: this.trpc.assignedToOrgProcedure
       .meta({
@@ -54,6 +54,6 @@ export class CategoryRouter {
       })
       .input(z.object({ id: z.string() }))
       .output(CategorySchemaRead)
-      .query(({ input }) => this.categoryService.deleteCategory(input.id)),
+      .mutation(({ input }) => this.categoryService.deleteCategory(input.id)),
   });
 }

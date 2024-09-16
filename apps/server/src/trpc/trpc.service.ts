@@ -5,6 +5,7 @@ import { OpenApiMeta } from 'trpc-openapi';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { CachingService } from '../caching/caching.service';
 import { TrpcContext } from './trpc.router';
+import { env } from '../server-env';
 
 export type TrpcMeta = OpenApiMeta & {
   caching?: true | { ttl?: number; common?: true };
@@ -84,12 +85,37 @@ export class TrpcService {
     },
   );
 
-  public readonly adminProcedure = this.protectedProcedure.use(
+  public readonly adminProcedure = this.assignedToOrgProcedure.use(
     async (request) => {
       if (request.ctx.user.role !== 'ADMIN') {
         throw new TRPCError({ code: 'FORBIDDEN' });
       }
-      return request.next(request);
+      return request.next({
+        ctx: {
+          ...request.ctx,
+          user: {
+            ...request.ctx.user,
+            role: 'ADMIN' as const,
+          },
+        },
+      });
+    },
+  );
+
+  public readonly superAdminProcedure = this.adminProcedure.use(
+    async (request) => {
+      if (request.ctx.user.orgId !== env.DEFAULT_ORGANIZATION_ID) {
+        throw new TRPCError({ code: 'FORBIDDEN' });
+      }
+      return request.next({
+        ctx: {
+          ...request.ctx,
+          user: {
+            ...request.ctx.user,
+            orgId: env.DEFAULT_ORGANIZATION_NAME,
+          },
+        },
+      });
     },
   );
 
