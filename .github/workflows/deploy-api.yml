@@ -1,9 +1,9 @@
-name: Build and api server
+name: Build and deploy api server
 
 on:
   workflow_dispatch: # Manually trigger workflow
   workflow_run:
-    workflows: ["CI + CD"]
+    workflows: [CI + CD]
     branches: [main]
     types:
       - completed
@@ -22,7 +22,6 @@ jobs:
           script: |
             echo "${{ secrets.GH_REGISTRY_ACCESS_TOKEN }}" | docker login ghcr.io -u kopenkinda --password-stdin
             cd /racky
-            echo ${{ env }} > .env
             docker pull ghcr.io/kopenkinda/racky-api:latest
             docker compose down
             docker compose up -d
