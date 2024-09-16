@@ -22,6 +22,7 @@ jobs:
           script: |
             echo "${{ secrets.GH_REGISTRY_ACCESS_TOKEN }}" | docker login ghcr.io -u kopenkinda --password-stdin
             cd /racky
+            echo ${{ env }} > .env
             docker pull ghcr.io/kopenkinda/racky-api:latest
             docker compose down
             docker compose up -d
