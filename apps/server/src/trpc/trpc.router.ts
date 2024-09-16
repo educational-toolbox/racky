@@ -19,6 +19,7 @@ import { env } from '../server-env';
 import { TrpcService } from '../trpc/trpc.service';
 import { UserRouter } from '../business/user/user.router';
 import { AuthService } from '../auth/auth.service';
+import { NotificationsRouter } from '../business/notification/notification.router';
 
 export interface TrpcContext {
   db: DatabaseService;
@@ -49,6 +50,7 @@ export class TrpcRouter {
     private readonly mediaRouter: MediaRouter,
     private readonly organizationRouter: OrganizationRouter,
     private readonly userRouter: UserRouter,
+    private readonly notificationRouter: NotificationsRouter,
   ) {
     this.openapiDoc = this.generateTRPCOpenAPIDocument();
     this.defineOpenApiPaths();
@@ -63,6 +65,7 @@ export class TrpcRouter {
     reservation: this.reservationRouter.router,
     media: this.mediaRouter.router,
     org: this.organizationRouter.router,
+    notifications: this.notificationRouter.router,
   });
 
   applyTRPCHandler(app: INestApplication) {

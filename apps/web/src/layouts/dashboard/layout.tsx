@@ -35,6 +35,7 @@ import { useMenuItems } from "./menu-items.store";
 import { useRoleOverride } from "~/hooks/admin/use-role-override";
 import { useIsMobile } from "~/hooks/use-is-mobile";
 import { VisuallyHidden } from "~/components/ui/visually-hidden";
+import { NotificationsButton } from "~/components/shared/notifications";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const [path] = useLocation();
@@ -99,6 +100,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
                 <div />
               </Separator>
             </RequireAccessLevel>
+            <NotificationsButton />
             <SignOutButton />
           </div>
         </header>

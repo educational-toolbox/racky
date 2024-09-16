@@ -26,17 +26,18 @@ enum ReservationStatus {
 }
 
 model User {
-  id             String        @id @default(uuid())
-  email          String        @unique
+  id             String         @id @default(uuid())
+  email          String         @unique
   firstName      String?
   lastName       String?
   password       String?
-  role           Role          @default(USER)
-  owns           Organization? @relation(name: "organization_owner")
+  role           Role           @default(USER)
+  owns           Organization?  @relation(name: "organization_owner")
   ownsId         String?
-  organization   Organization? @relation(fields: [organizationId], references: [id], name: "organization_users")
+  organization   Organization?  @relation(fields: [organizationId], references: [id], name: "organization_users")
   organizationId String?
   reservations   Reservation[]
+  notifications  Notification[]
 }
 
 model Organization {
@@ -104,4 +105,14 @@ model Reservation {
   userId    String
   item      Item              @relation(fields: [itemId], references: [id])
   itemId    String
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
