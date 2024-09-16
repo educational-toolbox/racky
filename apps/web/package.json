@@ -13,7 +13,8 @@
     "lint:write:staged": "pnpm with-env eslint --fix ",
     "format": "prettier --check \"./src/**/*.{ts,tsx}\"",
     "format:write": "prettier --write \"./src/**/*.{ts,tsx}\"",
-    "format:write:staged": "prettier --write "
+    "format:write:staged": "prettier --write ",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.7.0",
