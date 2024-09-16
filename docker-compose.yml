@@ -1,22 +1,10 @@
 services:
   api:
     image: ghcr.io/kopenkinda/racky-api:latest
-    platform: "linux/amd64"
-    working_dir: /app
     build:
       context: .
       dockerfile: ./apps/server/Dockerfile
     ports:
-      - 3069:3001
+      - 80:3001
     env_file: .env
-    networks:
-      - app
     restart: always
-
-volumes:
-  db_data:
-  nginx-data:
-
-networks:
-  app:
-    driver: "bridge"
