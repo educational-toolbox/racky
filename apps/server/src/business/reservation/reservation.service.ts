@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { ReservationRead, ReservationWrite } from './reservation.schema';
+import { NotificationService } from '../notification/notification.service';
 
 type ExtendedReservationRead = ReservationRead & {
   item: {
@@ -20,7 +21,10 @@ type ExtendedReservationRead = ReservationRead & {
 
 @Injectable()
 export class ReservationService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   findAll() {
     return this.databaseService.reservation.findMany();
@@ -87,12 +91,12 @@ export class ReservationService {
     });
   }
 
-  create(
+  async create(
     reservation: ReservationWrite,
     userId: string,
     orgId: string,
   ): Promise<ReservationRead> {
-    return this.databaseService.reservation.create({
+    const result = await this.databaseService.reservation.create({
       data: {
         endDate: reservation.endDate,
         startDate: reservation.startDate,
@@ -106,6 +110,8 @@ export class ReservationService {
         user: { connect: { id: userId } },
       },
     });
+
+    return result;
   }
 
   cancel(reservationId: string, userId: string): Promise<ReservationRead> {
@@ -115,13 +121,21 @@ export class ReservationService {
     });
   }
 
-  update(
+  async update(
     reservation: Partial<ReservationRead> & { id: string },
   ): Promise<ReservationRead> {
-    return this.databaseService.reservation.update({
+    const result = await this.databaseService.reservation.update({
       where: { id: reservation.id },
       data: reservation,
     });
+
+    await this.notificationService.create(
+      result.userId,
+      'Status update',
+      `Your reservation status has been updated to ${result.status}`,
+    );
+
+    return result;
   }
 
   delete(reservationId: string): Promise<ReservationRead> {
