@@ -24,4 +24,10 @@ export default defineConfig({
       "~": path.resolve(__dirname, "./src"),
     },
   },
+  // @ts-expect-error - Vite doesn't have a type for this I guess?
+  test: {
+    environment: "jsdom",
+    testMatch: ["./tests/**/*.test.tsx"],
+    globals: true,
+  },
 });
