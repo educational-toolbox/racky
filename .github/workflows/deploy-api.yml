@@ -3,7 +3,7 @@ name: Build and deploy api server
 on:
   workflow_dispatch: # Manually trigger workflow
   workflow_run:
-    workflows: [CI + CD]
+    workflows: ["CI and CD"]
     branches: [main]
     types:
       - completed
@@ -11,6 +11,7 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    name: Deploy API Server to VPS
     steps:
       - name: SSH into Server and Load Docker Image
         uses: appleboy/ssh-action@master
