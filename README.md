@@ -25,19 +25,15 @@ cd apps/server
 pnpm test
 ```
 
-Test files for the `test` class are located under:
+## Development
 
-```
-apps/
-  - server/
-    - src/
-      - auth/clerk-auth.service.spec.ts           - [ KOPENKIN DMITRII ]
-      - business/
-        - media/s3.service.spec.ts             - [ KOPENKIN DMITRII ]
-        - item/item.service.spec.ts               - [ ARNAL THEO       ]
-        - reservation/reservation.service.spec.ts - [ CLEMENT LLORENS  ]
+to launch the server in development mode, run the following command:
+
+```bash
+pnpm dev
 ```
 
-Explanations on why we use mocks are located in the comments next to the usage of the mocks in their respective test file.
+By default:
 
-PS [Dmitrii KOPENKIN]: I have less than 20 tests written, however, I believe that the tests I have written are of good quality and cover the most important parts of the code. I have also written a lot of mocks to test the code in isolation.
+- Server is located on http://localhost:3001
+- Client is located on http://localhost:5736
