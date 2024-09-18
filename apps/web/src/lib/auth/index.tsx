@@ -68,7 +68,7 @@ export function useSession({ enforce = false } = {}) {
 }
 
 export const SignedInAsAnonymous = ({ children }: PropsWithChildren) => {
-  const session = useSession({ enforce: true });
+  const session = useSession();
   if (session.state === "authenticated" && session.user.anonymous) {
     return <>{children}</>;
   }
@@ -97,7 +97,13 @@ export const SignedOut = ({ children }: PropsWithChildren) => {
   return null;
 };
 
-export const SignOutButton = () => {
+export const SignOutButton = ({
+  full,
+  className,
+}: {
+  full?: boolean;
+  className?: string;
+}) => {
   const auth = useAuth();
   const session = useSession();
   return (
@@ -108,10 +114,12 @@ export const SignOutButton = () => {
           await session.invalidate();
         }
       }}
-      size="icon"
+      size={!full ? "icon" : undefined}
       variant="outline"
+      className={className}
     >
       <Icon name="LogOut" />
+      {full ? "Sign Out" : null}
     </Button>
   );
 };

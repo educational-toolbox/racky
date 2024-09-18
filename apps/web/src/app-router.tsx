@@ -7,6 +7,7 @@ import {
   SignedIn,
   SignedInAsAnonymous,
   SignedOut,
+  SignOutButton,
   useSession,
 } from "./lib/auth";
 import { lazy, Suspense } from "react";
@@ -34,9 +35,6 @@ export const AppRouter = () => {
   return (
     <Switch>
       <Route path="/app" nest>
-        <SignedInAsAnonymous>
-          <AnonymousPage />
-        </SignedInAsAnonymous>
         <SignedIn>
           <DashboardLayout>
             <Suspense fallback={<Loader centered />}>
@@ -49,6 +47,12 @@ export const AppRouter = () => {
             </AdminLayout>
           </DashboardLayout>
         </SignedIn>
+        <SignedOut>
+          <Redirect to="~/auth" />
+        </SignedOut>
+        <SignedInAsAnonymous>
+          <Redirect to="~/" />
+        </SignedInAsAnonymous>
       </Route>
 
       <Route path="/auth" nest>
@@ -76,6 +80,9 @@ export const AppRouter = () => {
       </Route>
 
       <Route>
+        <SignedInAsAnonymous>
+          <AnonymousPage />
+        </SignedInAsAnonymous>
         <SignedIn>
           <Redirect to="/app" />
         </SignedIn>
@@ -90,14 +97,18 @@ export const AppRouter = () => {
 const AnonymousPage = () => {
   const session = useSession();
   return (
-    <div>
-      <span className="text-center w-full block py-12">
-        Acount is not verified. Please wait while we verify your account.
-      </span>
-      <div className="flex items-center justify-center w-full">
+    <div className="w-full grid place-items-center">
+      <div className="max-w-[400px]">
+        <div className="pt-12 mb-4">
+          Acount is not verified. <br /> Please wait while we verify your
+          account.
+        </div>
         <pre className="rounded-md p-2 border">
-          {JSON.stringify(session.user, null, 2)}
+          id : {session.user?.id}
+          <br />
+          org: {session.user?.orgId || "none"}
         </pre>
+        <SignOutButton full className="w-full mt-2" />
       </div>
     </div>
   );
