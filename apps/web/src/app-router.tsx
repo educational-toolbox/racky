@@ -52,7 +52,7 @@ export const AppRouter = () => {
       </Route>
 
       <Route path="/auth" nest>
-        <SignIn />
+        <AuthPage />
       </Route>
 
       <Route path="/social" nest>
@@ -99,6 +99,14 @@ const AnonymousPage = () => {
           {JSON.stringify(session.user, null, 2)}
         </pre>
       </div>
+    </div>
+  );
+};
+
+const AuthPage = () => {
+  return (
+    <div className="w-screen h-svh grid place-items-center">
+      <SignIn />
     </div>
   );
 };

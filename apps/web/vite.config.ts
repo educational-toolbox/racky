@@ -7,14 +7,8 @@ export default defineConfig({
   plugins: [
     viteStaticCopy({
       targets: [
-        {
-          src: path.resolve(__dirname, "./404.html"), // 1️⃣
-          dest: "./", // 2️⃣
-        },
-        {
-          src: path.resolve(__dirname, "./CNAME"), // 1️⃣
-          dest: "./", // 2️⃣
-        },
+        { src: path.resolve(__dirname, "./404.html"), dest: "./" },
+        { src: path.resolve(__dirname, "./CNAME"), dest: "./" },
       ],
     }),
     react(),
@@ -23,5 +17,11 @@ export default defineConfig({
     alias: {
       "~": path.resolve(__dirname, "./src"),
     },
+  },
+  // @ts-expect-error - Vite doesn't have a type for this I guess?
+  test: {
+    environment: "jsdom",
+    testMatch: ["./tests/**/*.test.tsx"],
+    globals: true,
   },
 });
