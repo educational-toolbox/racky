@@ -21,6 +21,7 @@ import type { Reservation } from "~/lib/api/server-types";
 import { ReservationItem } from "./reservation-item";
 import { AppImage } from "~/components/shared/app-image";
 import { AppLink } from "~/components/app-link";
+import { UserCard } from "~/components/shared/user/user-card";
 
 export const ReservationsColumn = ({
   loading,
@@ -30,6 +31,7 @@ export const ReservationsColumn = ({
   cancellable,
   printable,
   collapsible,
+  withUserInfo,
   className,
   /**
    * If provided, the reservations will be displayed in a table format, ignoring the `printable`, `cancellable` and `approvable` props.
@@ -44,6 +46,7 @@ export const ReservationsColumn = ({
   printable?: boolean;
   className?: string;
   collapsible?: boolean;
+  withUserInfo?: boolean;
   caption?: string;
 }) => {
   if (collapsible) {
@@ -64,6 +67,7 @@ export const ReservationsColumn = ({
               {loading && <Loader centered />}
               {!loading && !caption && (
                 <ReservationsList
+                  withUserInfo={withUserInfo}
                   reservations={reservations}
                   approvable={approvable}
                   cancellable={cancellable}
@@ -72,6 +76,7 @@ export const ReservationsColumn = ({
               )}
               {!loading && !!caption && (
                 <ReservationTable
+                  withUserInfo={withUserInfo}
                   reservations={reservations}
                   caption={caption}
                 />
@@ -95,6 +100,7 @@ export const ReservationsColumn = ({
         {loading && <Loader centered />}
         {!loading && (
           <ReservationsList
+            withUserInfo={withUserInfo}
             reservations={reservations}
             approvable={approvable}
             cancellable={cancellable}
@@ -110,11 +116,13 @@ const ReservationsList = ({
   reservations,
   cancellable = false,
   printable = false,
+  withUserInfo = false,
   approvable = false,
 }: {
   reservations: Reservation[];
   cancellable?: boolean;
   printable?: boolean;
+  withUserInfo?: boolean;
   approvable?: boolean;
 }) => {
   return (
@@ -126,6 +134,7 @@ const ReservationsList = ({
           reservation={reservation}
           cancellable={cancellable}
           printable={printable}
+          withUserInfo={withUserInfo}
         />
       ))}
     </div>
@@ -134,9 +143,11 @@ const ReservationsList = ({
 
 const ReservationTable = ({
   reservations,
+  withUserInfo,
   caption,
 }: {
   reservations: Reservation[];
+  withUserInfo?: boolean;
   caption: string;
 }) => {
   return (
@@ -145,6 +156,7 @@ const ReservationTable = ({
       <TableHeader>
         <TableRow>
           <TableHead className="max-w-48">ID</TableHead>
+          {!!withUserInfo && <TableHead>User</TableHead>}
           <TableHead>Picture</TableHead>
           <TableHead>Category</TableHead>
           <TableHead>Catalogue</TableHead>
@@ -157,6 +169,11 @@ const ReservationTable = ({
         {reservations.map((reservation) => (
           <TableRow key={reservation.id}>
             <TableCell className="max-w-48">{reservation.id}</TableCell>
+            {!!withUserInfo && (
+              <TableCell>
+                <UserCard userId={reservation.user.id} />
+              </TableCell>
+            )}
             <TableCell>
               <AppImage
                 useS3

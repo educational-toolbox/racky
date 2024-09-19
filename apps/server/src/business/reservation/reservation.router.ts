@@ -9,6 +9,9 @@ import {
 import { ReservationService } from './reservation.service';
 
 const extendedReservationSchemaRead = reservationSchemaRead.extend({
+  user: z.object({
+    id: z.string(),
+  }),
   item: z.object({
     id: z.string(),
     name: z.string(),
