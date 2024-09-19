@@ -419,7 +419,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.3)
+        version: 4.3.1(vite@5.4.6)
       dotenv-cli:
         specifier: ^7.4.1
         version: 7.4.1
@@ -466,11 +466,11 @@ importers:
         specifier: ^8.0.1
         version: 8.4.0(eslint@9.10.0)(typescript@5.5.4)
       vite:
-        specifier: ^5.4.1
-        version: 5.4.3(@types/node@20.11.28)
+        specifier: ^5.4.6
+        version: 5.4.6(@types/node@20.11.28)
       vite-plugin-static-copy:
         specifier: ^1.0.6
-        version: 1.0.6(vite@5.4.3)
+        version: 1.0.6(vite@5.4.6)
       vitest:
         specifier: ^2.1.1
         version: 2.1.1(@types/node@20.11.28)(jsdom@25.0.0)
@@ -6485,7 +6485,7 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@vitejs/plugin-react@4.3.1(vite@5.4.3):
+  /@vitejs/plugin-react@4.3.1(vite@5.4.6):
     resolution: {integrity: sha512-m/V2syj5CuVnaxcUJOQRel/Wr31FFXRFlnOoq1TVtkCxsY5veGMTEmpWHndrhB2U8ScHtCQB1e+4hWYExQc6Lg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -6496,7 +6496,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.24.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.3(@types/node@20.11.28)
+      vite: 5.4.6(@types/node@20.11.28)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6510,7 +6510,7 @@ packages:
       tinyrainbow: 1.2.0
     dev: true
 
-  /@vitest/mocker@2.1.1(@vitest/spy@2.1.1)(vite@5.4.3):
+  /@vitest/mocker@2.1.1(@vitest/spy@2.1.1)(vite@5.4.6):
     resolution: {integrity: sha512-LNN5VwOEdJqCmJ/2XJBywB11DLlkbY0ooDJW3uRX5cZyYCrc4PI/ePX0iQhE3BiEGiQmK4GE7Q/PqCkkaiPnrA==}
     peerDependencies:
       '@vitest/spy': 2.1.1
@@ -6525,7 +6525,7 @@ packages:
       '@vitest/spy': 2.1.1
       estree-walker: 3.0.3
       magic-string: 0.30.11
-      vite: 5.4.3(@types/node@20.11.28)
+      vite: 5.4.6(@types/node@20.11.28)
     dev: true
 
   /@vitest/pretty-format@2.1.1:
@@ -13930,7 +13930,7 @@ packages:
       cac: 6.7.14
       debug: 4.3.7
       pathe: 1.1.2
-      vite: 5.4.3(@types/node@20.11.28)
+      vite: 5.4.6(@types/node@20.11.28)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -13943,7 +13943,7 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-static-copy@1.0.6(vite@5.4.3):
+  /vite-plugin-static-copy@1.0.6(vite@5.4.6):
     resolution: {integrity: sha512-3uSvsMwDVFZRitqoWHj0t4137Kz7UynnJeq1EZlRW7e25h2068fyIZX4ORCCOAkfp1FklGxJNVJBkBOD+PZIew==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
@@ -13953,11 +13953,11 @@ packages:
       fast-glob: 3.3.2
       fs-extra: 11.2.0
       picocolors: 1.0.1
-      vite: 5.4.3(@types/node@20.11.28)
+      vite: 5.4.6(@types/node@20.11.28)
     dev: true
 
-  /vite@5.4.3(@types/node@20.11.28):
-    resolution: {integrity: sha512-IH+nl64eq9lJjFqU+/yrRnrHPVTlgy42/+IzbOdaFDVlyLgI/wDlf+FCobXLX1cT0X5+7LMyH1mIy2xJdLfo8Q==}
+  /vite@5.4.6(@types/node@20.11.28):
+    resolution: {integrity: sha512-IeL5f8OO5nylsgzd9tq4qD2QqI0k2CQLGrWD0rCN0EQJZpBK5vJAx0I+GDkMOXxQX/OfFHMuLIx6ddAxGX/k+Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -14022,7 +14022,7 @@ packages:
     dependencies:
       '@types/node': 20.11.28
       '@vitest/expect': 2.1.1
-      '@vitest/mocker': 2.1.1(@vitest/spy@2.1.1)(vite@5.4.3)
+      '@vitest/mocker': 2.1.1(@vitest/spy@2.1.1)(vite@5.4.6)
       '@vitest/pretty-format': 2.1.1
       '@vitest/runner': 2.1.1
       '@vitest/snapshot': 2.1.1
@@ -14038,7 +14038,7 @@ packages:
       tinyexec: 0.3.0
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.3(@types/node@20.11.28)
+      vite: 5.4.6(@types/node@20.11.28)
       vite-node: 2.1.1(@types/node@20.11.28)
       why-is-node-running: 2.3.0
     transitivePeerDependencies:
