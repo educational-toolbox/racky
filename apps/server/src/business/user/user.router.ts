@@ -60,5 +60,17 @@ export class UserRouter {
       .query(({ input }) => {
         return this.userService.getOne(input.id);
       }),
+    edit: this.trpc.protectedProcedure
+      .input(
+        z.object({
+          email: z.string().email(),
+          firstName: z.string().min(1),
+          lastName: z.string().min(1),
+        }),
+      )
+      .output(z.void())
+      .mutation(({ ctx, input }) =>
+        this.userService.update(ctx.user.id, input).then(() => undefined),
+      ),
   });
 }
