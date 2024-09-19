@@ -47,14 +47,17 @@ export const AdminReservations = () => {
         className="col-span-1 md:col-span-2"
         reservations={reservations.pending}
         loading={isLoading}
+        withUserInfo
         cancellable
         approvable
+        collapsible
       />
       <ReservationsColumn
         title="Approved reservations"
         className="col-span-1 md:col-span-3"
         reservations={reservations.approved}
         loading={isLoading}
+        withUserInfo
         printable
         collapsible
       />
@@ -63,6 +66,7 @@ export const AdminReservations = () => {
           title="Cancelled reservations"
           reservations={reservations.cancelled}
           loading={isLoading}
+          withUserInfo
           className="col-span-1 md:col-span-5"
           collapsible
           caption="Cancelled reservations"

@@ -6,21 +6,30 @@ import { Icon } from "~/components/shared/app-icon";
 import { AppImage } from "~/components/shared/app-image";
 import { ItemStatusBadge } from "~/components/shared/item-status-badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import type { Reservation } from "~/lib/api/server-types";
 import { ApproveReservationButton } from "./approve-reservation-button";
 import { CancelReservationButton } from "./cancel-reservation-button";
+import { UserCard } from "~/components/shared/user/user-card";
 
 export const ReservationItem = ({
   reservation,
   cancellable,
   approvable,
   printable,
+  withUserInfo,
 }: {
   reservation: Reservation;
   cancellable?: boolean;
   printable?: boolean;
   approvable?: boolean;
+  withUserInfo?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
@@ -85,6 +94,15 @@ export const ReservationItem = ({
           )}
         </div>
       </CardContent>
+      {withUserInfo && (
+        <CardFooter className="border-t border-dashed pb-1">
+          <UserCard
+            link
+            className="w-full border-none shadow-none"
+            userId={reservation.user.id}
+          />
+        </CardFooter>
+      )}
     </Card>
   );
 };

@@ -4,10 +4,14 @@ import { ReservationRead, ReservationWrite } from './reservation.schema';
 import { NotificationService } from '../notification/notification.service';
 
 type ExtendedReservationRead = ReservationRead & {
+  user: {
+    id: string;
+  };
   item: {
     id: string;
     name: string;
     picture: string | null;
+
     catalogueItem: {
       id: string;
       name: string;
@@ -40,6 +44,9 @@ export class ReservationService {
     return this.databaseService.reservation.findMany({
       where: { userId },
       include: {
+        user: {
+          select: { id: true },
+        },
         item: {
           select: {
             id: true,
@@ -73,6 +80,9 @@ export class ReservationService {
         item: { catalogueItem: { organizationId: orgId } },
       },
       include: {
+        user: {
+          select: { id: true },
+        },
         item: {
           select: {
             id: true,

@@ -101,6 +101,9 @@ describe('reservation service tests', () => {
       reservationRepository.received(1).findMany({
         where: { userId: 'u1' },
         include: {
+          user: {
+            select: { id: true },
+          },
           item: {
             select: {
               id: true,
