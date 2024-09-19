@@ -5,6 +5,7 @@ import { AppLink } from "~/components/app-link";
 import { Icon } from "~/components/shared/app-icon";
 import { AppImage } from "~/components/shared/app-image";
 import { ItemStatusBadge } from "~/components/shared/item-status-badge";
+import { UserCard } from "~/components/shared/user/user-card";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -16,7 +17,7 @@ import {
 import type { Reservation } from "~/lib/api/server-types";
 import { ApproveReservationButton } from "./approve-reservation-button";
 import { CancelReservationButton } from "./cancel-reservation-button";
-import { UserCard } from "~/components/shared/user/user-card";
+import { cn } from "~/lib/utils";
 
 export const ReservationItem = ({
   reservation,
@@ -36,11 +37,8 @@ export const ReservationItem = ({
     content: () => ref.current,
   });
   return (
-    <Card
-      ref={ref}
-      className="print:mt-12 print:mx-40 print:flex print:flex-col-reverse"
-    >
-      <CardHeader className="print:p-4">
+    <Card ref={ref} className="print:mt-12 print:mx-40">
+      <CardHeader className="print:p-4 print:pb-0">
         <CardTitle>
           {formatDate(reservation.startDate, "dd/MM/yyyy")} -{" "}
           {formatDate(reservation.endDate, "dd/MM/yyyy")}
@@ -51,7 +49,7 @@ export const ReservationItem = ({
           className="max-w-min"
         />
       </CardHeader>
-      <CardContent className="print:p-4">
+      <CardContent className="print:p-4 print:pt-2">
         <div className="flex gap-1">
           <AppImage
             useS3
@@ -94,15 +92,17 @@ export const ReservationItem = ({
           )}
         </div>
       </CardContent>
-      {withUserInfo && (
-        <CardFooter className="border-t border-dashed pb-1">
-          <UserCard
-            link
-            className="w-full border-none shadow-none"
-            userId={reservation.user.id}
-          />
-        </CardFooter>
-      )}
+      <CardFooter
+        className={cn("border-t border-dashed pb-1 print:px-4", {
+          "print:block hidden": !withUserInfo,
+        })}
+      >
+        <UserCard
+          link
+          className="w-full border-none shadow-none"
+          userId={reservation.user.id}
+        />
+      </CardFooter>
     </Card>
   );
 };
