@@ -36,6 +36,7 @@ import { useRoleOverride } from "~/hooks/admin/use-role-override";
 import { useIsMobile } from "~/hooks/use-is-mobile";
 import { VisuallyHidden } from "~/components/ui/visually-hidden";
 import { NotificationsButton } from "~/components/shared/notifications";
+import { EditUserInfo } from "~/components/shared/edit-user-info";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const [path] = useLocation();
@@ -165,6 +166,7 @@ function DesktopMenuWrapper(props: {
         <DesktopMenu items={props.items} />
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+        <EditUserInfo />
         <Tooltip>
           <TooltipTrigger asChild>
             <ThemeSwitcher />

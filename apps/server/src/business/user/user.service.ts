@@ -20,4 +20,19 @@ export class UserService {
       },
     });
   }
+  update(
+    userId: string,
+    data: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+    },
+  ) {
+    return this.database.user.update({
+      where: {
+        id: userId,
+      },
+      data,
+    });
+  }
 }

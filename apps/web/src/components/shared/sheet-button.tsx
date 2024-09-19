@@ -26,6 +26,7 @@ export type SheetButtonProps = {
     title: string;
     description?: string;
     hidden?: boolean;
+    side?: "left" | "right";
   };
   children: React.ReactNode;
   onClose?: () => void;
@@ -68,7 +69,7 @@ export const SheetButton = forwardRef<SheetButtonRef, SheetButtonProps>(
           {button.text}
           {buttonPosition === "end" && <Icon name={button.icon} />}
         </Button>
-        <SheetContent>
+        <SheetContent side={sheet.side}>
           <SheetHeader>
             <SheetTitle hidden={sheet.hidden}>{sheet.title}</SheetTitle>
             {sheet.description && (

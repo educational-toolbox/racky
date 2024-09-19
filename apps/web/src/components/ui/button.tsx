@@ -40,7 +40,13 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  tooltip?: string | { content: string; delay: number };
+  tooltip?:
+    | string
+    | {
+        content: string;
+        delay: number;
+        side?: React.ComponentProps<typeof TooltipContent>["side"];
+      };
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -62,7 +68,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               {...props}
             />
           </TooltipTrigger>
-          <TooltipContent>{tooltipContent}</TooltipContent>
+          <TooltipContent
+            side={typeof tooltip === "object" ? tooltip.side : undefined}
+          >
+            {tooltipContent}
+          </TooltipContent>
         </Tooltip>
       );
     }
