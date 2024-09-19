@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader } from "~/components/shared/loader";
 import { Card, CardHeader } from "~/components/ui/card";
 import { DataTable } from "~/components/ui/data-table/table";
@@ -17,10 +17,12 @@ import { columns } from "./columns";
 import { CreateCatalogueButton } from "./create-catalogue";
 import { CreateItemButton } from "./create-item";
 import { useInventoryFilters } from "./use-inventory-filters";
+import { useRoleOverride } from "~/hooks/admin/use-role-override";
 
 export const CatalogueSection = () => {
   const [params, update] = useInventoryFilters();
   const [search, setSearch] = useState("");
+  const override = useRoleOverride();
   const debouncedSearch = useDebounce(search, 300);
   useEffect(() => {
     update({ search: debouncedSearch === "" ? undefined : debouncedSearch });
@@ -37,7 +39,16 @@ export const CatalogueSection = () => {
     { enabled: categoryId !== undefined },
   );
 
-  const validItems = items ?? [];
+  const validItems = useMemo(() => {
+    let data = items ?? [];
+    if (
+      (override.allowed && override.viewAs !== "ADMIN") ||
+      override.originalRole === "USER"
+    ) {
+      data = data.filter((item) => item.status !== "DRAFT");
+    }
+    return data;
+  }, [override, items]);
 
   return (
     <Card>
@@ -103,11 +114,7 @@ const SubcategorySelector = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="default">
-          {isLoading ? (
-            <Loader />
-          ) : (
-            `All catalogues - ${validCatalogItems.length}`
-          )}
+          {isLoading ? <Loader /> : `All catalogues`}
         </SelectItem>
         {validCatalogItems.map((catalogItem) => (
           <SelectItem value={catalogItem.id} key={catalogItem.id}>
